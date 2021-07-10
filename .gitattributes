@@ -1,0 +1,14 @@
+*.[Ee][Xx][Rr] filter=lfs diff=lfs merge=lfs -text
+*.[Mm][Pp]4 filter=lfs diff=lfs merge=lfs -text
+*.[Pp][Nn][Gg] filter=lfs diff=lfs merge=lfs -text
+*.[Mm][Oo][Vv] filter=lfs diff=lfs merge=lfs -text
+*.[Mm][Pp]3 filter=lfs diff=lfs merge=lfs -text
+*.[Ww][Aa][Vv] filter=lfs diff=lfs merge=lfs -text
+*.[Tt][Gg][Aa] filter=lfs diff=lfs merge=lfs -text
+*.[Pp][Ss][Dd] filter=lfs diff=lfs merge=lfs -text
+*.unitypackage filter=lfs diff=lfs merge=lfs -text
+*.[Ff][Bb][Xx] filter=lfs diff=lfs merge=lfs -text
+*.[Ss][Oo] filter=lfs diff=lfs merge=lfs -text
+*.[Jj][Pp][Gg] filter=lfs diff=lfs merge=lfs -text
+*.[Jj][Pp][Ee][Gg] filter=lfs diff=lfs merge=lfs -text
+*.[Oo][Gg][Gg] filter=lfs diff=lfs merge=lfs -text
