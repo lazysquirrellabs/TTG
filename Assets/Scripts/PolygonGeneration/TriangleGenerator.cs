@@ -44,7 +44,5 @@ namespace SneakySquirrelLabs.TerracedTerrainGenerator.PolygonGeneration
         }
 
         #endregion
-
-        
     }
 }

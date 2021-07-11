@@ -17,11 +17,13 @@ namespace SneakySquirrelLabs.TerracedTerrainGenerator
 
         public TerrainGenerator(uint sides, float radius, Vector3 position)
         {
-            if (sides == 3)
-                _polygonGenerator = new TriangleGenerator(radius);
-            else
-                throw new NotImplementedException($"Polygon with {sides} not implemented");
-            
+            _polygonGenerator = sides switch
+            {
+                3 => new TriangleGenerator(radius),
+                4 => new SquareGenerator(radius),
+                _ => throw new NotImplementedException($"Polygon with {sides} not implemented")
+            };
+
             _position = position;
         }
 
