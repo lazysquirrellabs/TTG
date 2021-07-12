@@ -16,11 +16,16 @@ namespace SneakySquirrelLabs.TerracedTerrainGenerator.PolygonGeneration
         {
             var mesh = new Mesh
             {
-                name = "Terraced Terrain Mesh",
-                vertices = CreateVertices(Radius), 
-                triangles = new[] {0, 1, 2, 0, 2, 3},
-                normals = new [] {Vector3.up, Vector3.up, Vector3.up , Vector3.up }
+                name = "Terraced Terrain Mesh"
             };
+            
+            var vertices = CreateVertices(Radius);
+            mesh.SetVertices(vertices);
+            var triangles = new[] {0, 1, 2, 0, 2, 3};
+            mesh.SetTriangles(triangles, 0, false, 0);
+            var normals = new[] {Vector3.up, Vector3.up, Vector3.up, Vector3.up};
+            mesh.SetNormals(normals);
+            
             return mesh;
 
             static Vector3[] CreateVertices(float radius)

@@ -36,6 +36,14 @@ namespace SneakySquirrelLabs.TerracedTerrainGenerator.PolygonGeneration
                 triangles =  GetTriangles(_sides),
                 normals =  GetNormals(_sides)
             };
+
+            var vertices = CreateVertices(Radius, angleDelta, _sides);
+            mesh.SetVertices(vertices);
+            var triangles = GetTriangles(_sides);
+            mesh.SetTriangles(triangles, 0, false, 0);
+            var normals = GetNormals(_sides);
+            mesh.SetNormals(normals);
+            
             return mesh;
 
             static Vector3[] CreateVertices(float radius, float delta, uint sides)
