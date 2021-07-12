@@ -21,6 +21,7 @@ namespace SneakySquirrelLabs.TerracedTerrainGenerator
             {
                 3 => new TriangleGenerator(radius),
                 4 => new SquareGenerator(radius),
+                _ when sides <= 10  => new RegularPolygonGenerator(sides, radius),
                 _ => throw new NotImplementedException($"Polygon with {sides} not implemented")
             };
 

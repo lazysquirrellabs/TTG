@@ -1,3 +1,4 @@
+using SneakySquirrelLabs.TerracedTerrainGenerator.Utils;
 using UnityEngine;
 
 namespace SneakySquirrelLabs.TerracedTerrainGenerator.PolygonGeneration
@@ -16,10 +17,10 @@ namespace SneakySquirrelLabs.TerracedTerrainGenerator.PolygonGeneration
         {
             var mesh = new Mesh
             {
+                name = "Terraced Terrain Mesh",
                 vertices = CreateVertices(Radius), 
                 triangles = new[] {0, 1, 2},
-                normals = new [] {Vector3.up, Vector3.up, Vector3.up },
-                name = "Terraced Terrain Mesh"
+                normals = new [] {Vector3.up, Vector3.up, Vector3.up }
             };
             return mesh;
 
@@ -27,19 +28,9 @@ namespace SneakySquirrelLabs.TerracedTerrainGenerator.PolygonGeneration
             {
                 var vertices = new Vector3[3];
                 vertices[0] = new Vector3(radius, 0f, 0f);
-                vertices[1] = Rotate(vertices[0], -120);
-                vertices[2] = Rotate(vertices[1], -120);
+                vertices[1] = vertices[0].Rotate(-120f);
+                vertices[2] = vertices[1].Rotate(-120f);
                 return vertices;
-
-                static Vector3 Rotate(Vector3 point, float degrees)
-                {
-                    var angle = degrees * Mathf.Deg2Rad;
-                    var cos = Mathf.Cos(angle);
-                    var sin = Mathf.Sin(angle);
-                    var newX = point.x * cos - point.z * sin;
-                    var newZ = point.x * sin + point.z * cos;
-                    return new Vector3(newX, point.y, newZ);
-                }
             }
         }
 
