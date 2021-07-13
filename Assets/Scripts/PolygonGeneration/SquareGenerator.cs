@@ -2,6 +2,9 @@ using UnityEngine;
 
 namespace SneakySquirrelLabs.TerracedTerrainGenerator.PolygonGeneration
 {
+    /// <summary>
+    /// Generates a square mesh composed by two triangles.
+    /// </summary>
     internal class SquareGenerator : PolygonGenerator
     {
         #region Setup
@@ -21,8 +24,13 @@ namespace SneakySquirrelLabs.TerracedTerrainGenerator.PolygonGeneration
             
             var vertices = CreateVertices(Radius);
             mesh.SetVertices(vertices);
-            var triangles = new[] {0, 1, 2, 0, 2, 3};
+            var triangles = new[]
+            {
+                0, 1, 2, // First triangle
+                0, 2, 3  // Second triangle
+            };
             mesh.SetTriangles(triangles, 0, false, 0);
+            // Normals are vertex-based
             var normals = new[] {Vector3.up, Vector3.up, Vector3.up, Vector3.up};
             mesh.SetNormals(normals);
             

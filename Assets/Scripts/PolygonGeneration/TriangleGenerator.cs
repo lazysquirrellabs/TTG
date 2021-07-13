@@ -3,6 +3,9 @@ using UnityEngine;
 
 namespace SneakySquirrelLabs.TerracedTerrainGenerator.PolygonGeneration
 {
+    /// <summary>
+    /// Generates a triangle mesh.
+    /// </summary>
     internal class TriangleGenerator : PolygonGenerator
     {
         #region Setup
@@ -24,6 +27,7 @@ namespace SneakySquirrelLabs.TerracedTerrainGenerator.PolygonGeneration
             mesh.SetVertices(vertices);
             var triangles = new[] {0, 1, 2};
             mesh.SetTriangles(triangles, 0, false, 0);
+            // Normals are vertex-based
             var normals = new[] {Vector3.up, Vector3.up, Vector3.up};
             mesh.SetNormals(normals);
             

@@ -4,10 +4,16 @@ using UnityEngine;
 
 namespace SneakySquirrelLabs.TerracedTerrainGenerator.PolygonGeneration
 {
+    /// <summary>
+    /// Generates regular polygons with 5 or more sides.
+    /// </summary>
     internal class RegularPolygonGenerator : PolygonGenerator
     {
         #region Fields
 
+        /// <summary>
+        /// How many sides the polygon has.
+        /// </summary>
         private readonly ushort _sides;
 
         #endregion
