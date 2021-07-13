@@ -15,7 +15,7 @@ namespace SneakySquirrelLabs.TerracedTerrainGenerator
 
         #region Setup
 
-        public TerrainGenerator(uint sides, float radius, Vector3 position)
+        public TerrainGenerator(ushort sides, float radius, Vector3 position)
         {
             _polygonGenerator = sides switch
             {

@@ -6,7 +6,7 @@ namespace SneakySquirrelLabs.TerracedTerrainGenerator.Example
     {
         #region Serialized fields
 
-        [SerializeField, Range(3,10)] private uint _sides;
+        [SerializeField, Range(3,10)] private ushort _sides;
         [SerializeField, Range(1,100)] private float _radius;
 
         #endregion

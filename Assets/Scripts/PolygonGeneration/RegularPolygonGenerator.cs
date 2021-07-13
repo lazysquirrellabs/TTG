@@ -8,13 +8,13 @@ namespace SneakySquirrelLabs.TerracedTerrainGenerator.PolygonGeneration
     {
         #region Fields
 
-        private readonly uint _sides;
+        private readonly ushort _sides;
 
         #endregion
         
         #region Setup
         
-        public RegularPolygonGenerator(uint sides, float radius) : base(radius)
+        public RegularPolygonGenerator(ushort sides, float radius) : base(radius)
         {
             if (sides < 5)
                 throw new ArgumentException("Regular polygons should have at least 5 sides");
@@ -62,14 +62,14 @@ namespace SneakySquirrelLabs.TerracedTerrainGenerator.PolygonGeneration
                 return vertices;
             }
 
-            static int[] GetTriangles(uint sides)
+            static int[] GetTriangles(ushort sides)
             {
                 var triangles = new int[sides * 3];
                 for (var i = 0; i < sides; i++)
                 {
-                    triangles[i * 3] = (int) sides;
+                    triangles[i * 3] = sides;
                     triangles[i * 3 + 1] = i;
-                    triangles[i * 3 + 2] = (i + 1) % (int) sides;
+                    triangles[i * 3 + 2] = (i + 1) % sides;
                 }
                 
                 return triangles;
