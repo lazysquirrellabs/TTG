@@ -4,17 +4,31 @@ using UnityEngine;
 
 namespace SneakySquirrelLabs.TerracedTerrainGenerator.MeshFragmentation
 {
+    /// <summary>
+    /// Fragments a mesh into sub-triangles given an arbitrary depth. The original mesh is modified.
+    /// </summary>
     internal class MeshFragmenter
     {
         #region Fields
 
+        /// <summary>
+        /// The mesh to be fragmented.
+        /// </summary>
         private readonly Mesh _mesh;
+        /// <summary>
+        /// The depth (how many consecutive times) the mesh will be fragmented.
+        /// </summary>
         private readonly ushort _depth;
 
         #endregion
 
         #region Setup
 
+        /// <summary>
+        /// <see cref="MeshFragmenter"/>'s constructor. To actually fragment a mesh, call <see cref="Fragment"/>.
+        /// </summary>
+        /// <param name="mesh">The mesh to be fragmented.</param>
+        /// <param name="depth">The depth (how many consecutive times) the mesh will be fragmented.</param>
         internal MeshFragmenter(Mesh mesh, ushort depth)
         {
             _mesh = mesh;
@@ -25,6 +39,9 @@ namespace SneakySquirrelLabs.TerracedTerrainGenerator.MeshFragmentation
 
         #region Internal
 
+        /// <summary>
+        /// Actually fragments the mesh. It modifies the original mesh instead of returning a new one.
+        /// </summary>
         internal void Fragment()
         {
             if (_depth == 0)
@@ -33,13 +50,20 @@ namespace SneakySquirrelLabs.TerracedTerrainGenerator.MeshFragmentation
             var vertices = _mesh.vertices;
             var triangles = _mesh.triangles;
 
+            // The Mesh's triangles field contains indexes of the triangles' vertices. So to find the number of
+            // triangles, we just divide it by 3
             var initialTriangleCount = triangles.Length / 3;
-            var newTriangleIxCount = GetTriangleIxCountForDepth(initialTriangleCount, _depth);
-
-            var readTriangles = new int[newTriangleIxCount];
-            var writeTriangles = new int[newTriangleIxCount];
-            var readVertices = new Vector3[newTriangleIxCount / 2];
-            var writeVertices = new Vector3[newTriangleIxCount / 2];
+            // Find the number of triangles in the final mesh (at maximum depth)
+            var finalTriangleCount = GetTriangleCountForDepth(initialTriangleCount, _depth);
+            var finalTriangleIxCount = finalTriangleCount * 3;
+            
+            // Instead of creating a new array for each depth, we use the same 2 arrays everywhere: 1 for reading and
+            // one for writing. Both have exactly the number of elements necessary for the final depth.
+            // Every time we step into a new depth, we swap them to read from the last depth's write array.
+            var readTriangles = new int[finalTriangleIxCount];
+            var writeTriangles = new int[finalTriangleIxCount];
+            var readVertices = new Vector3[finalTriangleIxCount / 2];
+            var writeVertices = new Vector3[finalTriangleIxCount / 2];
             Array.Copy(triangles, readTriangles, triangles.Length);
             Array.Copy(vertices, readVertices, vertices.Length);
             double currentDepthTotalTriangles = initialTriangleCount;
@@ -47,7 +71,7 @@ namespace SneakySquirrelLabs.TerracedTerrainGenerator.MeshFragmentation
             for (var i = 1; i <= _depth; i++)
             {
                 FragmentAllTriangles(currentDepthTotalTriangles);
-                currentDepthTotalTriangles = GetTriangleIxCountForDepth(initialTriangleCount, i);
+                currentDepthTotalTriangles = GetTriangleCountForDepth(initialTriangleCount, i);
                 (readTriangles, writeTriangles) = (writeTriangles, readTriangles);
                 (readVertices, writeVertices) = (writeVertices, readVertices);
             }
@@ -55,18 +79,18 @@ namespace SneakySquirrelLabs.TerracedTerrainGenerator.MeshFragmentation
             _mesh.vertices = readVertices;
             _mesh.triangles = readTriangles;
 
-            static uint GetTriangleIxCountForDepth(int initialTriangleCount, int depth)
+            static uint GetTriangleCountForDepth(int initialTriangleCount, int depth)
             {
-                return (uint) (3 * (Math.Pow(4, depth) * initialTriangleCount));
+                return (uint) (Math.Pow(4, depth) * initialTriangleCount);
             }
 
-            void FragmentAllTriangles(double triangleIndexCount)
+            void FragmentAllTriangles(double triangleCount)
             {
-                for (var i = 0; i < triangleIndexCount; i += 3)
+                for (var i = 0; i < triangleCount; i++)
                 {
-                    var writeTriangleIx = i * 4;
-                    var writeVertexIx = i * 2;
-                    FragmentTriangle(i, writeTriangleIx, readTriangles, writeTriangles, writeVertexIx, readVertices, writeVertices);
+                    var triangleIx = i * 12;
+                    var writeVertexIx = i * 6;
+                    FragmentTriangle(i*3, triangleIx, readTriangles, writeTriangles, writeVertexIx, readVertices, writeVertices);
                 }
             }
             

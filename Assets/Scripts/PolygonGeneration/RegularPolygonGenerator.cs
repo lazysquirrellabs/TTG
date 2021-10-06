@@ -80,7 +80,6 @@ namespace SneakySquirrelLabs.TerracedTerrainGenerator.PolygonGeneration
                 
                 return triangles;
             }
-
             
             static Vector3[] GetNormals(uint sides)
             {
