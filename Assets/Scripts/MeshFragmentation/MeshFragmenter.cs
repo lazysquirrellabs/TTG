@@ -87,19 +87,25 @@ namespace SneakySquirrelLabs.TerracedTerrainGenerator.MeshFragmentation
             void FragmentAllTriangles(double triangleCount)
             {
                 for (var i = 0; i < triangleCount; i++)
-                {
-                    var triangleIx = i * 12;
-                    var writeVertexIx = i * 6;
-                    FragmentTriangle(i*3, triangleIx, readTriangles, writeTriangles, writeVertexIx, readVertices, writeVertices);
-                }
+                    FragmentTriangle(i, readTriangles, writeTriangles, readVertices, writeVertices);
             }
-            
-            static void FragmentTriangle(int readTriangleIx, int writeTriangleIx, IReadOnlyList<int> readTriangles, 
-                int[] writeTriangles, int writeVertexIx, IReadOnlyList<Vector3> readVertices, Vector3[] writeVertices)
+
+            static void FragmentTriangle(int triangleIx, IReadOnlyList<int> readTriangles, int[] writeTriangles, 
+                IReadOnlyList<Vector3> readVertices, Vector3[] writeVertices)
             {
+                // Each original triangle has 3 vertices, so we need to offset that from reading
+                var readTriangleIx = triangleIx * 3;
+                // The fragmented triangle will have 4 triangles, each one with 3 vertices, so we need to offset by 12
+                var writeTriangleIx = triangleIx * 12;
+                // The fragmented triangle will have 6 vertices, so we need to offset by 6
+                var writeVertexIx = triangleIx * 6;
+                
+                // Read the original vertex data
                 var indexVertex1 = readTriangles[readTriangleIx];
                 var indexVertex2 = readTriangles[readTriangleIx+1];
                 var indexVertex3 = readTriangles[readTriangleIx+2];
+                
+                // Calculate the new vertices and add them
                 var v1 = readVertices[indexVertex1];
                 var v2 = readVertices[indexVertex2];
                 var v3 = readVertices[indexVertex3];
@@ -113,6 +119,8 @@ namespace SneakySquirrelLabs.TerracedTerrainGenerator.MeshFragmentation
                 var ix4 = AddVertex(v4);
                 var ix5 = AddVertex(v5);
                 var ix6 = AddVertex(v6);
+                
+                // Add the new triangles using the indices of the new vertices
                 AddTriangle(ix1, ix4, ix6);
                 AddTriangle(ix4, ix5, ix6);
                 AddTriangle(ix5, ix3, ix6);
