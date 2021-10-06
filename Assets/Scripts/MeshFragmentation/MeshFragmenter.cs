@@ -76,9 +76,9 @@ namespace SneakySquirrelLabs.TerracedTerrainGenerator.MeshFragmentation
                 (readVertices, writeVertices) = (writeVertices, readVertices);
             }
 
-            _mesh.vertices = readVertices;
-            _mesh.triangles = readTriangles;
-
+            _mesh.SetVertices(readVertices);
+            _mesh.SetTriangles(readTriangles, 0, false);
+            
             static uint GetTriangleCountForDepth(int initialTriangleCount, int depth)
             {
                 return (uint) (Math.Pow(4, depth) * initialTriangleCount);
