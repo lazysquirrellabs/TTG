@@ -27,7 +27,7 @@ namespace SneakySquirrelLabs.TerracedTerrainGenerator.PolygonGeneration
         /// <exception cref="ArgumentException">Thrown if the radius is not positive.</exception>
         protected PolygonGenerator(float radius)
         {
-            if (Radius <= 0f)
+            if (radius <= 0f)
                 throw new ArgumentException("Radius must be positive");
             Radius = radius;
         }
