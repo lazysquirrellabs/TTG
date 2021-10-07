@@ -20,6 +20,14 @@ namespace SneakySquirrelLabs.TerracedTerrainGenerator.PolygonGeneration
         
         #region Setup
         
+        /// <summary>
+        /// Creates a regular polygon generator.
+        /// </summary>
+        /// <param name="sides">How many sides the generated polygon should have.</param>
+        /// <param name="radius">The radius of the generated polygon (distance between the center and its
+        /// vertices).</param>
+        /// <exception cref="ArgumentException">Thrown if the number of sides is less than 5. For squares and triangles,
+        /// check <see cref="SquareGenerator"/> and <see cref="TriangleGenerator"/>.</exception>
         public RegularPolygonGenerator(ushort sides, float radius) : base(radius)
         {
             if (sides < 5)
@@ -30,7 +38,7 @@ namespace SneakySquirrelLabs.TerracedTerrainGenerator.PolygonGeneration
         #endregion
 
         #region Internal
-
+        
         internal override Mesh Generate()
         {
             var angleDelta = 360f / _sides;

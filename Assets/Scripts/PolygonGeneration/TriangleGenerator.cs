@@ -4,13 +4,18 @@ using UnityEngine;
 namespace SneakySquirrelLabs.TerracedTerrainGenerator.PolygonGeneration
 {
     /// <summary>
-    /// Generates a triangle mesh.
+    /// Generates an equilateral triangle mesh.
     /// </summary>
     internal class TriangleGenerator : PolygonGenerator
     {
         #region Setup
 
-        internal TriangleGenerator(float radius) : base(radius) { }
+        /// <summary>
+        /// Creates a triangle generator
+        /// </summary>
+        /// <param name="size">The size of the generated triangle (the distance between the center and
+        /// its vertices).</param>
+        internal TriangleGenerator(float size) : base(size) { }
 
         #endregion
 

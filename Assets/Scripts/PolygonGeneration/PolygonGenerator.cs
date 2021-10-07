@@ -19,6 +19,12 @@ namespace SneakySquirrelLabs.TerracedTerrainGenerator.PolygonGeneration
 
         #region Setup
         
+        /// <summary>
+        /// Creates a polygon generator. Used by subclasses only.
+        /// </summary>
+        /// <param name="radius">The radius of the generated polygon (distance between the center and its
+        /// farthest point).</param>
+        /// <exception cref="ArgumentException">Thrown if the radius is not positive.</exception>
         protected PolygonGenerator(float radius)
         {
             if (Radius <= 0f)

@@ -3,13 +3,17 @@ using UnityEngine;
 namespace SneakySquirrelLabs.TerracedTerrainGenerator.PolygonGeneration
 {
     /// <summary>
-    /// Generates a square mesh composed by two triangles.
+    /// Generates a square mesh.
     /// </summary>
     internal class SquareGenerator : PolygonGenerator
     {
         #region Setup
         
-        public SquareGenerator(float radius) : base(radius) { }
+        /// <summary>
+        /// Creates a square generator.
+        /// </summary>
+        /// <param name="size">The size of the generated square (length of one side).</param>
+        public SquareGenerator(float size) : base(size) { }
         
         #endregion
 
