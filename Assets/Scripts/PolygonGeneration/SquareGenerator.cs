@@ -2,11 +2,18 @@ using UnityEngine;
 
 namespace SneakySquirrelLabs.TerracedTerrainGenerator.PolygonGeneration
 {
+    /// <summary>
+    /// Generates a square mesh.
+    /// </summary>
     internal class SquareGenerator : PolygonGenerator
     {
         #region Setup
         
-        public SquareGenerator(float radius) : base(radius) { }
+        /// <summary>
+        /// Creates a square generator.
+        /// </summary>
+        /// <param name="size">The size of the generated square (length of one side).</param>
+        public SquareGenerator(float size) : base(size) { }
         
         #endregion
 
@@ -21,10 +28,13 @@ namespace SneakySquirrelLabs.TerracedTerrainGenerator.PolygonGeneration
             
             var vertices = CreateVertices(Radius);
             mesh.SetVertices(vertices);
-            var triangles = new[] {0, 1, 2, 0, 2, 3};
+            var triangles = new[]
+            {
+                0, 1, 2, // First triangle
+                0, 2, 3  // Second triangle
+            };
             mesh.SetTriangles(triangles, 0, false, 0);
-            var normals = new[] {Vector3.up, Vector3.up, Vector3.up, Vector3.up};
-            mesh.SetNormals(normals);
+            mesh.RecalculateNormals();
             
             return mesh;
 

@@ -4,16 +4,30 @@ using UnityEngine;
 
 namespace SneakySquirrelLabs.TerracedTerrainGenerator.PolygonGeneration
 {
+    /// <summary>
+    /// Generates regular polygons with 5 or more sides.
+    /// </summary>
     internal class RegularPolygonGenerator : PolygonGenerator
     {
         #region Fields
 
+        /// <summary>
+        /// How many sides the polygon has.
+        /// </summary>
         private readonly ushort _sides;
 
         #endregion
         
         #region Setup
         
+        /// <summary>
+        /// Creates a regular polygon generator.
+        /// </summary>
+        /// <param name="sides">How many sides the generated polygon should have.</param>
+        /// <param name="radius">The radius of the generated polygon (distance between the center and its
+        /// vertices).</param>
+        /// <exception cref="ArgumentException">Thrown if the number of sides is less than 5. For squares and triangles,
+        /// check <see cref="SquareGenerator"/> and <see cref="TriangleGenerator"/>.</exception>
         public RegularPolygonGenerator(ushort sides, float radius) : base(radius)
         {
             if (sides < 5)
@@ -24,7 +38,7 @@ namespace SneakySquirrelLabs.TerracedTerrainGenerator.PolygonGeneration
         #endregion
 
         #region Internal
-
+        
         internal override Mesh Generate()
         {
             var angleDelta = 360f / _sides;
@@ -41,8 +55,7 @@ namespace SneakySquirrelLabs.TerracedTerrainGenerator.PolygonGeneration
             mesh.SetVertices(vertices);
             var triangles = GetTriangles(_sides);
             mesh.SetTriangles(triangles, 0, false, 0);
-            var normals = GetNormals(_sides);
-            mesh.SetNormals(normals);
+            mesh.RecalculateNormals();
             
             return mesh;
 
@@ -74,7 +87,6 @@ namespace SneakySquirrelLabs.TerracedTerrainGenerator.PolygonGeneration
                 
                 return triangles;
             }
-
             
             static Vector3[] GetNormals(uint sides)
             {

@@ -6,6 +6,12 @@ namespace SneakySquirrelLabs.TerracedTerrainGenerator.Utils
     {
         #region Internal
 
+        /// <summary>
+        /// Rotates the given <paramref name="point"/> around the origin by a given angle.
+        /// </summary>
+        /// <param name="point">The point to be rotated.</param>
+        /// <param name="degrees">The angle in degrees.</param>
+        /// <returns>The rotated point.</returns>
         internal static Vector3 Rotate(this Vector3 point, float degrees)
         {
             var angle = degrees * Mathf.Deg2Rad;
