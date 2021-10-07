@@ -47,8 +47,7 @@ namespace SneakySquirrelLabs.TerracedTerrainGenerator.PolygonGeneration
             mesh.SetVertices(vertices);
             var triangles = GetTriangles(_sides);
             mesh.SetTriangles(triangles, 0, false, 0);
-            var normals = GetNormals(_sides);
-            mesh.SetNormals(normals);
+            mesh.RecalculateNormals();
             
             return mesh;
 

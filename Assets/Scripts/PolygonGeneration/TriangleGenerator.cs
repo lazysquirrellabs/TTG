@@ -27,9 +27,7 @@ namespace SneakySquirrelLabs.TerracedTerrainGenerator.PolygonGeneration
             mesh.SetVertices(vertices);
             var triangles = new[] {0, 1, 2};
             mesh.SetTriangles(triangles, 0, false, 0);
-            // Normals are vertex-based
-            var normals = new[] {Vector3.up, Vector3.up, Vector3.up};
-            mesh.SetNormals(normals);
+            mesh.RecalculateNormals();
             
             return mesh;
 
