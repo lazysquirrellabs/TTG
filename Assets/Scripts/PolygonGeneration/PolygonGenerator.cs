@@ -1,3 +1,4 @@
+using System;
 using UnityEngine;
 
 namespace SneakySquirrelLabs.TerracedTerrainGenerator.PolygonGeneration
@@ -20,6 +21,8 @@ namespace SneakySquirrelLabs.TerracedTerrainGenerator.PolygonGeneration
         
         protected PolygonGenerator(float radius)
         {
+            if (Radius <= 0f)
+                throw new ArgumentException("Radius must be positive");
             Radius = radius;
         }
 
