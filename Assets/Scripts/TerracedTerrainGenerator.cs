@@ -1,4 +1,5 @@
 using System;
+using SneakySquirrelLabs.TerracedTerrainGenerator.Deformation;
 using SneakySquirrelLabs.TerracedTerrainGenerator.MeshFragmentation;
 using SneakySquirrelLabs.TerracedTerrainGenerator.PolygonGeneration;
 using UnityEngine;
@@ -24,6 +25,10 @@ namespace SneakySquirrelLabs.TerracedTerrainGenerator
         /// How many iterations of the fragmentation should be performed.
         /// </summary>
         private readonly ushort _depth;
+        /// <summary>
+        /// The maximum height of the generated terrain.
+        /// </summary>
+        private readonly float _height;
 
         #endregion
 
@@ -34,11 +39,12 @@ namespace SneakySquirrelLabs.TerracedTerrainGenerator
         /// </summary>
         /// <param name="sides">Number of sides of the terrain's basic shape. Value must be between 3 and 10. </param>
         /// <param name="radius">The terrain's radius?</param>
+        /// <param name="height">The maximum height of the generated terrain.</param>
         /// <param name="depth">Depth to fragment the basic mesh.</param>
         /// <param name="position">The position of the generated terrain (in world space).</param>
         /// <exception cref="NotImplementedException">Thrown if the provided number of sides is
         /// not supported.</exception>
-        public TerrainGenerator(ushort sides, float radius, ushort depth, Vector3 position)
+        public TerrainGenerator(ushort sides, float radius, float height, ushort depth, Vector3 position)
         {
             _polygonGenerator = sides switch
             {
@@ -48,6 +54,7 @@ namespace SneakySquirrelLabs.TerracedTerrainGenerator
                 _ => throw new NotImplementedException($"Polygon with {sides} not implemented")
             };
 
+            _height = height;
             _depth = depth;
             _position = position;
         }
@@ -69,6 +76,8 @@ namespace SneakySquirrelLabs.TerracedTerrainGenerator
             var mesh = _polygonGenerator.Generate();
             var fragmenter = new MeshFragmenter(mesh, _depth);
             fragmenter.Fragment();
+            var deformer = new PerlinDeformer();
+            deformer.Deform(mesh, _height);
             meshFilter.mesh = mesh;
             return rootGameObject;
         }

@@ -155,6 +155,7 @@ MonoBehaviour:
   _sides: 3
   _depth: 2
   _radius: 10
+  _height: 3
 --- !u!4 &826162129
 Transform:
   m_ObjectHideFlags: 0
