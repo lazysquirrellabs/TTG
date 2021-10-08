@@ -73,11 +73,11 @@ namespace SneakySquirrelLabs.TerracedTerrainGenerator
             rootGameObject.transform.position = _position;
             var meshFilter = rootGameObject.AddComponent<MeshFilter>();
             rootGameObject.AddComponent<MeshRenderer>();
-            var mesh = _polygonGenerator.Generate();
+            var mesh = _polygonGenerator.Generate(false);
             var fragmenter = new MeshFragmenter(mesh, _depth);
-            fragmenter.Fragment();
+            fragmenter.Fragment(false);
             var deformer = new PerlinDeformer();
-            deformer.Deform(mesh, _height);
+            deformer.Deform(mesh, _height, true);
             meshFilter.mesh = mesh;
             return rootGameObject;
         }

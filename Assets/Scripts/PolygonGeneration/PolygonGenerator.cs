@@ -36,11 +36,13 @@ namespace SneakySquirrelLabs.TerracedTerrainGenerator.PolygonGeneration
         
         #region Internal
 
+        
         /// <summary>
         /// Generates the polygon <see cref="Mesh"/>.
         /// </summary>
+         /// <param name="calculateNormals">Whether the vertices' normals should be calculated.</param>
         /// <returns>The generated mesh.</returns>
-        internal abstract Mesh Generate();
+        internal abstract Mesh Generate(bool calculateNormals);
 
         #endregion
 

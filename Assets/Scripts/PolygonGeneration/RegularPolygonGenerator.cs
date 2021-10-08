@@ -39,7 +39,7 @@ namespace SneakySquirrelLabs.TerracedTerrainGenerator.PolygonGeneration
 
         #region Internal
         
-        internal override Mesh Generate()
+        internal override Mesh Generate(bool calculateNormals)
         {
             var angleDelta = 360f / _sides;
 
@@ -55,7 +55,8 @@ namespace SneakySquirrelLabs.TerracedTerrainGenerator.PolygonGeneration
             mesh.SetVertices(vertices);
             var triangles = GetTriangles(_sides);
             mesh.SetTriangles(triangles, 0, false, 0);
-            mesh.RecalculateNormals();
+            if (calculateNormals)
+                mesh.RecalculateNormals();
             
             return mesh;
 

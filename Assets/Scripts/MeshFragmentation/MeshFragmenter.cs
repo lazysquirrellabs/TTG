@@ -41,8 +41,10 @@ namespace SneakySquirrelLabs.TerracedTerrainGenerator.MeshFragmentation
 
         /// <summary>
         /// Actually fragments the mesh. It modifies the original mesh instead of returning a new one.
+        /// <param name="recalculateNormals">Whether the vertices' normals should be recalculated after
+        /// fragmentation.</param>
         /// </summary>
-        internal void Fragment()
+        internal void Fragment(bool recalculateNormals)
         {
             if (_depth == 0)
                 return;
@@ -78,7 +80,8 @@ namespace SneakySquirrelLabs.TerracedTerrainGenerator.MeshFragmentation
 
             _mesh.SetVertices(readVertices);
             _mesh.SetTriangles(readTriangles, 0, false);
-            _mesh.RecalculateNormals();
+            if (recalculateNormals)
+                _mesh.RecalculateNormals();
             
             static uint GetTriangleCountForDepth(int initialTriangleCount, int depth)
             {
