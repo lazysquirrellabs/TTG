@@ -29,6 +29,10 @@ namespace SneakySquirrelLabs.TerracedTerrainGenerator
         /// The maximum height of the generated terrain.
         /// </summary>
         private readonly float _height;
+        /// <summary>
+        /// The frequency of the deformation.
+        /// </summary>
+        private readonly float _frequency;
 
         #endregion
 
@@ -40,11 +44,12 @@ namespace SneakySquirrelLabs.TerracedTerrainGenerator
         /// <param name="sides">Number of sides of the terrain's basic shape. Value must be between 3 and 10. </param>
         /// <param name="radius">The terrain's radius?</param>
         /// <param name="height">The maximum height of the generated terrain.</param>
+        /// <param name="frequency">The frequency of deformation.</param>
         /// <param name="depth">Depth to fragment the basic mesh.</param>
         /// <param name="position">The position of the generated terrain (in world space).</param>
         /// <exception cref="NotImplementedException">Thrown if the provided number of sides is
         /// not supported.</exception>
-        public TerrainGenerator(ushort sides, float radius, float height, ushort depth, Vector3 position)
+        public TerrainGenerator(ushort sides, float radius, float height, float frequency, ushort depth, Vector3 position)
         {
             _polygonGenerator = sides switch
             {
@@ -55,6 +60,7 @@ namespace SneakySquirrelLabs.TerracedTerrainGenerator
             };
 
             _height = height;
+            _frequency = frequency;
             _depth = depth;
             _position = position;
         }
@@ -77,7 +83,7 @@ namespace SneakySquirrelLabs.TerracedTerrainGenerator
             var fragmenter = new MeshFragmenter(mesh, _depth);
             fragmenter.Fragment(false);
             var deformer = new PerlinDeformer();
-            deformer.Deform(mesh, _height, true);
+            deformer.Deform(mesh, _height, _frequency, true);
             meshFilter.mesh = mesh;
             return rootGameObject;
         }
