@@ -52,8 +52,8 @@ namespace SneakySquirrelLabs.TerracedTerrainGenerator.Deformation
         internal void Deform(Mesh mesh, float height, float frequency, bool recalculateNormals)
         {
             var vertices = mesh.vertices;
-            var xOffset = frequency * (float) _random.NextDouble();
-            var yOffset = frequency * (float) _random.NextDouble();
+            var xOffset = _random.Next(-1_000, 1_000);
+            var yOffset = _random.Next(-1_000, 1_000);
 
             for (var i = 0; i < vertices.Length; i++)
             {

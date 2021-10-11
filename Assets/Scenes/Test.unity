@@ -153,10 +153,10 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _sides: 5
-  _depth: 6
+  _depth: 5
   _radius: 10
-  _height: 2
-  _frequency: 0.5
+  _height: 3
+  _frequency: 0.2
 --- !u!4 &826162129
 Transform:
   m_ObjectHideFlags: 0
