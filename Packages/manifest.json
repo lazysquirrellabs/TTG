@@ -1,6 +1,5 @@
 {
   "dependencies": {
-    "com.unity.collab-proxy": "1.15.17",
     "com.unity.ide.rider": "3.0.15",
     "com.unity.render-pipelines.universal": "12.1.7",
     "com.unity.test-framework": "1.1.31",
