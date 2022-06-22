@@ -19,7 +19,7 @@ namespace SneakySquirrelLabs.TerracedTerrainGenerator.PolygonGeneration
 
         #region Internal
 
-        internal override Mesh Generate()
+        internal override Mesh Generate(bool calculateNormals)
         {
             var mesh = new Mesh
             {
@@ -34,7 +34,8 @@ namespace SneakySquirrelLabs.TerracedTerrainGenerator.PolygonGeneration
                 0, 2, 3  // Second triangle
             };
             mesh.SetTriangles(triangles, 0, false, 0);
-            mesh.RecalculateNormals();
+            if (calculateNormals)
+                mesh.RecalculateNormals();
             
             return mesh;
 
