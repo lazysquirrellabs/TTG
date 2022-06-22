@@ -73,19 +73,19 @@ namespace SneakySquirrelLabs.TerracedTerrainGenerator
         /// Generates the entire terraced terrain.
         /// </summary>
         /// <returns>The <see cref="GameObject"/> which holds the generated terrain.</returns>
-        public GameObject GenerateTerrain()
+        public MeshRenderer GenerateTerrain()
         {
             var rootGameObject = new GameObject("Terraced Terrain");
             rootGameObject.transform.position = _position;
             var meshFilter = rootGameObject.AddComponent<MeshFilter>();
-            rootGameObject.AddComponent<MeshRenderer>();
+            var meshRenderer = rootGameObject.AddComponent<MeshRenderer>();
             var mesh = _polygonGenerator.Generate(false);
             var fragmenter = new MeshFragmenter(mesh, _depth);
             fragmenter.Fragment(false);
             var deformer = new PerlinDeformer();
             deformer.Deform(mesh, _height, _frequency, true);
             meshFilter.mesh = mesh;
-            return rootGameObject;
+            return meshRenderer;
         }
 
         #endregion
