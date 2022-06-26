@@ -2,6 +2,7 @@ using System;
 using SneakySquirrelLabs.TerracedTerrainGenerator.Deformation;
 using SneakySquirrelLabs.TerracedTerrainGenerator.MeshFragmentation;
 using SneakySquirrelLabs.TerracedTerrainGenerator.PolygonGeneration;
+using SneakySquirrelLabs.TerracedTerrainGenerator.TerraceGeneration;
 using UnityEngine;
 
 namespace SneakySquirrelLabs.TerracedTerrainGenerator
@@ -33,6 +34,10 @@ namespace SneakySquirrelLabs.TerracedTerrainGenerator
         /// The frequency of the deformation.
         /// </summary>
         private readonly float _frequency;
+        /// <summary>
+        /// The number of terraces to create.
+        /// </summary>
+        private readonly uint _terraceCount;
 
         #endregion
 
@@ -47,15 +52,17 @@ namespace SneakySquirrelLabs.TerracedTerrainGenerator
         /// <param name="frequency">The frequency of deformation.</param>
         /// <param name="depth">Depth to fragment the basic mesh.</param>
         /// <param name="position">The position of the generated terrain (in world space).</param>
+        /// <param name="terraceCount">The number of terraces to create.</param>
         /// <exception cref="NotImplementedException">Thrown if the provided number of sides is
         /// not supported.</exception>
-        public TerrainGenerator(ushort sides, float radius, float height, float frequency, ushort depth, Vector3 position)
+        public TerrainGenerator(ushort sides, float radius, float height, float frequency, ushort depth, 
+            Vector3 position, uint terraceCount)
         {
             _polygonGenerator = sides switch
             {
                 3 => new TriangleGenerator(radius),
                 4 => new SquareGenerator(radius),
-                _ when sides <= 10  => new RegularPolygonGenerator(sides, radius),
+                <= 10 => new RegularPolygonGenerator(sides, radius),
                 _ => throw new NotImplementedException($"Polygon with {sides} not implemented")
             };
 
@@ -63,6 +70,7 @@ namespace SneakySquirrelLabs.TerracedTerrainGenerator
             _frequency = frequency;
             _depth = depth;
             _position = position;
+            _terraceCount = terraceCount;
         }
 
         #endregion
@@ -84,6 +92,7 @@ namespace SneakySquirrelLabs.TerracedTerrainGenerator
             fragmenter.Fragment(false);
             var deformer = new PerlinDeformer();
             deformer.Deform(mesh, _height, _frequency, true);
+            var terracer = new Terracer(mesh, _terraceCount);
             meshFilter.mesh = mesh;
             return meshRenderer;
         }
