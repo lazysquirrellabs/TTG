@@ -94,6 +94,7 @@ namespace SneakySquirrelLabs.TerracedTerrainGenerator
             deformer.Deform(mesh, _height, _frequency, true);
             var terracer = new Terracer(mesh, _terraceCount);
             meshFilter.mesh = mesh;
+            terracer.CreateTerraces();
             return meshRenderer;
         }
 

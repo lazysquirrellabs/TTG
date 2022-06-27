@@ -157,6 +157,7 @@ MonoBehaviour:
   _radius: 10
   _height: 3
   _frequency: 0.2
+  _terraceCount: 10
   _material: {fileID: 2100000, guid: 881a28996daae4ea6aa8e2ddc486b5ca, type: 2}
 --- !u!4 &826162129
 Transform:
