@@ -79,7 +79,8 @@ namespace SneakySquirrelLabs.TerracedTerrainGenerator.TerraceGeneration
                 {
                     var isLastPlane = p == planeCount - 1;
                     var planeHeight = _planeHeights[p];
-                    var pointsAbove = triangle.GetPointsAbove(planeHeight);
+                    int pointsAbove;
+                    (triangle, pointsAbove) = RearrangeAccordingToPlane(triangle, planeHeight);
 
                     switch (pointsAbove)
                     {
@@ -111,6 +112,42 @@ namespace SneakySquirrelLabs.TerracedTerrainGenerator.TerraceGeneration
                     _meshBuilder.AddTriangle(v1Plane, v2Plane, v3Plane);
                 }
 
+                static (Triangle, int) RearrangeAccordingToPlane(Triangle triangle, float planeHeight)
+                {
+                    var v1Below = triangle.V1.y < planeHeight;
+                    var v2Below = triangle.V2.y < planeHeight;
+                    var v3Below = triangle.V3.y < planeHeight;
+                    
+                    if (v1Below)
+                    {
+                        if (v2Below)
+                            return triangle.V3.y < planeHeight ? (triangle, 0) : (triangle, 1);
+                        
+                        if (v3Below)
+                        {
+                            triangle = new Triangle(triangle.V3, triangle.V1, triangle.V2);
+                            return (triangle, 1);
+                        }
+
+                        triangle = new Triangle(triangle.V2, triangle.V3, triangle.V1);
+                        return (triangle, 2);
+                    }
+
+                    if (v2Below)
+                    {
+                        if (v3Below)
+                        {
+                            triangle = new Triangle(triangle.V2, triangle.V3, triangle.V1);
+                            return (triangle, 1);
+                        }
+                        
+                        triangle = new Triangle(triangle.V3, triangle.V1, triangle.V2);
+                        return (triangle, 2);
+                    }
+
+                    return v3Below ? (triangle, 2) : (triangle, 3);
+                }
+                
                 static Vector3 GetPlanePoint(Vector3 v1, Vector3 v2, float planeHeight)
                 {
                     var t = (planeHeight - v1.y) / (v2.y - v1.y);
