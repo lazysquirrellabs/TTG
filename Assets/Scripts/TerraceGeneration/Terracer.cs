@@ -69,8 +69,8 @@ namespace SneakySquirrelLabs.TerracedTerrainGenerator.TerraceGeneration
 
             var vertices = _meshBuilder.Vertices;
             var triangles = _meshBuilder.Triangles;
-            _mesh.triangles = triangles;
             _mesh.vertices = vertices;
+            _mesh.triangles = triangles;
 
             void SliceTriangle(Triangle triangle)
             {
@@ -88,10 +88,10 @@ namespace SneakySquirrelLabs.TerracedTerrainGenerator.TerraceGeneration
                             // Skip, it has been sliced
                             break;
                         case 1:
-                            SlideTriangle1Above(triangle, planeHeight);
+                            SliceTriangle1Above(triangle, planeHeight);
                             break;
                         case 2:
-
+                            SliceTriangle2Above(triangle, planeHeight);
                             break;
                         case 3 when !isLastPlane:
                             // Skip, will be caught by another plane.
@@ -104,12 +104,21 @@ namespace SneakySquirrelLabs.TerracedTerrainGenerator.TerraceGeneration
                     }
                 }
 
-                void SlideTriangle1Above(Triangle t,float planeHeight)
+                void SliceTriangle1Above(Triangle t,float planeHeight)
                 {
-                    var v1Plane = GetPlanePoint(t.V1, t.V3, planeHeight);
-                    var v2Plane = GetPlanePoint(t.V2, t.V3, planeHeight);
+                    var v13Plane = GetPlanePoint(t.V1, t.V3, planeHeight);
+                    var v23Plane = GetPlanePoint(t.V2, t.V3, planeHeight);
                     var v3Plane = new Vector3(t.V3.x, planeHeight, t.V3.z);
-                    _meshBuilder.AddTriangle(v1Plane, v2Plane, v3Plane);
+                    _meshBuilder.AddTriangle(v13Plane, v23Plane, v3Plane);
+                }
+                
+                void SliceTriangle2Above(Triangle t,float planeHeight)
+                {
+                    var v13Plane = GetPlanePoint(t.V1, t.V3, planeHeight);
+                    var v23Plane = GetPlanePoint(t.V2, t.V3, planeHeight);
+                    var v1Plane = new Vector3(t.V1.x, planeHeight, t.V1.z);
+                    var v2Plane = new Vector3(t.V2.x, planeHeight, t.V2.z);
+                    _meshBuilder.AddQuadrilateral(v13Plane, v1Plane, v2Plane, v23Plane);
                 }
 
                 static (Triangle, int) RearrangeAccordingToPlane(Triangle triangle, float planeHeight)
