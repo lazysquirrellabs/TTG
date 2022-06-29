@@ -1,4 +1,3 @@
-using System;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -42,55 +41,33 @@ namespace SneakySquirrelLabs.TerracedTerrainGenerator.TerraceGeneration
             AddTriangle(v1, v2, v3);
         }
         
-        internal bool TryAddSlicedTriangle(Triangle triangle, float plane, float previousPlane, int pointsAbove)
+        internal void AddSlicedTriangle1Above(Triangle t, float plane, float previousPlane)
         {
-            switch (pointsAbove)
-            {
-                case 0:
-                    // Skip, it has been sliced
-                    return false;
-                case 1:
-                    SliceTriangle1Above(triangle);
-                    return true;
-                case 2:
-                    SliceTriangle2Above(triangle);
-                    return true;
-                case 3:
-                    // Skip, will be caught by another plane.
-                    return false;
-                default:
-                    throw new NotSupportedException($"It's impossible to have {pointsAbove} above.");
-            }
+            // Add floor
+            var v13Plane = GetPlanePoint(t.V1, t.V3, plane);
+            var v23Plane = GetPlanePoint(t.V2, t.V3, plane);
+            var v3Plane = new Vector3(t.V3.x, plane, t.V3.z);
+            AddTriangle(v13Plane, v23Plane, v3Plane);
 
-            void SliceTriangle1Above(Triangle t)
-            {
-                var v13Plane = GetPlanePoint(t.V1, t.V3, plane);
-                var v23Plane = GetPlanePoint(t.V2, t.V3, plane);
-                var v3Plane = new Vector3(t.V3.x, plane, t.V3.z);
-                AddTriangle(v13Plane, v23Plane, v3Plane);
-            }
+            // Add wall
+            var v13PreviousPlane = new Vector3(v13Plane.x, previousPlane, v13Plane.z);
+            var v23PreviousPlane = new Vector3(v23Plane.x, previousPlane, v23Plane.z);
+            AddQuadrilateral(v23Plane, v13Plane, v13PreviousPlane, v23PreviousPlane);
+        }
+        
+        internal void AddSlicedTriangle2Above(Triangle t, float plane, float previousPlane)
+        {
+            // Add floor
+            var v13Plane = GetPlanePoint(t.V1, t.V3, plane);
+            var v23Plane = GetPlanePoint(t.V2, t.V3, plane);
+            var v1Plane = new Vector3(t.V1.x, plane, t.V1.z);
+            var v2Plane = new Vector3(t.V2.x, plane, t.V2.z);
+            AddQuadrilateral(v13Plane, v1Plane, v2Plane, v23Plane);
 
-            void SliceTriangle2Above(Triangle t)
-            {
-                // Add at current plane
-                var v13Plane = GetPlanePoint(t.V1, t.V3, plane);
-                var v23Plane = GetPlanePoint(t.V2, t.V3, plane);
-                var v1Plane = new Vector3(t.V1.x, plane, t.V1.z);
-                var v2Plane = new Vector3(t.V2.x, plane, t.V2.z);
-                AddQuadrilateral(v13Plane, v1Plane, v2Plane, v23Plane);
-
-                // Add at previous plane
-                var v3PreviousPlane = new Vector3(t.V3.x, previousPlane, t.V3.z);
-                var v13PreviousPlane = new Vector3(v13Plane.x, previousPlane, v13Plane.z);
-                var v23PreviousPlane = new Vector3(v23Plane.x, previousPlane, v23Plane.z);
-                AddTriangle(v3PreviousPlane, v13PreviousPlane, v23PreviousPlane);
-            }
-
-            static Vector3 GetPlanePoint(Vector3 lower, Vector3 higher, float planeHeight)
-            {
-                var t = (planeHeight - lower.y) / (higher.y - lower.y);
-                return Vector3.Lerp(lower, higher, t);
-            }
+            // Add wall
+            var v13PreviousPlane = new Vector3(v13Plane.x, previousPlane, v13Plane.z);
+            var v23PreviousPlane = new Vector3(v23Plane.x, previousPlane, v23Plane.z);
+            AddQuadrilateral(v13Plane, v23Plane, v23PreviousPlane, v13PreviousPlane);
         }
 
         #endregion
@@ -108,7 +85,6 @@ namespace SneakySquirrelLabs.TerracedTerrainGenerator.TerraceGeneration
             _nextVertexIndex++;
             _indices.Add(_nextVertexIndex);
             _nextVertexIndex++;
-            // Debug.Log($"Added triangle at ({v1}, {v2}, {v3})");
         }
 
         /// <summary>
@@ -125,7 +101,7 @@ namespace SneakySquirrelLabs.TerracedTerrainGenerator.TerraceGeneration
             _vertices.Add(v2);
             _vertices.Add(v3);
             _vertices.Add(v4);
-            // Calculate each vertex index
+            // Calculate each vertex's index
             var index1 = _nextVertexIndex;
             _nextVertexIndex++;
             var index2 = _nextVertexIndex;
@@ -142,6 +118,12 @@ namespace SneakySquirrelLabs.TerracedTerrainGenerator.TerraceGeneration
             _indices.Add(index2);
             _indices.Add(index3);
             _indices.Add(index4);
+        }
+        
+        private static Vector3 GetPlanePoint(Vector3 lower, Vector3 higher, float planeHeight)
+        {
+            var t = (planeHeight - lower.y) / (higher.y - lower.y);
+            return Vector3.Lerp(lower, higher, t);
         }
 
         #endregion
