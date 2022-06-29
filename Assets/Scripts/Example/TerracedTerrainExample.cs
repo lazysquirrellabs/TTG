@@ -18,9 +18,15 @@ namespace SneakySquirrelLabs.TerracedTerrainGenerator.Example
         
         #region Setup
 
+        private void Awake()
+        {
+            Application.targetFrameRate = 30;
+        }
+
         private void Start()
         {
-            var generator = new TerrainGenerator(_sides, _radius, _height, _frequency, _depth, Vector3.zero, _terraceCount);
+            var origin = Vector3.zero;
+            var generator = new TerrainGenerator(_sides, _radius, _height, _frequency, _depth, origin, _terraceCount);
             var meshRenderer = generator.GenerateTerrain();
             meshRenderer.material = _material;
         }

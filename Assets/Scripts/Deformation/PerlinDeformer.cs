@@ -14,27 +14,25 @@ namespace SneakySquirrelLabs.TerracedTerrainGenerator.Deformation
         /// Randomizer used to offset the filter noise application so it delivers different results.
         /// </summary>
         private readonly Random _random;
+        /// <summary>
+        /// The mesh data to be fragmented.
+        /// </summary>
+        private readonly MeshData _meshData;
 
         #endregion
         
         #region Setup
 
         /// <summary>
-        /// Creates a <see cref="PerlinDeformer"/> with a random seed.
-        /// </summary>
-        internal PerlinDeformer()
-        {
-            _random = new Random();
-        }
-
-        /// <summary>
         /// Creates a <see cref="PerlinDeformer"/> with the given <paramref name="seed"/>. If you want deterministic
         /// output, use this function.
         /// </summary>
         /// <param name="seed">Seed used by the randomizer.</param>
-        internal PerlinDeformer(int seed)
+        /// <param name="meshData">The mesh data to be deformed.</param>
+        internal PerlinDeformer(int seed, MeshData meshData)
         {
             _random = new Random(seed);
+            _meshData = meshData;
         }
 
         #endregion
@@ -44,24 +42,21 @@ namespace SneakySquirrelLabs.TerracedTerrainGenerator.Deformation
         /// <summary>
         /// Deforms the given terrain mesh.
         /// </summary>
-        /// <param name="mesh">The terrain mesh to be deformed.</param>
         /// <param name="height">The maximum height used for deformation.</param>
         /// <param name="frequency">The frequency of deformation (how many elements in a given area).</param>
-        internal void Deform(Mesh mesh, float height, float frequency)
+        internal void Deform(float height, float frequency)
         {
-            var vertices = mesh.vertices;
             var xOffset = _random.Next(-1_000, 1_000);
             var yOffset = _random.Next(-1_000, 1_000);
+            _meshData.Map(DeformVertex);
 
-            for (var i = 0; i < vertices.Length; i++)
+            Vector3 DeformVertex(Vector3 vertex)
             {
-                var vertex = vertices[i];
                 var filterX = (vertex.x + xOffset) * frequency;
                 var filterY = (vertex.z + yOffset) * frequency;
                 vertex.y += height * Mathf.PerlinNoise(filterX, filterY);
-                vertices[i] = vertex;
+                return vertex;
             }
-            mesh.SetVertices(vertices);
         }
 
         #endregion

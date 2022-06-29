@@ -21,21 +21,13 @@ namespace SneakySquirrelLabs.TerracedTerrainGenerator.PolygonGeneration
 
         #region Internal
 
-        internal override Mesh Generate(bool calculateNormals)
+        internal override MeshData Generate()
         {
-            var mesh = new Mesh
-            {
-                name = "Terraced Terrain Mesh"
-            };
-
+            var meshData = new MeshData(3, 3);
             var vertices = CreateVertices(Radius);
-            mesh.SetVertices(vertices);
-            var triangles = new[] {0, 1, 2};
-            mesh.SetTriangles(triangles, 0, false, 0);
-            if (calculateNormals)
-                mesh.RecalculateNormals();
+            meshData.AddTriangle(vertices[0], vertices[1], vertices[2]);
             
-            return mesh;
+            return meshData;
 
             static Vector3[] CreateVertices(float radius)
             {

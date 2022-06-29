@@ -12,9 +12,9 @@ namespace SneakySquirrelLabs.TerracedTerrainGenerator.MeshFragmentation
         #region Fields
 
         /// <summary>
-        /// The mesh to be fragmented.
+        /// The mesh data to be fragmented.
         /// </summary>
-        private readonly Mesh _mesh;
+        private readonly MeshData _readMeshData;
         /// <summary>
         /// The depth (how many consecutive times) the mesh will be fragmented.
         /// </summary>
@@ -27,11 +27,11 @@ namespace SneakySquirrelLabs.TerracedTerrainGenerator.MeshFragmentation
         /// <summary>
         /// <see cref="MeshFragmenter"/>'s constructor. To actually fragment a mesh, call <see cref="Fragment"/>.
         /// </summary>
-        /// <param name="mesh">The mesh to be fragmented.</param>
+        /// <param name="meshData">The mesh data to be fragmented.</param>
         /// <param name="depth">The depth (how many consecutive times) the mesh will be fragmented.</param>
-        internal MeshFragmenter(Mesh mesh, ushort depth)
+        internal MeshFragmenter(MeshData meshData, ushort depth)
         {
-            _mesh = mesh;
+            _readMeshData = meshData;
             _depth = depth;
         }
 
@@ -41,20 +41,18 @@ namespace SneakySquirrelLabs.TerracedTerrainGenerator.MeshFragmentation
 
         /// <summary>
         /// Actually fragments the mesh. It modifies the original mesh instead of returning a new one.
-        /// <param name="recalculateNormals">Whether the vertices' normals should be recalculated after
-        /// fragmentation.</param>
         /// </summary>
-        internal void Fragment(bool recalculateNormals)
+        internal MeshData Fragment()
         {
             if (_depth == 0)
-                return;
+                return _readMeshData;
 
-            var vertices = _mesh.vertices;
-            var triangles = _mesh.triangles;
+            var vertices = _readMeshData.Vertices;
+            var indices = _readMeshData.Indices;
 
             // The Mesh's triangles field contains indexes of the triangles' vertices. So to find the number of
             // triangles, we just divide it by 3
-            var initialTriangleCount = triangles.Length / 3;
+            var initialTriangleCount = indices.Count / 3;
             // Find the number of triangles in the final mesh (at maximum depth)
             var finalTriangleCount = GetTriangleCountForDepth(initialTriangleCount, _depth);
             var finalTriangleIxCount = finalTriangleCount * 3;
@@ -66,8 +64,8 @@ namespace SneakySquirrelLabs.TerracedTerrainGenerator.MeshFragmentation
             var writeTriangles = new int[finalTriangleIxCount];
             var readVertices = new Vector3[finalTriangleIxCount / 2];
             var writeVertices = new Vector3[finalTriangleIxCount / 2];
-            Array.Copy(triangles, readTriangles, triangles.Length);
-            Array.Copy(vertices, readVertices, vertices.Length);
+            indices.CopyTo(0, readTriangles, 0, indices.Count);
+            vertices.CopyTo(0, readVertices, 0, vertices.Count);
             double currentDepthTotalTriangles = initialTriangleCount;
 
             for (var i = 1; i <= _depth; i++)
@@ -78,10 +76,7 @@ namespace SneakySquirrelLabs.TerracedTerrainGenerator.MeshFragmentation
                 (readVertices, writeVertices) = (writeVertices, readVertices);
             }
 
-            _mesh.SetVertices(readVertices);
-            _mesh.SetTriangles(readTriangles, 0, false);
-            if (recalculateNormals)
-                _mesh.RecalculateNormals();
+            return new MeshData(readVertices, readTriangles);
             
             static uint GetTriangleCountForDepth(int initialTriangleCount, int depth)
             {

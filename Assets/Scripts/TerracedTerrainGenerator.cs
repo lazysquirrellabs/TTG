@@ -15,6 +15,10 @@ namespace SneakySquirrelLabs.TerracedTerrainGenerator
         #region Fields
 
         /// <summary>
+        /// The seed used to feed the randomizer.
+        /// </summary>
+        private readonly int _seed;
+        /// <summary>
         /// The position of the generated terrain, in world space.
         /// </summary>
         private readonly Vector3 _position;
@@ -22,10 +26,6 @@ namespace SneakySquirrelLabs.TerracedTerrainGenerator
         /// The polygon generator used to create the terrain's basic shape.
         /// </summary>
         private readonly PolygonGenerator _polygonGenerator;
-        /// <summary>
-        /// The vertex (and consequently terrain) deformer that will generate hills and valleys.
-        /// </summary>
-        private readonly PerlinDeformer _deformer;
         /// <summary>
         /// How many iterations of the fragmentation should be performed.
         /// </summary>
@@ -72,7 +72,7 @@ namespace SneakySquirrelLabs.TerracedTerrainGenerator
                 _ => throw new NotImplementedException($"Polygon with {sides} not implemented")
             };
             
-            _deformer = new PerlinDeformer(seed);
+            _seed = seed;
             _height = height;
             _frequency = frequency;
             _depth = depth;
@@ -103,7 +103,8 @@ namespace SneakySquirrelLabs.TerracedTerrainGenerator
                 _ => throw new NotImplementedException($"Polygon with {sides} not implemented")
             };
             
-            _deformer = new PerlinDeformer();
+            var random = new System.Random();
+            _seed = random.Next();
             _height = height;
             _frequency = frequency;
             _depth = depth;
@@ -125,14 +126,14 @@ namespace SneakySquirrelLabs.TerracedTerrainGenerator
             rootGameObject.transform.position = _position;
             var meshFilter = rootGameObject.AddComponent<MeshFilter>();
             var meshRenderer = rootGameObject.AddComponent<MeshRenderer>();
-            var mesh = _polygonGenerator.Generate(false);
-            var fragmenter = new MeshFragmenter(mesh, _depth);
-            fragmenter.Fragment(false);
-            _deformer.Deform(mesh, _height, _frequency);
-            var terracer = new Terracer(mesh, _terraceCount);
+            var meshData = _polygonGenerator.Generate();
+            var fragmenter = new MeshFragmenter(meshData, _depth);
+            meshData = fragmenter.Fragment();
+            var deformer = new PerlinDeformer(_seed, meshData);
+            deformer.Deform(_height, _frequency);
+            var terracer = new Terracer(meshData, _terraceCount);
+            var mesh = terracer.CreateTerraces();
             meshFilter.mesh = mesh;
-            terracer.CreateTerraces();
-            mesh.RecalculateNormals();
             return meshRenderer;
         }
 

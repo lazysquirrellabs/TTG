@@ -14,50 +14,43 @@ namespace SneakySquirrelLabs.TerracedTerrainGenerator.TerraceGeneration
         
         #region Fields
 
-        private readonly Mesh _mesh;
-        private readonly MeshBuilder _meshBuilder;
+        private readonly MeshData _meshData;
+        private readonly TerracedMeshBuilder _meshBuilder;
         private readonly float[] _planeHeights;
         private readonly uint _terraces;
-        private readonly List<Vector3> _originalVertices;
-        private readonly List<int> _originalTriangles;
 
         #endregion
 
         #region Setup
 
-        internal Terracer(Mesh mesh, uint terraces)
+        internal Terracer(MeshData meshData, uint terraces)
         {
-            _mesh = mesh;
+            _meshData = meshData;
             // In the base case, there will be at least the same amount of vertices
-            _meshBuilder = new MeshBuilder(mesh.vertexCount, mesh.triangles.Length);
-            var originalVertexCount = mesh.vertexCount;
-            _originalVertices = new List<Vector3>(originalVertexCount);
-            mesh.GetVertices(_originalVertices);
-            _originalTriangles = new List<int>(3 * originalVertexCount);
-            mesh.GetTriangles(_originalTriangles, 0);
-            _planeHeights = GetHeights(terraces + 1, _originalVertices);
+            _meshBuilder = new TerracedMeshBuilder(_meshData.Vertices.Count, _meshData.Indices.Count);
+            _planeHeights = GetHeights(terraces + 1, meshData.Vertices);
             _terraces = terraces;
-
+            
             static float[] GetHeights(uint count, List<Vector3> vertices)
             {
                 var lowestPoint = float.PositiveInfinity;
                 var highestPoint = float.NegativeInfinity;
                 var heights = new float[count];
-
+            
                 foreach (var vertex in vertices)
                 {
                     lowestPoint = Mathf.Min(vertex.y, lowestPoint);
                     highestPoint = Mathf.Max(vertex.y, highestPoint);
                 }
-
+            
                 // Ensure that all points will be between the lowest and maximum points
                 lowestPoint -= float.Epsilon;
                 highestPoint += float.Epsilon;
                 var delta = (highestPoint - lowestPoint) / (count - 1);
-
+            
                 for (var i = 0; i < count; i++)
                     heights[i] = lowestPoint + i * delta;
-
+            
                 return heights;
             }
         }
@@ -66,24 +59,21 @@ namespace SneakySquirrelLabs.TerracedTerrainGenerator.TerraceGeneration
 
         #region Internal
 
-        internal void CreateTerraces()
+        internal Mesh CreateTerraces()
         {
             if (_terraces == 0)
-                return;
+                return _meshBuilder.Build();
             
-            var triangleCount = _originalTriangles.Count / 3;
-            var originalTriangleIndex = 0;
+            var triangleCount = _meshData.Indices.Count / 3;
+            var triangleIndex = 0;
 
             for (var t = 0; t < triangleCount; t++)
             {
-                var triangle = new Triangle(_originalTriangles, _originalVertices, ref originalTriangleIndex);
+                var triangle = new Triangle(_meshData.Indices, _meshData.Vertices, ref triangleIndex);
                 AddTriangle(triangle);
             }
 
-            var vertices = _meshBuilder.Vertices;
-            var triangles = _meshBuilder.Triangles;
-            _mesh.SetVertices(vertices);
-            _mesh.SetTriangles(triangles, 0, true);
+            return _meshBuilder.Build();
 
             void AddTriangle(Triangle t)
             {
