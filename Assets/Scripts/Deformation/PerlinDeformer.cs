@@ -47,9 +47,7 @@ namespace SneakySquirrelLabs.TerracedTerrainGenerator.Deformation
         /// <param name="mesh">The terrain mesh to be deformed.</param>
         /// <param name="height">The maximum height used for deformation.</param>
         /// <param name="frequency">The frequency of deformation (how many elements in a given area).</param>
-        /// <param name="recalculateNormals">Whether the vertices' normals should be recalculated after
-        /// deformation.</param>
-        internal void Deform(Mesh mesh, float height, float frequency, bool recalculateNormals)
+        internal void Deform(Mesh mesh, float height, float frequency)
         {
             var vertices = mesh.vertices;
             var xOffset = _random.Next(-1_000, 1_000);
@@ -64,8 +62,6 @@ namespace SneakySquirrelLabs.TerracedTerrainGenerator.Deformation
                 vertices[i] = vertex;
             }
             mesh.SetVertices(vertices);
-            if (recalculateNormals)
-                mesh.RecalculateNormals();
         }
 
         #endregion
