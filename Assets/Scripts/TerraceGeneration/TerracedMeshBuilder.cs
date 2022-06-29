@@ -1,4 +1,5 @@
 using UnityEngine;
+using UnityEngine.Rendering;
 
 namespace SneakySquirrelLabs.TerracedTerrainGenerator.TerraceGeneration
 {
@@ -6,6 +7,7 @@ namespace SneakySquirrelLabs.TerracedTerrainGenerator.TerraceGeneration
     {
         #region Fields
 
+        private const int MaxVertexCountUInt16 = 65_535;
         private readonly MeshData _meshData;
 
         #endregion
@@ -25,6 +27,8 @@ namespace SneakySquirrelLabs.TerracedTerrainGenerator.TerraceGeneration
         {
             var mesh = new Mesh();
             mesh.name = "Terraced Terrain";
+            if (_meshData.Vertices.Count > MaxVertexCountUInt16)
+                mesh.indexFormat = IndexFormat.UInt32;
             mesh.SetVertices(_meshData.Vertices);
             mesh.SetTriangles(_meshData.Indices, 0);
             mesh.RecalculateNormals();
