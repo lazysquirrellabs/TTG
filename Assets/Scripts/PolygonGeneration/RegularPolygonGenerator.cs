@@ -1,4 +1,5 @@
 using System;
+using SneakySquirrelLabs.TerracedTerrainGenerator.Data;
 using SneakySquirrelLabs.TerracedTerrainGenerator.Utils;
 using UnityEngine;
 
@@ -39,13 +40,13 @@ namespace SneakySquirrelLabs.TerracedTerrainGenerator.PolygonGeneration
 
         #region Internal
         
-        internal override MeshData Generate()
+        internal override SimpleMeshData Generate()
         {
             var angleDelta = 360f / _sides;
 
             var vertexCount = _sides + 1;
             var indicesCount = _sides * 3;
-            var meshData = new MeshData(vertexCount, indicesCount);
+            var meshData = new SimpleMeshData(vertexCount, indicesCount);
 
             var vertices = CreateEdges(Radius, angleDelta, _sides);
             var center = Vector3.zero;

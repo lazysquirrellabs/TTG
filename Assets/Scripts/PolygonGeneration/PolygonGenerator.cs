@@ -1,4 +1,5 @@
 using System;
+using SneakySquirrelLabs.TerracedTerrainGenerator.Data;
 using UnityEngine;
 
 namespace SneakySquirrelLabs.TerracedTerrainGenerator.PolygonGeneration
@@ -40,7 +41,7 @@ namespace SneakySquirrelLabs.TerracedTerrainGenerator.PolygonGeneration
         /// Generates the polygon <see cref="Mesh"/>.
         /// </summary>
         /// <returns>The generated mesh.</returns>
-        internal abstract MeshData Generate();
+        internal abstract SimpleMeshData Generate();
 
         #endregion
     }

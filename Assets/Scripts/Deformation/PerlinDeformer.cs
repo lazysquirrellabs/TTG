@@ -1,3 +1,4 @@
+using SneakySquirrelLabs.TerracedTerrainGenerator.Data;
 using UnityEngine;
 using Random = System.Random;
 
@@ -17,7 +18,7 @@ namespace SneakySquirrelLabs.TerracedTerrainGenerator.Deformation
         /// <summary>
         /// The mesh data to be fragmented.
         /// </summary>
-        private readonly MeshData _meshData;
+        private readonly SimpleMeshData _meshData;
 
         #endregion
         
@@ -29,7 +30,7 @@ namespace SneakySquirrelLabs.TerracedTerrainGenerator.Deformation
         /// </summary>
         /// <param name="seed">Seed used by the randomizer.</param>
         /// <param name="meshData">The mesh data to be deformed.</param>
-        internal PerlinDeformer(int seed, MeshData meshData)
+        internal PerlinDeformer(int seed, SimpleMeshData meshData)
         {
             _random = new Random(seed);
             _meshData = meshData;

@@ -1,3 +1,4 @@
+using SneakySquirrelLabs.TerracedTerrainGenerator.Data;
 using SneakySquirrelLabs.TerracedTerrainGenerator.Utils;
 using UnityEngine;
 
@@ -21,9 +22,9 @@ namespace SneakySquirrelLabs.TerracedTerrainGenerator.PolygonGeneration
 
         #region Internal
 
-        internal override MeshData Generate()
+        internal override SimpleMeshData Generate()
         {
-            var meshData = new MeshData(3, 3);
+            var meshData = new SimpleMeshData(3, 3);
             var vertices = CreateVertices(Radius);
             meshData.AddTriangle(vertices[0], vertices[1], vertices[2]);
             

@@ -41,7 +41,11 @@ namespace SneakySquirrelLabs.TerracedTerrainGenerator
         /// <summary>
         /// The number of terraces to create.
         /// </summary>
-        private readonly uint _terraceCount;
+        private readonly int _terraceCount;
+        /// <summary>
+        /// The materials used by the terraces. 
+        /// </summary>
+        private Material[] _materials;
 
         #endregion
 
@@ -59,10 +63,11 @@ namespace SneakySquirrelLabs.TerracedTerrainGenerator
         /// <param name="depth">Depth to fragment the basic mesh.</param>
         /// <param name="position">The position of the generated terrain (in world space).</param>
         /// <param name="terraceCount">The number of terraces to create.</param>
+        /// <param name="materials">The materials for all terrains.</param>
         /// <exception cref="NotImplementedException">Thrown if the provided number of sides is
         /// not supported.</exception>
         public TerrainGenerator(int seed, ushort sides, float radius, float height, float frequency, ushort depth, 
-            Vector3 position, uint terraceCount)
+            Vector3 position, int terraceCount, Material[] materials)
         {
             _polygonGenerator = sides switch
             {
@@ -72,14 +77,18 @@ namespace SneakySquirrelLabs.TerracedTerrainGenerator
                 _ => throw new NotImplementedException($"Polygon with {sides} not implemented")
             };
             
+            if (materials.Length < terraceCount)
+                throw new ArgumentException("There are not enough materials for all terrains.");
+            
             _seed = seed;
             _height = height;
             _frequency = frequency;
             _depth = depth;
             _position = position;
             _terraceCount = terraceCount;
+            _materials = materials;
         }
-        
+
         /// <summary>
         /// <see cref="TerrainGenerator"/>'s constructor.
         /// </summary>
@@ -90,10 +99,13 @@ namespace SneakySquirrelLabs.TerracedTerrainGenerator
         /// <param name="depth">Depth to fragment the basic mesh.</param>
         /// <param name="position">The position of the generated terrain (in world space).</param>
         /// <param name="terraceCount">The number of terraces to create.</param>
-        /// <exception cref="NotImplementedException">Thrown if the provided number of sides is
+        /// <param name="materials">The materials for all terrains.</param>
+        /// <exception cref="NotImplementedException">Thrown if the provided number of <paramref name="sides"/> is
         /// not supported.</exception>
+        /// /// <exception cref="ArgumentException">Thrown whenever the number of <paramref name="materials"/>
+        ///  does not match <paramref name="terraceCount"/>. </exception>
         public TerrainGenerator(ushort sides, float radius, float height, float frequency, ushort depth, 
-            Vector3 position, uint terraceCount)
+            Vector3 position, int terraceCount, Material[] materials)
         {
             _polygonGenerator = sides switch
             {
@@ -102,6 +114,9 @@ namespace SneakySquirrelLabs.TerracedTerrainGenerator
                 <= 10 => new RegularPolygonGenerator(sides, radius),
                 _ => throw new NotImplementedException($"Polygon with {sides} not implemented")
             };
+
+            if (materials.Length < terraceCount)
+                throw new ArgumentException("There are not enough materials for all terrains.");
             
             var random = new System.Random();
             _seed = random.Next();
@@ -110,6 +125,7 @@ namespace SneakySquirrelLabs.TerracedTerrainGenerator
             _depth = depth;
             _position = position;
             _terraceCount = terraceCount;
+            _materials = materials;
         }
 
         #endregion
@@ -134,6 +150,7 @@ namespace SneakySquirrelLabs.TerracedTerrainGenerator
             var terracer = new Terracer(meshData, _terraceCount);
             var mesh = terracer.CreateTerraces();
             meshFilter.mesh = mesh;
+            meshRenderer.materials = _materials;
             return meshRenderer;
         }
 

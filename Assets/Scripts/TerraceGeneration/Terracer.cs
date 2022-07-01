@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using SneakySquirrelLabs.TerracedTerrainGenerator.Data;
 using UnityEngine;
 
 namespace SneakySquirrelLabs.TerracedTerrainGenerator.TerraceGeneration
@@ -8,30 +9,30 @@ namespace SneakySquirrelLabs.TerracedTerrainGenerator.TerraceGeneration
     {
         #region Delegates
 
-        private delegate void Slicer(Triangle t, float height, float previousHeight);
+        private delegate void Slicer(Triangle t, float height, float previousHeight, int terraceIndex);
 
         #endregion
         
         #region Fields
 
-        private readonly MeshData _meshData;
+        private readonly SimpleMeshData _meshData;
         private readonly TerracedMeshBuilder _meshBuilder;
         private readonly float[] _planeHeights;
-        private readonly uint _terraces;
+        private readonly int _terraces;
 
         #endregion
 
         #region Setup
 
-        internal Terracer(MeshData meshData, uint terraces)
+        internal Terracer(SimpleMeshData meshData, int terraces)
         {
             _meshData = meshData;
             // In the base case, there will be at least the same amount of vertices
-            _meshBuilder = new TerracedMeshBuilder(_meshData.Vertices.Count, _meshData.Indices.Count);
-            _planeHeights = GetHeights(terraces + 1, meshData.Vertices);
+            _meshBuilder = new TerracedMeshBuilder(terraces, _meshData.Vertices.Count, _meshData.Indices.Count);
+            _planeHeights = GetHeights(terraces, meshData.Vertices);
             _terraces = terraces;
             
-            static float[] GetHeights(uint count, List<Vector3> vertices)
+            static float[] GetHeights(int count, List<Vector3> vertices)
             {
                 var lowestPoint = float.PositiveInfinity;
                 var highestPoint = float.NegativeInfinity;
@@ -84,10 +85,10 @@ namespace SneakySquirrelLabs.TerracedTerrainGenerator.TerraceGeneration
                 for (var p = 1; p < planeCount; p++)
                 {
                     var height = _planeHeights[p];
-                    SliceTriangleAtHeight(height);
+                    SliceTriangleAtHeight(height, p);
                 }
 
-                void SliceTriangleAtHeight(float height)
+                void SliceTriangleAtHeight(float height, int terraceIx)
                 {
                     int pointsAbove;
                     (t, pointsAbove) = RearrangeAccordingToPlane(t, height);
@@ -119,13 +120,13 @@ namespace SneakySquirrelLabs.TerracedTerrainGenerator.TerraceGeneration
                     {
                         if (!added)
                             PlacePlane();
-                        slice(t, height, previousHeight);
+                        slice(t, height, previousHeight, terraceIx);
                         added = true;
                     }
                 
                     void PlacePlane()
                     {
-                        _meshBuilder.AddWholeTriangle(t, previousHeight);
+                        _meshBuilder.AddWholeTriangle(t, previousHeight, terraceIx);
                         added = true;
                     }
                 
