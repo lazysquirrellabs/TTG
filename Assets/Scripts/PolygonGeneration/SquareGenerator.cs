@@ -1,3 +1,4 @@
+using SneakySquirrelLabs.TerracedTerrainGenerator.Data;
 using UnityEngine;
 
 namespace SneakySquirrelLabs.TerracedTerrainGenerator.PolygonGeneration
@@ -19,25 +20,13 @@ namespace SneakySquirrelLabs.TerracedTerrainGenerator.PolygonGeneration
 
         #region Internal
 
-        internal override Mesh Generate(bool calculateNormals)
+        internal override SimpleMeshData Generate()
         {
-            var mesh = new Mesh
-            {
-                name = "Terraced Terrain Mesh"
-            };
-            
+            var meshData = new SimpleMeshData(4, 6);
             var vertices = CreateVertices(Radius);
-            mesh.SetVertices(vertices);
-            var triangles = new[]
-            {
-                0, 1, 2, // First triangle
-                0, 2, 3  // Second triangle
-            };
-            mesh.SetTriangles(triangles, 0, false, 0);
-            if (calculateNormals)
-                mesh.RecalculateNormals();
+            meshData.AddQuadrilateral(vertices[0], vertices[1], vertices[2], vertices[3]);
             
-            return mesh;
+            return meshData;
 
             static Vector3[] CreateVertices(float radius)
             {

@@ -1,4 +1,5 @@
 using System;
+using SneakySquirrelLabs.TerracedTerrainGenerator.Data;
 using SneakySquirrelLabs.TerracedTerrainGenerator.Utils;
 using UnityEngine;
 
@@ -39,64 +40,43 @@ namespace SneakySquirrelLabs.TerracedTerrainGenerator.PolygonGeneration
 
         #region Internal
         
-        internal override Mesh Generate(bool calculateNormals)
+        internal override SimpleMeshData Generate()
         {
             var angleDelta = 360f / _sides;
 
-            var mesh = new Mesh
-            {
-                name = "Terraced Terrain Mesh",
-                vertices = CreateVertices(Radius, angleDelta, _sides),
-                triangles =  GetTriangles(_sides),
-                normals =  GetNormals(_sides)
-            };
+            var vertexCount = _sides + 1;
+            var indicesCount = _sides * 3;
+            var meshData = new SimpleMeshData(vertexCount, indicesCount);
 
-            var vertices = CreateVertices(Radius, angleDelta, _sides);
-            mesh.SetVertices(vertices);
-            var triangles = GetTriangles(_sides);
-            mesh.SetTriangles(triangles, 0, false, 0);
-            if (calculateNormals)
-                mesh.RecalculateNormals();
+            var vertices = CreateEdges(Radius, angleDelta, _sides);
+            var center = Vector3.zero;
+
+            // Add all triangles, except the "knot" one
+            for (var i = 0; i < _sides - 1; i++)
+            {
+                var p1 = vertices[i];
+                var p2 = vertices[i + 1];
+                meshData.AddTriangle(p1, p2, center);
+            }
             
-            return mesh;
+            // Add the "knot" triangle
+            meshData.AddTriangle(vertices[_sides-1], vertices[0], center);
+            
+            return meshData;
 
-            static Vector3[] CreateVertices(float radius, float delta, uint sides)
+            static Vector3[] CreateEdges(float radius, float delta, uint sides)
             {
-                var vertices = new Vector3[sides + 1];
+                var vertices = new Vector3[sides];
                 // Place the first vertex Radius units away
                 vertices[0] = new Vector3(radius, 0f, 0f);
                 
                 // Place other outer vertices
                 for (var i = 1; i < sides; i++)
                     vertices[i] = vertices[i - 1].Rotate(-delta);
-                
-                // Place the center vertex
-                vertices[sides] = Vector3.zero;
 
                 return vertices;
             }
 
-            static int[] GetTriangles(ushort sides)
-            {
-                var triangles = new int[sides * 3];
-                for (var i = 0; i < sides; i++)
-                {
-                    triangles[i * 3] = sides;
-                    triangles[i * 3 + 1] = i;
-                    triangles[i * 3 + 2] = (i + 1) % sides;
-                }
-                
-                return triangles;
-            }
-            
-            static Vector3[] GetNormals(uint sides)
-            {
-                var vertexCount = sides + 1;
-                var normals = new Vector3[vertexCount];
-                for (var i = 0; i < vertexCount; i++) 
-                    normals[i] = Vector3.up;
-                return normals;
-            }
         }
 
         #endregion
