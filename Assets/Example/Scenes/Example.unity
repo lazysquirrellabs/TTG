@@ -158,7 +158,7 @@ MonoBehaviour:
   _depth: 5
   _radius: 15
   _height: 3
-  _frequency: 0.2
+  _frequency: 0.1
   _terraceCount: 5
   _materials:
   - {fileID: 2100000, guid: 881a28996daae4ea6aa8e2ddc486b5ca, type: 2}

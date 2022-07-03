@@ -25,7 +25,7 @@ public class TerracedTerrainExample : MonoBehaviour
     private void Start()
     {
         var origin = Vector3.zero;
-        var generator = new TerrainGenerator(_sides, _radius, _height, _frequency, _depth, origin, _terraceCount, _materials);
+        var generator = new TerrainGenerator(1, _sides, _radius, _height, _frequency, _depth, origin, _terraceCount, _materials);
         generator.GenerateTerrain();
     }
 

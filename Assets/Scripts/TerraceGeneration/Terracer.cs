@@ -29,7 +29,9 @@ namespace SneakySquirrelLabs.TerracedTerrainGenerator.TerraceGeneration
             _meshData = meshData;
             // In the base case, there will be at least the same amount of vertices
             _meshBuilder = new TerracedMeshBuilder(terraces, _meshData.Vertices.Count, _meshData.Indices.Count);
-            _planeHeights = GetHeights(terraces, meshData.Vertices);
+            // Two extra planes are placed: one below and one above all points. This helps the algorithm.
+            var planeCount = terraces + 2;
+            _planeHeights = GetHeights(planeCount, meshData.Vertices);
             _terraces = terraces;
             
             static float[] GetHeights(int count, List<Vector3> vertices)
@@ -44,13 +46,15 @@ namespace SneakySquirrelLabs.TerracedTerrainGenerator.TerraceGeneration
                     highestPoint = Mathf.Max(vertex.y, highestPoint);
                 }
             
-                // Ensure that all points will be between the lowest and maximum points
+                // // Ensure that all points are above the lowest plane
                 lowestPoint -= float.Epsilon;
-                highestPoint += float.Epsilon;
                 var delta = (highestPoint - lowestPoint) / (count - 1);
             
-                for (var i = 0; i < count; i++)
+                for (var i = 1; i < count; i++)
                     heights[i] = lowestPoint + i * delta;
+
+                // Ensure that all points are below the highest plane
+                heights[count - 1] += 0.001f;
             
                 return heights;
             }
@@ -82,11 +86,18 @@ namespace SneakySquirrelLabs.TerracedTerrainGenerator.TerraceGeneration
                 var previousHeight = _planeHeights[0];
                 var added = false;
 
-                for (var p = 1; p < planeCount; p++)
+                // Loop through terraces, except the last one
+                for (var terraceIx = 0; terraceIx < _terraces - 1; terraceIx++)
                 {
-                    var height = _planeHeights[p];
-                    SliceTriangleAtHeight(height, p);
+                    // There is one plane below the first terrace, so offset its index by 1
+                    var terraceHeight = _planeHeights[terraceIx + 1];
+                    SliceTriangleAtHeight(terraceHeight, terraceIx);
                 }
+                
+                // Handle the last terrace
+                var lastHeight = _planeHeights[planeCount - 1];
+                var lastTerraceIx = _terraces - 1;
+                SliceTriangleAtHeight(lastHeight, lastTerraceIx);
 
                 void SliceTriangleAtHeight(float height, int terraceIx)
                 {
@@ -118,9 +129,10 @@ namespace SneakySquirrelLabs.TerracedTerrainGenerator.TerraceGeneration
                     
                     void SliceTriangle(Slicer slice)
                     {
+                        // If this is the fist slice, place the bottom triangle
                         if (!added)
                             PlacePlane();
-                        slice(t, height, previousHeight, terraceIx);
+                        slice(t, height, previousHeight, terraceIx + 1);
                         added = true;
                     }
                 
