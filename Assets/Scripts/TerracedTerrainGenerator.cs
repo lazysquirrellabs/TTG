@@ -19,10 +19,6 @@ namespace SneakySquirrelLabs.TerracedTerrainGenerator
         /// </summary>
         private readonly int _seed;
         /// <summary>
-        /// The position of the generated terrain, in world space.
-        /// </summary>
-        private readonly Vector3 _position;
-        /// <summary>
         /// The polygon generator used to create the terrain's basic shape.
         /// </summary>
         private readonly PolygonGenerator _polygonGenerator;
@@ -41,11 +37,7 @@ namespace SneakySquirrelLabs.TerracedTerrainGenerator
         /// <summary>
         /// The number of terraces to create.
         /// </summary>
-        private readonly int _terraceCount;
-        /// <summary>
-        /// The materials used by the terraces. 
-        /// </summary>
-        private Material[] _materials;
+        private readonly int _terraces;
 
         #endregion
 
@@ -61,13 +53,11 @@ namespace SneakySquirrelLabs.TerracedTerrainGenerator
         /// <param name="height">The maximum height of the generated terrain.</param>
         /// <param name="frequency">The frequency of deformation.</param>
         /// <param name="depth">Depth to fragment the basic mesh.</param>
-        /// <param name="position">The position of the generated terrain (in world space).</param>
-        /// <param name="terraceCount">The number of terraces to create.</param>
-        /// <param name="materials">The materials for all terrains.</param>
+        /// <param name="terraces">The number of terraces to create.</param>
         /// <exception cref="NotImplementedException">Thrown if the provided number of sides is
         /// not supported.</exception>
         public TerrainGenerator(int seed, ushort sides, float radius, float height, float frequency, ushort depth, 
-            Vector3 position, int terraceCount, Material[] materials)
+            int terraces)
         {
             _polygonGenerator = sides switch
             {
@@ -77,16 +67,11 @@ namespace SneakySquirrelLabs.TerracedTerrainGenerator
                 _ => throw new NotImplementedException($"Polygon with {sides} not implemented")
             };
             
-            if (materials.Length < terraceCount)
-                throw new ArgumentException("There are not enough materials for all terrains.");
-            
             _seed = seed;
             _height = height;
             _frequency = frequency;
             _depth = depth;
-            _position = position;
-            _terraceCount = terraceCount;
-            _materials = materials;
+            _terraces = terraces;
         }
 
         /// <summary>
@@ -97,15 +82,10 @@ namespace SneakySquirrelLabs.TerracedTerrainGenerator
         /// <param name="height">The maximum height of the generated terrain.</param>
         /// <param name="frequency">The frequency of deformation.</param>
         /// <param name="depth">Depth to fragment the basic mesh.</param>
-        /// <param name="position">The position of the generated terrain (in world space).</param>
-        /// <param name="terraceCount">The number of terraces to create.</param>
-        /// <param name="materials">The materials for all terrains.</param>
+        /// <param name="terraces">The number of terraces to create.</param>
         /// <exception cref="NotImplementedException">Thrown if the provided number of <paramref name="sides"/> is
         /// not supported.</exception>
-        /// /// <exception cref="ArgumentException">Thrown whenever the number of <paramref name="materials"/>
-        ///  does not match <paramref name="terraceCount"/>. </exception>
-        public TerrainGenerator(ushort sides, float radius, float height, float frequency, ushort depth, 
-            Vector3 position, int terraceCount, Material[] materials)
+        public TerrainGenerator(ushort sides, float radius, float height, float frequency, ushort depth, int terraces)
         {
             _polygonGenerator = sides switch
             {
@@ -114,18 +94,13 @@ namespace SneakySquirrelLabs.TerracedTerrainGenerator
                 <= 10 => new RegularPolygonGenerator(sides, radius),
                 _ => throw new NotImplementedException($"Polygon with {sides} not implemented")
             };
-
-            if (materials.Length < terraceCount)
-                throw new ArgumentException("There are not enough materials for all terrains.");
             
             var random = new System.Random();
             _seed = random.Next();
             _height = height;
             _frequency = frequency;
             _depth = depth;
-            _position = position;
-            _terraceCount = terraceCount;
-            _materials = materials;
+            _terraces = terraces;
         }
 
         #endregion
@@ -135,23 +110,16 @@ namespace SneakySquirrelLabs.TerracedTerrainGenerator
         /// <summary>
         /// Generates the entire terraced terrain.
         /// </summary>
-        /// <returns>The <see cref="GameObject"/> which holds the generated terrain.</returns>
-        public MeshRenderer GenerateTerrain()
+        /// <returns>The generated <see cref="Mesh"/>.</returns>
+        public Mesh GenerateTerrain()
         {
-            var rootGameObject = new GameObject("Terraced Terrain");
-            rootGameObject.transform.position = _position;
-            var meshFilter = rootGameObject.AddComponent<MeshFilter>();
-            var meshRenderer = rootGameObject.AddComponent<MeshRenderer>();
             var meshData = _polygonGenerator.Generate();
             var fragmenter = new MeshFragmenter(meshData, _depth);
             meshData = fragmenter.Fragment();
             var deformer = new PerlinDeformer(_seed, meshData);
             deformer.Deform(_height, _frequency);
-            var terracer = new Terracer(meshData, _terraceCount);
-            var mesh = terracer.CreateTerraces();
-            meshFilter.mesh = mesh;
-            meshRenderer.materials = _materials;
-            return meshRenderer;
+            var terracer = new Terracer(meshData, _terraces);
+            return terracer.CreateTerraces();
         }
 
         #endregion

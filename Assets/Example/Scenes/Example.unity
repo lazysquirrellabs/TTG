@@ -160,12 +160,7 @@ MonoBehaviour:
   _height: 3
   _frequency: 0.1
   _terraceCount: 5
-  _materials:
-  - {fileID: 2100000, guid: 881a28996daae4ea6aa8e2ddc486b5ca, type: 2}
-  - {fileID: 2100000, guid: 8a465d3289bff49d091d2a63dd6737df, type: 2}
-  - {fileID: 2100000, guid: 83d5d73232e1747549862c668699299a, type: 2}
-  - {fileID: 2100000, guid: 64cc31042ebe04b7b8ba55f47ae5e648, type: 2}
-  - {fileID: 2100000, guid: 06ca0ee6a40e3465d9d94c43d0346484, type: 2}
+  _meshFilter: {fileID: 826162130}
 --- !u!4 &826162129
 Transform:
   m_ObjectHideFlags: 0
@@ -210,6 +205,10 @@ MeshRenderer:
   m_RendererPriority: 0
   m_Materials:
   - {fileID: 2100000, guid: 881a28996daae4ea6aa8e2ddc486b5ca, type: 2}
+  - {fileID: 2100000, guid: 8a465d3289bff49d091d2a63dd6737df, type: 2}
+  - {fileID: 2100000, guid: 83d5d73232e1747549862c668699299a, type: 2}
+  - {fileID: 2100000, guid: 64cc31042ebe04b7b8ba55f47ae5e648, type: 2}
+  - {fileID: 2100000, guid: 06ca0ee6a40e3465d9d94c43d0346484, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
