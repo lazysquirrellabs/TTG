@@ -15,10 +15,8 @@ namespace SneakySquirrelLabs.TerracedTerrainGenerator.Deformation
         /// Randomizer used to offset the filter noise application so it delivers different results.
         /// </summary>
         private readonly Random _random;
-        /// <summary>
-        /// The mesh data to be fragmented.
-        /// </summary>
-        private readonly SimpleMeshData _meshData;
+        private readonly float _maximumHeight;
+        private readonly float _frequency;
         /// <summary>
         /// The curve used to change the height distribution.
         /// </summary>
@@ -33,13 +31,15 @@ namespace SneakySquirrelLabs.TerracedTerrainGenerator.Deformation
         /// output, use this function.
         /// </summary>
         /// <param name="seed">Seed used by the randomizer.</param>
-        /// <param name="meshData">The mesh data to be deformed.</param>
-        /// <param name="heightDistribution">The curve used to change the height distribution. If it's null,
-        /// the distribution won't be affected, thus it will be linear.</param>
-        internal PerlinDeformer(int seed, SimpleMeshData meshData, AnimationCurve heightDistribution)
+        /// <param name="maximumHeight">The maximum height used for deformation.</param>
+        /// <param name="frequency">The frequency of deformation (how many elements in a given area).</param>
+        /// <param name="heightDistribution">The curve used to change the height distribution. If it's null, the
+        /// distribution won't be affected, thus it will be linear.</param>
+        internal PerlinDeformer(int seed, float maximumHeight, float frequency, AnimationCurve heightDistribution)
         {
             _random = new Random(seed);
-            _meshData = meshData;
+            _maximumHeight = maximumHeight;
+            _frequency = frequency;
             _heightDistribution = heightDistribution;
         }
 
@@ -50,26 +50,25 @@ namespace SneakySquirrelLabs.TerracedTerrainGenerator.Deformation
         /// <summary>
         /// Deforms the given terrain mesh.
         /// </summary>
-        /// <param name="maximumHeight">The maximum height used for deformation.</param>
-        /// <param name="frequency">The frequency of deformation (how many elements in a given area).</param>
-        internal void Deform(float maximumHeight, float frequency)
+        /// <param name="meshData">The mesh data to be deformed.</param>
+        internal void Deform(MeshData meshData)
         {
             var xOffset = _random.Next(-1_000, 1_000);
             var yOffset = _random.Next(-1_000, 1_000);
-            _meshData.Map(DeformVertex);
+            meshData.Map(DeformVertex);
 
             Vector3 DeformVertex(Vector3 vertex)
             {
-                var filterX = (vertex.x + xOffset) * frequency;
-                var filterY = (vertex.z + yOffset) * frequency;
-                var height = GetHeight(filterX, filterY, maximumHeight, _heightDistribution);
+                var filterX = (vertex.x + xOffset) * _frequency;
+                var filterY = (vertex.z + yOffset) * _frequency;
+                var height = GetHeight(filterX, filterY, _maximumHeight, _heightDistribution);
                 vertex.y += height;
                 return vertex;
 
                 static float GetHeight(float x, float y, float maximum, AnimationCurve heightDistribution)
                 {
                     var noise = Mathf.PerlinNoise(x, y);
-                    var modifier = heightDistribution == null ? 1 : heightDistribution.Evaluate(noise);
+                    var modifier = heightDistribution?.Evaluate(noise) ?? 1;
                     return maximum * modifier;
                 }
             }

@@ -25,7 +25,7 @@ public class TerracedTerrainExample : MonoBehaviour
 
     private void Start()
     {
-        var generator = new TerrainGenerator(1, _sides, _radius, _height, _frequency, _depth, _terraceCount, _heightCurve);
+        var generator = new TerrainGenerator(_sides, _radius, _height, _frequency, _depth, _terraceCount, _heightCurve);
         _meshFilter.mesh = generator.GenerateTerrain();
     }
 

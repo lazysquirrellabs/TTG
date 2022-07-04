@@ -13,10 +13,6 @@ namespace SneakySquirrelLabs.TerracedTerrainGenerator.MeshFragmentation
         #region Fields
 
         /// <summary>
-        /// The mesh data to be fragmented.
-        /// </summary>
-        private readonly SimpleMeshData _readMeshData;
-        /// <summary>
         /// The depth (how many consecutive times) the mesh will be fragmented.
         /// </summary>
         private readonly ushort _depth;
@@ -28,11 +24,9 @@ namespace SneakySquirrelLabs.TerracedTerrainGenerator.MeshFragmentation
         /// <summary>
         /// <see cref="MeshFragmenter"/>'s constructor. To actually fragment a mesh, call <see cref="Fragment"/>.
         /// </summary>
-        /// <param name="meshData">The mesh data to be fragmented.</param>
         /// <param name="depth">The depth (how many consecutive times) the mesh will be fragmented.</param>
-        internal MeshFragmenter(SimpleMeshData meshData, ushort depth)
+        internal MeshFragmenter(ushort depth)
         {
-            _readMeshData = meshData;
             _depth = depth;
         }
 
@@ -41,15 +35,16 @@ namespace SneakySquirrelLabs.TerracedTerrainGenerator.MeshFragmentation
         #region Internal
 
         /// <summary>
-        /// Actually fragments the mesh. It modifies the original mesh instead of returning a new one.
+        /// Fragments a mesh. It modifies the original mesh instead of returning a new one.
         /// </summary>
-        internal SimpleMeshData Fragment()
+        /// <param name="meshData">The mesh data to be fragmented.</param>
+        internal SimpleMeshData Fragment(SimpleMeshData meshData)
         {
             if (_depth == 0)
-                return _readMeshData;
+                return meshData;
 
-            var vertices = _readMeshData.Vertices.ToArray();
-            var indices = _readMeshData.Indices;
+            var vertices = meshData.Vertices.ToArray();
+            var indices = meshData.Indices;
 
             // The Mesh's triangles field contains indexes of the triangles' vertices. So to find the number of
             // triangles, we just divide it by 3
