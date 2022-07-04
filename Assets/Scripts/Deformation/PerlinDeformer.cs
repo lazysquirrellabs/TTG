@@ -19,6 +19,10 @@ namespace SneakySquirrelLabs.TerracedTerrainGenerator.Deformation
         /// The mesh data to be fragmented.
         /// </summary>
         private readonly SimpleMeshData _meshData;
+        /// <summary>
+        /// The curve used to change the height distribution.
+        /// </summary>
+        private readonly AnimationCurve _heightDistribution;
 
         #endregion
         
@@ -30,10 +34,13 @@ namespace SneakySquirrelLabs.TerracedTerrainGenerator.Deformation
         /// </summary>
         /// <param name="seed">Seed used by the randomizer.</param>
         /// <param name="meshData">The mesh data to be deformed.</param>
-        internal PerlinDeformer(int seed, SimpleMeshData meshData)
+        /// <param name="heightDistribution">The curve used to change the height distribution. If it's null,
+        /// the distribution won't be affected, thus it will be linear.</param>
+        internal PerlinDeformer(int seed, SimpleMeshData meshData, AnimationCurve heightDistribution)
         {
             _random = new Random(seed);
             _meshData = meshData;
+            _heightDistribution = heightDistribution;
         }
 
         #endregion
@@ -43,9 +50,9 @@ namespace SneakySquirrelLabs.TerracedTerrainGenerator.Deformation
         /// <summary>
         /// Deforms the given terrain mesh.
         /// </summary>
-        /// <param name="height">The maximum height used for deformation.</param>
+        /// <param name="maximumHeight">The maximum height used for deformation.</param>
         /// <param name="frequency">The frequency of deformation (how many elements in a given area).</param>
-        internal void Deform(float height, float frequency)
+        internal void Deform(float maximumHeight, float frequency)
         {
             var xOffset = _random.Next(-1_000, 1_000);
             var yOffset = _random.Next(-1_000, 1_000);
@@ -55,8 +62,16 @@ namespace SneakySquirrelLabs.TerracedTerrainGenerator.Deformation
             {
                 var filterX = (vertex.x + xOffset) * frequency;
                 var filterY = (vertex.z + yOffset) * frequency;
-                vertex.y += height * Mathf.PerlinNoise(filterX, filterY);
+                var height = GetHeight(filterX, filterY, maximumHeight, _heightDistribution);
+                vertex.y += height;
                 return vertex;
+
+                static float GetHeight(float x, float y, float maximum, AnimationCurve heightDistribution)
+                {
+                    var noise = Mathf.PerlinNoise(x, y);
+                    var modifier = heightDistribution == null ? 1 : heightDistribution.Evaluate(noise);
+                    return maximum * modifier;
+                }
             }
         }
 

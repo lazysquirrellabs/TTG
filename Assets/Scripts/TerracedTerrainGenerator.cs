@@ -38,6 +38,10 @@ namespace SneakySquirrelLabs.TerracedTerrainGenerator
         /// The number of terraces to create.
         /// </summary>
         private readonly int _terraces;
+        /// <summary>
+        /// The curve used to modify the height distribution during the deformation (valley/ hill) generation phase. 
+        /// </summary>
+        private readonly AnimationCurve _heightDistribution;
 
         #endregion
 
@@ -47,17 +51,20 @@ namespace SneakySquirrelLabs.TerracedTerrainGenerator
         /// <see cref="TerrainGenerator"/>'s constructor.
         /// </summary>
         /// <param name="seed">Seed used by the randomizer to generate the terrain. Use this call if you'd like
-        /// reproducible generation.</param>
+        ///     reproducible generation.</param>
         /// <param name="sides">Number of sides of the terrain's basic shape. Value must be between 3 and 10. </param>
         /// <param name="radius">The terrain's radius?</param>
         /// <param name="height">The maximum height of the generated terrain.</param>
         /// <param name="frequency">The frequency of deformation.</param>
         /// <param name="depth">Depth to fragment the basic mesh.</param>
         /// <param name="terraces">The number of terraces to create.</param>
+        /// <param name="heightDistribution">The curve used to modify the height distribution during the deformation
+        /// (valley/hill) generation phase. If no curve is provided, the distribution won't be modified (thus it will be
+        /// linear).</param>
         /// <exception cref="NotImplementedException">Thrown if the provided number of sides is
         /// not supported.</exception>
         public TerrainGenerator(int seed, ushort sides, float radius, float height, float frequency, ushort depth, 
-            int terraces)
+            int terraces, AnimationCurve heightDistribution = null)
         {
             _polygonGenerator = sides switch
             {
@@ -72,6 +79,7 @@ namespace SneakySquirrelLabs.TerracedTerrainGenerator
             _frequency = frequency;
             _depth = depth;
             _terraces = terraces;
+            _heightDistribution = heightDistribution;
         }
 
         /// <summary>
@@ -83,9 +91,13 @@ namespace SneakySquirrelLabs.TerracedTerrainGenerator
         /// <param name="frequency">The frequency of deformation.</param>
         /// <param name="depth">Depth to fragment the basic mesh.</param>
         /// <param name="terraces">The number of terraces to create.</param>
+        /// <param name="heightDistribution">The curve used to modify the height distribution during the deformation
+        /// (valley/hill) generation phase. If no curve is provided, the distribution won't be modified (thus it will be
+        /// linear).</param>
         /// <exception cref="NotImplementedException">Thrown if the provided number of <paramref name="sides"/> is
         /// not supported.</exception>
-        public TerrainGenerator(ushort sides, float radius, float height, float frequency, ushort depth, int terraces)
+        public TerrainGenerator(ushort sides, float radius, float height, float frequency, ushort depth, int terraces, 
+            AnimationCurve heightDistribution = null)
         {
             _polygonGenerator = sides switch
             {
@@ -101,6 +113,7 @@ namespace SneakySquirrelLabs.TerracedTerrainGenerator
             _frequency = frequency;
             _depth = depth;
             _terraces = terraces;
+            _heightDistribution = heightDistribution;
         }
 
         #endregion
@@ -116,7 +129,7 @@ namespace SneakySquirrelLabs.TerracedTerrainGenerator
             var meshData = _polygonGenerator.Generate();
             var fragmenter = new MeshFragmenter(meshData, _depth);
             meshData = fragmenter.Fragment();
-            var deformer = new PerlinDeformer(_seed, meshData);
+            var deformer = new PerlinDeformer(_seed, meshData, _heightDistribution);
             deformer.Deform(_height, _frequency);
             var terracer = new Terracer(meshData, _terraces);
             return terracer.CreateTerraces();

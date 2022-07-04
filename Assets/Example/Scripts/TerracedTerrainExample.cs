@@ -12,6 +12,7 @@ public class TerracedTerrainExample : MonoBehaviour
     [SerializeField, Range(0.01f, 1f)] private float _frequency;
     [SerializeField, Range(1, 50)] private int _terraceCount;
     [SerializeField] private MeshFilter _meshFilter;
+    [SerializeField] private AnimationCurve _heightCurve;
 
     #endregion
     
@@ -24,7 +25,7 @@ public class TerracedTerrainExample : MonoBehaviour
 
     private void Start()
     {
-        var generator = new TerrainGenerator(_sides, _radius, _height, _frequency, _depth, _terraceCount);
+        var generator = new TerrainGenerator(1, _sides, _radius, _height, _frequency, _depth, _terraceCount, _heightCurve);
         _meshFilter.mesh = generator.GenerateTerrain();
     }
 
