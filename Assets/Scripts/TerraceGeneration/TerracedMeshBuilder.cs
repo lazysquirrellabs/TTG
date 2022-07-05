@@ -16,10 +16,10 @@ namespace SneakySquirrelLabs.TerracedTerrainGenerator.TerraceGeneration
 
         #region Setup
 
-        internal TerracedMeshBuilder(int terraceCount, int vertexCount, int indicesCount)
+        internal TerracedMeshBuilder(int vertexCount, int indicesCount, int terraceCount)
         {
             _terraceCount = terraceCount;
-            _meshData = new ComplexMeshData(terraceCount, vertexCount, indicesCount);
+            _meshData = new ComplexMeshData(vertexCount, indicesCount, terraceCount);
         }
 
         #endregion

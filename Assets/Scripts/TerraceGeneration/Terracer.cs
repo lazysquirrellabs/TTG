@@ -28,7 +28,7 @@ namespace SneakySquirrelLabs.TerracedTerrainGenerator.TerraceGeneration
         {
             _meshData = meshData;
             // In the base case, there will be at least the same amount of vertices
-            _meshBuilder = new TerracedMeshBuilder(terraces, _meshData.Vertices.Count, _meshData.Indices.Count);
+            _meshBuilder = new TerracedMeshBuilder(_meshData.Vertices.Count, _meshData.Indices.Count, terraces);
             // Two extra planes are placed: one below and one above all points. This helps the algorithm.
             var planeCount = terraces + 2;
             _planeHeights = GetHeights(planeCount, meshData.Vertices);
