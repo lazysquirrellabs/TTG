@@ -1,4 +1,3 @@
-using System.Collections.Generic;
 using SneakySquirrelLabs.TerracedTerrainGenerator.Data;
 using UnityEngine;
 using UnityEngine.Rendering;
@@ -31,80 +30,20 @@ namespace SneakySquirrelLabs.TerracedTerrainGenerator.TerraceGeneration
         {
             var mesh = new Mesh();
             mesh.name = "Terraced Terrain";
-            
-            var (vertices, indicesPerSubMesh) = GetOptimizedMeshData(_meshData, _terraceCount);
-            var vertexCount = vertices.Length;
+            var vertexCount = _meshData.Vertices.Count;
             if (vertexCount > MaxVertexCountUInt16)
                 mesh.indexFormat = IndexFormat.UInt32;
             mesh.subMeshCount = _terraceCount;
-            mesh.SetVertices(vertices, 0, vertexCount);
+            mesh.SetVertices(_meshData.Vertices, 0, vertexCount);
             
             for (var i = 0; i < _terraceCount; i++)
             {
-                var indices = indicesPerSubMesh[i];
+                var indices = _meshData.GetIndices(i);
                 mesh.SetTriangles(indices, 0, indices.Count, i);
             }
-          
+            
             mesh.RecalculateNormals();
-            mesh.RecalculateBounds();
             return mesh;
-
-            static (Vector3[], List<int>[]) GetOptimizedMeshData(ComplexMeshData meshData, int terraceCount)
-            {
-                var verticesPerIndex = GetOptimizedVertices();
-                var indices = GetOptimizedIndices(verticesPerIndex);
-                var vertices = new Vector3[verticesPerIndex.Count];
-      
-                foreach (var (vertex,index) in verticesPerIndex)
-                    vertices[index] = vertex;
-
-                return (vertices, indices);
-                
-                Dictionary<Vector3, int> GetOptimizedVertices()
-                {
-                    var optimizedVertices = new Dictionary<Vector3, int>();
-                    var vertexIndex = 0;
-                    
-                    foreach (var vertex in meshData.Vertices)
-                    {
-                        if (!optimizedVertices.ContainsKey(vertex))
-                        {
-                            optimizedVertices[vertex] = vertexIndex;
-                            vertexIndex++;
-                        }
-                    }
-
-                    return optimizedVertices;
-                }
-
-                List<int>[] GetOptimizedIndices(IReadOnlyDictionary<Vector3, int> optimizedVertices)
-                {
-                    var optimizedIndicesPerSubMesh = new List<int>[terraceCount];
-                
-                    for (var s = 0; s < terraceCount; s++)
-                    {
-                        var optimizedIndices = new List<int>();
-                        optimizedIndicesPerSubMesh[s] = optimizedIndices;
-                        var subMeshIndices = meshData.GetIndices(s);
-                        for (var i = 0; i < subMeshIndices.Count - 2; i += 3)
-                        {
-                            AddOptimizedIndex(optimizedIndices, subMeshIndices, i);
-                            AddOptimizedIndex(optimizedIndices, subMeshIndices, i + 1);
-                            AddOptimizedIndex(optimizedIndices, subMeshIndices, i + 2);
-                        }
-                    }
-
-                    void AddOptimizedIndex(ICollection<int> optimizedIndices, List<int> originalIndices, int index)
-                    {
-                        var vertexIndex = originalIndices[index];
-                        var vertex = meshData.Vertices[vertexIndex];
-                        var optimizedIndex = optimizedVertices[vertex];
-                        optimizedIndices.Add(optimizedIndex);
-                    }
-
-                    return optimizedIndicesPerSubMesh;
-                }
-            }
         }
         
         internal void AddWholeTriangle(Triangle triangle, float height, int terraceIx)
@@ -142,6 +81,11 @@ namespace SneakySquirrelLabs.TerracedTerrainGenerator.TerraceGeneration
             var v13PreviousPlane = new Vector3(v13Plane.x, previousPlane, v13Plane.z);
             var v23PreviousPlane = new Vector3(v23Plane.x, previousPlane, v23Plane.z);
             _meshData.AddQuadrilateral(v13Plane, v23Plane, v23PreviousPlane, v13PreviousPlane, terraceIx);
+        }
+
+        internal void Optimize()
+        {
+            _meshData.Optimize();
         }
 
         #endregion

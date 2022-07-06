@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 
 namespace SneakySquirrelLabs.TerracedTerrainGenerator.Data
@@ -23,11 +24,11 @@ namespace SneakySquirrelLabs.TerracedTerrainGenerator.Data
         /// <summary>
         /// The mesh's vertices.
         /// </summary>
-        internal List<Vector3> Vertices { get; }
+        internal List<Vector3> Vertices { get; private set; }
         /// <summary>
         /// The mesh's (triangle) indices per sub mesh.
         /// </summary>
-        protected List<int>[] IndicesPerSubMesh { get;}
+        protected List<int>[] IndicesPerSubMesh { get; private set; }
 
         #endregion
 
@@ -134,6 +135,69 @@ namespace SneakySquirrelLabs.TerracedTerrainGenerator.Data
             indices.Add(index2);
             indices.Add(index3);
             indices.Add(index4);
+        }
+
+        internal void Optimize()
+        {
+            (Vertices, IndicesPerSubMesh) = GetOptimizedMeshData();
+            
+            (List<Vector3>, List<int>[]) GetOptimizedMeshData()
+            {
+                var verticesPerIndex = GetOptimizedVertices();
+                var indices = GetOptimizedIndices(verticesPerIndex);
+                var vertices = new Vector3[verticesPerIndex.Count];
+      
+                foreach (var (vertex,index) in verticesPerIndex)
+                    vertices[index] = vertex;
+
+                return (vertices.ToList(), indices);
+                
+                Dictionary<Vector3, int> GetOptimizedVertices()
+                {
+                    var optimizedVertices = new Dictionary<Vector3, int>();
+                    var vertexIndex = 0;
+                    
+                    foreach (var vertex in Vertices)
+                    {
+                        if (!optimizedVertices.ContainsKey(vertex))
+                        {
+                            optimizedVertices[vertex] = vertexIndex;
+                            vertexIndex++;
+                        }
+                    }
+
+                    return optimizedVertices;
+                }
+
+                List<int>[] GetOptimizedIndices(IReadOnlyDictionary<Vector3, int> optimizedVertices)
+                {
+                    var terraceCount = IndicesPerSubMesh.Length;
+                    var optimizedIndicesPerSubMesh = new List<int>[terraceCount];
+                
+                    for (var s = 0; s < terraceCount; s++)
+                    {
+                        var optimizedIndices = new List<int>();
+                        optimizedIndicesPerSubMesh[s] = optimizedIndices;
+                        var subMeshIndices = IndicesPerSubMesh[s];
+                        for (var i = 0; i < subMeshIndices.Count - 2; i += 3)
+                        {
+                            AddOptimizedIndex(optimizedIndices, subMeshIndices, i);
+                            AddOptimizedIndex(optimizedIndices, subMeshIndices, i + 1);
+                            AddOptimizedIndex(optimizedIndices, subMeshIndices, i + 2);
+                        }
+                    }
+
+                    void AddOptimizedIndex(ICollection<int> optimizedIndices, List<int> originalIndices, int index)
+                    {
+                        var vertexIndex = originalIndices[index];
+                        var vertex = Vertices[vertexIndex];
+                        var optimizedIndex = optimizedVertices[vertex];
+                        optimizedIndices.Add(optimizedIndex);
+                    }
+
+                    return optimizedIndicesPerSubMesh;
+                }
+            }
         }
 
         #endregion

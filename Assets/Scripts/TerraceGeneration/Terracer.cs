@@ -77,6 +77,8 @@ namespace SneakySquirrelLabs.TerracedTerrainGenerator.TerraceGeneration
                 var triangle = new Triangle(_meshData.Indices, _meshData.Vertices, ref triangleIndex);
                 AddTriangle(triangle);
             }
+            
+            _meshBuilder.Optimize();
 
             void AddTriangle(Triangle t)
             {
