@@ -38,13 +38,13 @@ namespace SneakySquirrelLabs.TerracedTerrainGenerator.Data
         /// </summary>
         /// <param name="vertices">The initial mesh vertices.</param>
         /// <param name="indices">The initial mesh (triangle) indices.</param>
-        internal MeshData(IEnumerable<Vector3> vertices, IEnumerable<int> indices)
+        protected MeshData(IEnumerable<Vector3> vertices, IEnumerable<int> indices)
         {
             Vertices = new List<Vector3>(vertices);
             IndicesPerSubMesh = new List<int>[1];
             IndicesPerSubMesh[0] = new List<int>(indices);
         }
-
+        
         /// <summary>
         /// Creates mesh data with many sub meshes, allocating space for the provided vertex and indices amounts.
         /// </summary>
@@ -52,7 +52,7 @@ namespace SneakySquirrelLabs.TerracedTerrainGenerator.Data
         /// <param name="indicesCount">The initial amount of mesh (triangle) indices.</param>
         /// <param name="subMeshes">The number of sub meshes.</param>
         /// <exception cref="ArgumentException">Thrown whenever an invalid number of sub meshes is provided.</exception>
-        internal MeshData(int vertexCount, int indicesCount, int subMeshes)
+        protected MeshData(int vertexCount, int indicesCount, int subMeshes)
         {
             if (subMeshes < 1)
                 throw new ArgumentException("Mesh data must contain at least 1 sub mesh");
@@ -67,7 +67,7 @@ namespace SneakySquirrelLabs.TerracedTerrainGenerator.Data
         #endregion
 
         #region Internal
-
+        
         /// <summary>
         /// Maps a function <paramref name="f"/> to all vertices of the mesh.
         /// </summary>
