@@ -1,6 +1,5 @@
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using UnityEngine;
 
 namespace SneakySquirrelLabs.TerracedTerrainGenerator.Data
@@ -17,6 +16,8 @@ namespace SneakySquirrelLabs.TerracedTerrainGenerator.Data
         /// </summary>
         private int _nextVertexIndex;
 
+        private readonly Dictionary<Vector3, int> _vertexIndices;
+
         #endregion
         
         #region Properties
@@ -24,11 +25,11 @@ namespace SneakySquirrelLabs.TerracedTerrainGenerator.Data
         /// <summary>
         /// The mesh's vertices.
         /// </summary>
-        internal List<Vector3> Vertices { get; private set; }
+        internal List<Vector3> Vertices { get; }
         /// <summary>
         /// The mesh's (triangle) indices per sub mesh.
         /// </summary>
-        protected List<int>[] IndicesPerSubMesh { get; private set; }
+        protected List<int>[] IndicesPerSubMesh { get; }
 
         #endregion
 
@@ -41,6 +42,7 @@ namespace SneakySquirrelLabs.TerracedTerrainGenerator.Data
         /// <param name="indices">The initial mesh (triangle) indices.</param>
         protected MeshData(IEnumerable<Vector3> vertices, IEnumerable<int> indices)
         {
+            _vertexIndices = new Dictionary<Vector3, int>();
             Vertices = new List<Vector3>(vertices);
             IndicesPerSubMesh = new List<int>[1];
             IndicesPerSubMesh[0] = new List<int>(indices);
@@ -57,7 +59,8 @@ namespace SneakySquirrelLabs.TerracedTerrainGenerator.Data
         {
             if (subMeshes < 1)
                 throw new ArgumentException("Mesh data must contain at least 1 sub mesh");
-            
+
+            _vertexIndices = new Dictionary<Vector3, int>();
             Vertices = new List<Vector3>(vertexCount);
             IndicesPerSubMesh = new List<int>[subMeshes];
             var indicesPerSubMesh = indicesCount / subMeshes;
@@ -89,17 +92,14 @@ namespace SneakySquirrelLabs.TerracedTerrainGenerator.Data
         internal void AddTriangleAt(Vector3 v1, Vector3 v2, Vector3 v3, int subMesh)
         {
             // Add vertices
-            Vertices.Add(v1);
-            Vertices.Add(v2);
-            Vertices.Add(v3);
+            var ix1 = AddVertex(v1);
+            var ix2 = AddVertex(v2);
+            var ix3 = AddVertex(v3);
             // Add indices
             var indices = IndicesPerSubMesh[subMesh];
-            indices.Add(_nextVertexIndex);
-            _nextVertexIndex++;
-            indices.Add(_nextVertexIndex);
-            _nextVertexIndex++;
-            indices.Add(_nextVertexIndex);
-            _nextVertexIndex++;
+            indices.Add(ix1);
+            indices.Add(ix2);
+            indices.Add(ix3);
         }
 
         /// <summary>
@@ -112,92 +112,35 @@ namespace SneakySquirrelLabs.TerracedTerrainGenerator.Data
         /// <param name="subMesh">The index of the sub mesh to add the quadrilateral to.</param>
         internal void AddQuadrilateralAt(Vector3 v1, Vector3 v2, Vector3 v3, Vector3 v4, int subMesh)
         {
-            // Add all vertices
-            Vertices.Add(v1);
-            Vertices.Add(v2);
-            Vertices.Add(v3);
-            Vertices.Add(v4);
-            // Calculate each vertex's index
-            var index1 = _nextVertexIndex;
-            _nextVertexIndex++;
-            var index2 = _nextVertexIndex;
-            _nextVertexIndex++;
-            var index3 = _nextVertexIndex;
-            _nextVertexIndex++;
-            var index4 = _nextVertexIndex;
-            _nextVertexIndex++;
+            // Add vertices
+            var ix1 = AddVertex(v1);
+            var ix2 = AddVertex(v2);
+            var ix3 = AddVertex(v3);
+            var ix4 = AddVertex(v4);
             var indices = IndicesPerSubMesh[subMesh];
             // Add triangle 1
-            indices.Add(index1);
-            indices.Add(index2);
-            indices.Add(index4);
-            // Add triangle 2
-            indices.Add(index2);
-            indices.Add(index3);
-            indices.Add(index4);
+            indices.Add(ix1);
+            indices.Add(ix2);
+            indices.Add(ix4);
+            // // Add triangle 2
+            indices.Add(ix2);
+            indices.Add(ix3);
+            indices.Add(ix4);
         }
 
-        internal void Optimize()
+        #endregion
+
+        #region Private
+
+        private int AddVertex(Vector3 vertex)
         {
-            (Vertices, IndicesPerSubMesh) = GetOptimizedMeshData();
-            
-            (List<Vector3>, List<int>[]) GetOptimizedMeshData()
-            {
-                var verticesPerIndex = GetOptimizedVertices();
-                var indices = GetOptimizedIndices(verticesPerIndex);
-                var vertices = new Vector3[verticesPerIndex.Count];
-      
-                foreach (var (vertex,index) in verticesPerIndex)
-                    vertices[index] = vertex;
-
-                return (vertices.ToList(), indices);
-                
-                Dictionary<Vector3, int> GetOptimizedVertices()
-                {
-                    var optimizedVertices = new Dictionary<Vector3, int>();
-                    var vertexIndex = 0;
-                    
-                    foreach (var vertex in Vertices)
-                    {
-                        if (!optimizedVertices.ContainsKey(vertex))
-                        {
-                            optimizedVertices[vertex] = vertexIndex;
-                            vertexIndex++;
-                        }
-                    }
-
-                    return optimizedVertices;
-                }
-
-                List<int>[] GetOptimizedIndices(IReadOnlyDictionary<Vector3, int> optimizedVertices)
-                {
-                    var terraceCount = IndicesPerSubMesh.Length;
-                    var optimizedIndicesPerSubMesh = new List<int>[terraceCount];
-                
-                    for (var s = 0; s < terraceCount; s++)
-                    {
-                        var optimizedIndices = new List<int>();
-                        optimizedIndicesPerSubMesh[s] = optimizedIndices;
-                        var subMeshIndices = IndicesPerSubMesh[s];
-                        for (var i = 0; i < subMeshIndices.Count - 2; i += 3)
-                        {
-                            AddOptimizedIndex(optimizedIndices, subMeshIndices, i);
-                            AddOptimizedIndex(optimizedIndices, subMeshIndices, i + 1);
-                            AddOptimizedIndex(optimizedIndices, subMeshIndices, i + 2);
-                        }
-                    }
-
-                    void AddOptimizedIndex(ICollection<int> optimizedIndices, List<int> originalIndices, int index)
-                    {
-                        var vertexIndex = originalIndices[index];
-                        var vertex = Vertices[vertexIndex];
-                        var optimizedIndex = optimizedVertices[vertex];
-                        optimizedIndices.Add(optimizedIndex);
-                    }
-
-                    return optimizedIndicesPerSubMesh;
-                }
-            }
+            if (_vertexIndices.TryGetValue(vertex, out var existingIndex))
+                return existingIndex;
+            Vertices.Add(vertex);
+            _vertexIndices[vertex] = _nextVertexIndex;
+            var newIndex = _nextVertexIndex;
+            _nextVertexIndex++;
+            return newIndex;
         }
 
         #endregion

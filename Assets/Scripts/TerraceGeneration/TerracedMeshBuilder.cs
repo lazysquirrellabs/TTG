@@ -83,11 +83,6 @@ namespace SneakySquirrelLabs.TerracedTerrainGenerator.TerraceGeneration
             _meshData.AddQuadrilateral(v13Plane, v23Plane, v23PreviousPlane, v13PreviousPlane, terraceIx);
         }
 
-        internal void Optimize()
-        {
-            _meshData.Optimize();
-        }
-
         #endregion
         
         #region Private
