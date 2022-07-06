@@ -57,6 +57,21 @@ namespace SneakySquirrelLabs.TerracedTerrainGenerator
         public TerrainGenerator(int seed, ushort sides, float radius, float maximumHeight, float frequency, ushort depth, 
             int terraces, AnimationCurve heightDistribution = null)
         {
+            if (radius <= 0)
+                throw new ArgumentOutOfRangeException(nameof(radius));
+
+            if (maximumHeight <= 0)
+                throw new ArgumentOutOfRangeException(nameof(maximumHeight));
+
+            if (frequency <= 0)
+                throw new ArgumentOutOfRangeException(nameof(frequency));
+
+            if (depth <= 0)
+                throw new ArgumentOutOfRangeException(nameof(depth));
+
+            if (terraces <= 0)
+                throw new ArgumentOutOfRangeException(nameof(terraces));
+            
             _polygonGenerator = sides switch
             {
                 3 => new TriangleGenerator(radius),
@@ -84,24 +99,12 @@ namespace SneakySquirrelLabs.TerracedTerrainGenerator
         /// linear).</param>
         /// <exception cref="NotImplementedException">Thrown if the provided number of <paramref name="sides"/> is
         /// not supported.</exception>
-        public TerrainGenerator(ushort sides, float radius, float maximumHeight, float frequency, ushort depth, 
+        public TerrainGenerator(ushort sides, float radius, float maximumHeight, float frequency, ushort depth,
             int terraces, AnimationCurve heightDistribution = null)
+            : this(GetRandomSeed(), sides, radius, maximumHeight, frequency, depth, terraces, heightDistribution)
         {
-            _polygonGenerator = sides switch
-            {
-                3 => new TriangleGenerator(radius),
-                4 => new SquareGenerator(radius),
-                <= 10 => new RegularPolygonGenerator(sides, radius),
-                _ => throw new NotImplementedException($"Polygon with {sides} not implemented")
-            };
-            
-            var random = new System.Random();
-            var seed = random.Next();
-            _fragmenter = new MeshFragmenter(depth);
-            _deformer = new PerlinDeformer(seed, maximumHeight, frequency, heightDistribution);
-            _terraces = terraces;
         }
-        
+
         #endregion
         
         #region Public
@@ -152,6 +155,12 @@ namespace SneakySquirrelLabs.TerracedTerrainGenerator
             meshData = _fragmenter.Fragment(meshData);
             _deformer.Deform(meshData);
             return meshData;
+        }
+
+        private static int GetRandomSeed()
+        {
+            var random = new System.Random();
+            return random.Next();
         }
 
         #endregion

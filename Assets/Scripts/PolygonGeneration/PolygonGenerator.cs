@@ -25,11 +25,8 @@ namespace SneakySquirrelLabs.TerracedTerrainGenerator.PolygonGeneration
         /// </summary>
         /// <param name="radius">The radius of the generated polygon (distance between the center and its
         /// farthest point).</param>
-        /// <exception cref="ArgumentException">Thrown if the radius is not positive.</exception>
         protected PolygonGenerator(float radius)
         {
-            if (radius <= 0f)
-                throw new ArgumentException("Radius must be positive");
             Radius = radius;
         }
 
