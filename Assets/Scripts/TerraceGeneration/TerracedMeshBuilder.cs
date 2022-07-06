@@ -31,12 +31,12 @@ namespace SneakySquirrelLabs.TerracedTerrainGenerator.TerraceGeneration
         {
             var mesh = new Mesh();
             mesh.name = "Terraced Terrain";
-            var vertexCount = _meshData.Vertices.Count;
+            
+            var (vertices, indicesPerSubMesh) = GetOptimizedMeshData(_meshData, _terraceCount);
+            var vertexCount = vertices.Length;
             if (vertexCount > MaxVertexCountUInt16)
                 mesh.indexFormat = IndexFormat.UInt32;
             mesh.subMeshCount = _terraceCount;
-            var (vertices, indicesPerSubMesh) = GetOptimizedMeshData(_meshData, _terraceCount);
-            vertexCount = vertices.Length;
             mesh.SetVertices(vertices, 0, vertexCount);
             
             for (var i = 0; i < _terraceCount; i++)
@@ -44,7 +44,7 @@ namespace SneakySquirrelLabs.TerracedTerrainGenerator.TerraceGeneration
                 var indices = indicesPerSubMesh[i];
                 mesh.SetTriangles(indices, 0, indices.Count, i);
             }
-            
+          
             mesh.RecalculateNormals();
             mesh.RecalculateBounds();
             return mesh;
