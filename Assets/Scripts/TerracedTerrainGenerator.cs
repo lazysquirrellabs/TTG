@@ -123,7 +123,7 @@ namespace SneakySquirrelLabs.TerracedTerrainGenerator
             var synchronizationContext = SynchronizationContext.Current;
             var terracer =  await Task.Run(GenerateTerracedTerrainData, token);
             var generationState = new GenerationState();
-            synchronizationContext.Post(CreateMesh, generationState);
+            synchronizationContext.Send(CreateMesh, generationState);
             var mesh = await generationState.WaitForCompletion(token);
             return mesh;
 
