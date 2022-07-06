@@ -1,3 +1,6 @@
+using System;
+using System.Threading;
+using System.Threading.Tasks;
 using SneakySquirrelLabs.TerracedTerrainGenerator;
 using UnityEngine;
 
@@ -13,6 +16,13 @@ public class TerracedTerrainExample : MonoBehaviour
     [SerializeField, Range(1, 50)] private int _terraceCount;
     [SerializeField] private MeshFilter _meshFilter;
     [SerializeField] private AnimationCurve _heightCurve;
+    [SerializeField] private bool _async;
+
+    #endregion
+
+    #region Fields
+
+    private CancellationTokenSource _cancellationTokenSource;
 
     #endregion
     
@@ -21,12 +31,40 @@ public class TerracedTerrainExample : MonoBehaviour
     private void Awake()
     {
         Application.targetFrameRate = 30;
+        _cancellationTokenSource = new CancellationTokenSource();
     }
 
-    private void Start()
+    private async void Start()
     {
         var generator = new TerrainGenerator(_sides, _radius, _height, _frequency, _depth, _terraceCount, _heightCurve);
-        _meshFilter.mesh = generator.GenerateTerrain();
+        if (_async)
+            await GenerateAsync(generator);
+        else
+            GenerateSynchronously(generator);
+
+        void GenerateSynchronously(TerrainGenerator terrainGenerator)
+        {
+            _meshFilter.mesh = terrainGenerator.GenerateTerrain();
+        }
+
+        async Task GenerateAsync(TerrainGenerator terrainGenerator)
+        {
+            var token = _cancellationTokenSource.Token;
+
+            try
+            {
+                _meshFilter.mesh = await terrainGenerator.GenerateTerrainAsync(token);
+            }
+            catch (OperationCanceledException)
+            {
+                Debug.Log("Terrain generation was cancelled.");
+            }
+        }
+    }
+
+    private void OnDestroy()
+    {
+        _cancellationTokenSource.Cancel();
     }
 
     #endregion

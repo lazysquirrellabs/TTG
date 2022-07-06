@@ -1,4 +1,7 @@
 using System;
+using System.Threading;
+using System.Threading.Tasks;
+using SneakySquirrelLabs.TerracedTerrainGenerator.Data;
 using SneakySquirrelLabs.TerracedTerrainGenerator.Deformation;
 using SneakySquirrelLabs.TerracedTerrainGenerator.MeshFragmentation;
 using SneakySquirrelLabs.TerracedTerrainGenerator.PolygonGeneration;
@@ -98,7 +101,7 @@ namespace SneakySquirrelLabs.TerracedTerrainGenerator
             _deformer = new PerlinDeformer(seed, maximumHeight, frequency, heightDistribution);
             _terraces = terraces;
         }
-
+        
         #endregion
         
         #region Public
@@ -109,11 +112,46 @@ namespace SneakySquirrelLabs.TerracedTerrainGenerator
         /// <returns>The generated <see cref="Mesh"/>.</returns>
         public Mesh GenerateTerrain()
         {
+            var meshData = GenerateTerrainData();
+            var terracer = new Terracer(meshData, _terraces);
+            terracer.CreateTerraces();
+            return terracer.CreateMesh();
+        }
+
+        public async Task<Mesh> GenerateTerrainAsync(CancellationToken token)
+        {
+            var synchronizationContext = SynchronizationContext.Current;
+            var terracer =  await Task.Run(GenerateTerracedTerrainData, token);
+            var generationState = new GenerationState();
+            synchronizationContext.Post(CreateMesh, generationState);
+            var mesh = await generationState.WaitForCompletion(token);
+            return mesh;
+
+            Terracer GenerateTerracedTerrainData()
+            {
+                var meshDaTa = GenerateTerrainData();
+                var t = new Terracer(meshDaTa, _terraces);
+                t.CreateTerraces();
+                return t;
+            }
+            
+            void CreateMesh(object s)
+            {
+                var state = (GenerationState)s;
+                state.Mesh = terracer.CreateMesh();
+            }
+        }
+
+        #endregion
+
+        #region Private
+
+        private SimpleMeshData GenerateTerrainData()
+        {
             var meshData = _polygonGenerator.Generate();
             meshData = _fragmenter.Fragment(meshData);
             _deformer.Deform(meshData);
-            var terracer = new Terracer(meshData, _terraces);
-            return terracer.CreateTerraces();
+            return meshData;
         }
 
         #endregion

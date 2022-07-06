@@ -64,10 +64,10 @@ namespace SneakySquirrelLabs.TerracedTerrainGenerator.TerraceGeneration
 
         #region Internal
 
-        internal Mesh CreateTerraces()
+        internal void CreateTerraces()
         {
             if (_terraces == 0)
-                return _meshBuilder.Build();
+                return;
             
             var triangleCount = _meshData.Indices.Count / 3;
             var triangleIndex = 0;
@@ -77,8 +77,6 @@ namespace SneakySquirrelLabs.TerracedTerrainGenerator.TerraceGeneration
                 var triangle = new Triangle(_meshData.Indices, _meshData.Vertices, ref triangleIndex);
                 AddTriangle(triangle);
             }
-
-            return _meshBuilder.Build();
 
             void AddTriangle(Triangle t)
             {
@@ -179,7 +177,13 @@ namespace SneakySquirrelLabs.TerracedTerrainGenerator.TerraceGeneration
                 }
             }
         }
+
+        internal Mesh CreateMesh()
+        {
+            return _meshBuilder.Build();
+        }
         
         #endregion
+
     }
 }

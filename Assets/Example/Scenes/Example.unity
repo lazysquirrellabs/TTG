@@ -154,10 +154,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a40d5154d83e4d8dae52aa1ccdbbbe08, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _sides: 5
-  _depth: 6
+  _sides: 8
+  _depth: 5
   _radius: 20
-  _height: 5
+  _height: 10
   _frequency: 0.075
   _terraceCount: 15
   _meshFilter: {fileID: 826162130}
@@ -185,6 +185,7 @@ MonoBehaviour:
     m_PreInfinity: 2
     m_PostInfinity: 2
     m_RotationOrder: 4
+  _async: 1
 --- !u!4 &826162129
 Transform:
   m_ObjectHideFlags: 0
