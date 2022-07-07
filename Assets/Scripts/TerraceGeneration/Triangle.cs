@@ -15,7 +15,7 @@ namespace SneakySquirrelLabs.TerracedTerrainGenerator.TerraceGeneration
 
         #region Setup
 
-        internal Triangle(IReadOnlyList<int> triangles, IReadOnlyList<Vector3> vertices, ref int index)
+        internal Triangle(IReadOnlyList<int> triangles, List<Vector3> vertices, ref int index)
         {
             var ix1 = triangles[index];
             index++;
