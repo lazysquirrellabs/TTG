@@ -23,15 +23,16 @@ namespace SneakySquirrelLabs.TerracedTerrainGenerator.Data
         /// <summary>
         /// Creates mesh data for a complex mesh, allocating space for the provided vertex and indices amounts.
         /// </summary>
+        /// <param name="vertexCount">The initial amount of mesh vertices.</param>
         /// <param name="indicesCount">The initial amount of mesh (triangle) indices.</param>
         /// <param name="subMeshes">The number of sub meshes.</param>
         /// <exception cref="ArgumentException">Thrown whenever an invalid number of sub meshes is provided.</exception>
-        internal ComplexMeshData(int indicesCount, int subMeshes)
+        internal ComplexMeshData(int vertexCount, int indicesCount, int subMeshes)
         {
             if (subMeshes < 1)
                 throw new ArgumentException("Mesh data must contain at least 1 sub mesh");
 
-            Vertices = new Dictionary<Vector3, int>();
+            Vertices = new Dictionary<Vector3, int>(vertexCount);
             IndicesPerSubMesh = new List<int>[subMeshes];
             var indicesPerSubMesh = indicesCount / subMeshes;
             for (var i = 0; i < subMeshes; i++)
