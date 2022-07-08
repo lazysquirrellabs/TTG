@@ -11,6 +11,9 @@ namespace SneakySquirrelLabs.TerracedTerrainGenerator.Data
     {
         #region Fields
 
+        /// <summary>
+        /// All the vertices in the mesh data. 
+        /// </summary>
         internal Dictionary<Vector3, int> Vertices { get; }
 
         #endregion

@@ -11,13 +11,22 @@ namespace SneakySquirrelLabs.TerracedTerrainGenerator.Data
     {
         #region Fields
 
+        /// <summary>
+        /// The index of the next vertex.
+        /// </summary>
         private int _nextVertexIndex;
 
         #endregion
         
         #region Properties
-
+        
+        /// <summary>
+        /// All the vertices in the mesh data. 
+        /// </summary>
         internal List<Vector3> Vertices { get; }
+        /// <summary>
+        /// All the (triangle) indices in the mesh data.
+        /// </summary>
         internal List<int> Indices => IndicesPerSubMesh[0];
         
         #endregion
@@ -55,7 +64,7 @@ namespace SneakySquirrelLabs.TerracedTerrainGenerator.Data
         /// <summary>
         /// Maps a function <paramref name="f"/> to all vertices of the mesh.
         /// </summary>
-        /// <param name="f">The function to be executed on all vertices.</param>
+        /// <param name="f">The function to be applied on all vertices.</param>
         internal void Map(Func<Vector3, Vector3> f)
         {
             for (var i = 0; i < Vertices.Count; i++)
@@ -67,7 +76,7 @@ namespace SneakySquirrelLabs.TerracedTerrainGenerator.Data
         }
         
         /// <summary>
-        /// Adds a triangle to the mesh. Points are provided in clockwise order as soon from the rendered surface.
+        /// Adds a triangle to the mesh. Points are provided in clockwise order as seen from the rendered surface.
         /// </summary>
         /// <param name="v1">The first point of the triangle.</param>
         /// <param name="v2">The second point of the triangle.</param>

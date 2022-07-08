@@ -4,7 +4,7 @@ using UnityEngine;
 namespace SneakySquirrelLabs.TerracedTerrainGenerator.Data
 {
     /// <summary>
-    /// Represents all the necessary data to build a mesh.
+    /// Abstract class used to create data that can be used to create a <see cref="Mesh"/>.
     /// </summary>
     internal abstract class MeshData
     {
@@ -26,7 +26,7 @@ namespace SneakySquirrelLabs.TerracedTerrainGenerator.Data
         /// <param name="v2">The second point of the triangle.</param>
         /// <param name="v3">The third point of the triangle.</param>
         /// <param name="subMesh">The index of the sub mesh to add the triangle to.</param>
-        /// <param name="vertexIndex">The index to start adding vertices on.</param>
+        /// <param name="vertexIndex">The index to start adding vertices from.</param>
         protected void AddTriangleAt(Vector3 v1, Vector3 v2, Vector3 v3, int subMesh, ref int vertexIndex)
         {
             // Add vertices
@@ -48,7 +48,7 @@ namespace SneakySquirrelLabs.TerracedTerrainGenerator.Data
         /// <param name="v3">The top right corner of the quadrilateral.</param>
         /// <param name="v4">The bottom right corner of the quadrilateral.</param>
         /// <param name="subMesh">The index of the sub mesh to add the quadrilateral to.</param>
-        /// <param name="index">The index to start adding vertices on.</param>
+        /// <param name="index">The index to start adding vertices from.</param>
         protected void AddQuadrilateralAt(Vector3 v1, Vector3 v2, Vector3 v3, Vector3 v4, int subMesh, ref int index)
         {
             // Add vertices
