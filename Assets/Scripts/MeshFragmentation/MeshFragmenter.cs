@@ -1,6 +1,7 @@
 using System;
-using System.Collections.Generic;
 using SneakySquirrelLabs.TerracedTerrainGenerator.Data;
+using SneakySquirrelLabs.TerracedTerrainGenerator.Utils;
+using Unity.Collections;
 using UnityEngine;
 
 namespace SneakySquirrelLabs.TerracedTerrainGenerator.MeshFragmentation
@@ -43,50 +44,56 @@ namespace SneakySquirrelLabs.TerracedTerrainGenerator.MeshFragmentation
             if (_depth == 0)
                 return meshData;
 
-            var vertices = meshData.Vertices.ToArray();
-            var indices = meshData.Indices;
-
-            // The Mesh's triangles field contains indexes of the triangles' vertices. So to find the number of
-            // triangles, we just divide it by 3
-            var initialTriangleCount = indices.Count;
+            // Each triangle has 3 indices, so divide the number of indices by 3 to find the number of triangles
+            var initialTriangleCount = meshData.Indices.Count / 3;
             // Find the number of triangles in the final mesh (at maximum depth)
             var finalTriangleCount = GetTriangleCountForDepth(initialTriangleCount, _depth);
-            var finalTriangleIxCount = finalTriangleCount * 3;
-            
+            var finalIndicesCount = finalTriangleCount * 3;
+            var finalVertexCount = finalIndicesCount / 2;
+
             // Instead of creating a new array for each depth, we use the same 2 arrays everywhere: 1 for reading and
             // one for writing. Both have exactly the number of elements necessary for the final depth.
             // Every time we step into a new depth, we swap them to read from the last depth's write array.
-            var readTriangles = new int[finalTriangleIxCount];
-            var writeTriangles = new int[finalTriangleIxCount];
-            var readVertices = new Vector3[finalTriangleIxCount / 2];
-            var writeVertices = new Vector3[finalTriangleIxCount / 2];
-            indices.CopyTo(0, readTriangles, 0, indices.Count);
-            Array.Copy(vertices, 0, readVertices, 0, vertices.Length);
+            var readIndices = meshData.Indices.ToNativeNoAlloc(finalIndicesCount);
+            var writeIndices = CreateNativeArray<int>(finalIndicesCount);
+            var readVertices = meshData.Vertices.ToNativeNoAlloc(finalVertexCount);
+            var writeVertices = CreateNativeArray<Vector3>(finalVertexCount);
             double currentDepthTotalTriangles = initialTriangleCount;
 
-            for (var i = 1; i <= _depth; i++)
-            {
-                FragmentAllTriangles(currentDepthTotalTriangles);
-                currentDepthTotalTriangles = GetTriangleCountForDepth(initialTriangleCount, i);
-                (readTriangles, writeTriangles) = (writeTriangles, readTriangles);
-                (readVertices, writeVertices) = (writeVertices, readVertices);
-            }
+            for (var depth = 1; depth <= _depth; depth++)
+                FragmentAllTrianglesForDepth(depth, currentDepthTotalTriangles);
 
-            return new SimpleMeshData(readVertices, readTriangles);
+            var newMeshData = new SimpleMeshData(readVertices, readIndices);
+            // Dispose the native arrays
+            readIndices.Dispose();
+            writeIndices.Dispose();
+            readVertices.Dispose();
+            writeVertices.Dispose();
             
-            static uint GetTriangleCountForDepth(int initialTriangleCount, int depth)
-            {
-                return (uint) (Math.Pow(4, depth) * initialTriangleCount);
-            }
-
-            void FragmentAllTriangles(double triangleCount)
+            return newMeshData;
+            
+            void FragmentAllTrianglesForDepth(int depth, double triangleCount)
             {
                 for (var i = 0; i < triangleCount; i++)
-                    FragmentTriangle(i, readTriangles, writeTriangles, readVertices, writeVertices);
+                    FragmentTriangle(i, readIndices, writeIndices, readVertices, writeVertices);
+                
+                currentDepthTotalTriangles = GetTriangleCountForDepth(initialTriangleCount, depth);
+                (readIndices, writeIndices) = (writeIndices, readIndices);
+                (readVertices, writeVertices) = (writeVertices, readVertices);
+            }
+            
+            static int GetTriangleCountForDepth(int initialTriangleCount, int depth)
+            {
+                return (int) (Math.Pow(4, depth) * initialTriangleCount);
             }
 
-            static void FragmentTriangle(int triangleIx, IReadOnlyList<int> readTriangles, int[] writeTriangles, 
-                IReadOnlyList<Vector3> readVertices, Vector3[] writeVertices)
+            static NativeArray<T> CreateNativeArray<T>(int length) where T : struct
+            {
+                return new NativeArray<T>(length, Allocator.TempJob, NativeArrayOptions.UninitializedMemory);
+            }
+
+            static void FragmentTriangle(int triangleIx, NativeArray<int> readTriangles, NativeArray<int> writeTriangles, 
+                NativeArray<Vector3> readVertices, NativeArray<Vector3> writeVertices)
             {
                 // Each original triangle has 3 vertices, so we need to offset that from reading
                 var readTriangleIx = triangleIx * 3;
@@ -107,14 +114,14 @@ namespace SneakySquirrelLabs.TerracedTerrainGenerator.MeshFragmentation
                 var v4 = (v1 + v2) / 2;
                 var v5 = (v2 + v3) / 2;
                 var v6 = (v3 + v1) / 2;
-
+                
                 var ix1 = AddVertex(v1);
                 var ix2 = AddVertex(v2);
                 var ix3 = AddVertex(v3);
                 var ix4 = AddVertex(v4);
                 var ix5 = AddVertex(v5);
                 var ix6 = AddVertex(v6);
-                
+            
                 // Add the new triangles using the indices of the new vertices
                 AddTriangle(ix1, ix4, ix6);
                 AddTriangle(ix4, ix5, ix6);

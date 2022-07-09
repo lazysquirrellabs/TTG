@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using Unity.Collections;
 
 namespace SneakySquirrelLabs.TerracedTerrainGenerator.Utils
 {
@@ -12,6 +13,14 @@ namespace SneakySquirrelLabs.TerracedTerrainGenerator.Utils
             l1.CopyTo(combined, 0);
             l2.CopyTo(combined, lenght1);
             return combined;
+        }
+
+        internal static NativeArray<T> ToNativeNoAlloc<T>(this List<T> list, int capacity) where T : struct
+        {
+            var array = new NativeArray<T>(capacity, Allocator.TempJob, NativeArrayOptions.UninitializedMemory);
+            for (var i = 0; i < list.Count; i++)
+                array[i] = list[i];
+            return array;
         }
     }
 }
