@@ -66,9 +66,6 @@ namespace SneakySquirrelLabs.TerracedTerrainGenerator
             if (frequency <= 0)
                 throw new ArgumentOutOfRangeException(nameof(frequency));
 
-            if (depth <= 0)
-                throw new ArgumentOutOfRangeException(nameof(depth));
-
             if (terraces <= 0)
                 throw new ArgumentOutOfRangeException(nameof(terraces));
             

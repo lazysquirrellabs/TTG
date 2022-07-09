@@ -76,7 +76,6 @@ namespace SneakySquirrelLabs.TerracedTerrainGenerator.PolygonGeneration
 
                 return vertices;
             }
-
         }
 
         #endregion

@@ -51,7 +51,7 @@ namespace SneakySquirrelLabs.TerracedTerrainGenerator.Deformation
         /// Deforms the given terrain mesh.
         /// </summary>
         /// <param name="meshData">The mesh data to be deformed.</param>
-        internal void Deform(MeshData meshData)
+        internal void Deform(SimpleMeshData meshData)
         {
             var xOffset = _random.Next(-1_000, 1_000);
             var yOffset = _random.Next(-1_000, 1_000);
