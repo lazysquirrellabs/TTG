@@ -67,7 +67,6 @@ namespace SneakySquirrelLabs.TerracedTerrainGenerator.Data
             indices.Add(ix4);
         }
 
-
         /// <summary>
         /// Adds a vertex to the mesh data.
         /// </summary>

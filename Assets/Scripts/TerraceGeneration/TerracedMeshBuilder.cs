@@ -81,30 +81,34 @@ namespace SneakySquirrelLabs.TerracedTerrainGenerator.TerraceGeneration
         internal void AddSlicedTriangle1Above(Triangle t, float plane, float previousPlane, int terraceIx)
         {
             // Add floor
-            var v13Plane = GetPlanePoint(t.V1, t.V3, plane);
-            var v23Plane = GetPlanePoint(t.V2, t.V3, plane);
-            var v3Plane = new Vector3(t.V3.x, plane, t.V3.z);
-            _horizontalMeshData.AddTriangle(v13Plane, v23Plane, v3Plane, terraceIx, ref _vertexIndex);
+            var floor1 = GetPlanePoint(t.V1, t.V3, plane);
+            var floor2 = GetPlanePoint(t.V2, t.V3, plane);
+            var floor3 = new Vector3(t.V3.x, plane, t.V3.z);
+            _horizontalMeshData.AddTriangle(floor1, floor2, floor3, terraceIx, ref _vertexIndex);
 
             // Add wall
-            var v13PreviousPlane = new Vector3(v13Plane.x, previousPlane, v13Plane.z);
-            var v23PreviousPlane = new Vector3(v23Plane.x, previousPlane, v23Plane.z);
-            _verticalMeshData.AddQuadrilateral(v23Plane, v13Plane, v13PreviousPlane, v23PreviousPlane, terraceIx, ref _vertexIndex);
+            var wall1 = floor2;
+            var wall2 = floor1;
+            var wall3 = new Vector3(floor1.x, previousPlane, floor1.z);
+            var wall4 = new Vector3(floor2.x, previousPlane, floor2.z);
+            _verticalMeshData.AddQuadrilateral(wall1, wall2, wall3, wall4, terraceIx, ref _vertexIndex);
         }
         
         internal void AddSlicedTriangle2Above(Triangle t, float plane, float previousPlane, int terraceIx)
         {
             // Add floor
-            var v13Plane = GetPlanePoint(t.V1, t.V3, plane);
-            var v23Plane = GetPlanePoint(t.V2, t.V3, plane);
-            var v1Plane = new Vector3(t.V1.x, plane, t.V1.z);
-            var v2Plane = new Vector3(t.V2.x, plane, t.V2.z);
-            _horizontalMeshData.AddQuadrilateral(v13Plane, v1Plane, v2Plane, v23Plane, terraceIx, ref _vertexIndex);
+            var floor1 = GetPlanePoint(t.V1, t.V3, plane);
+            var floor2 = GetPlanePoint(t.V2, t.V3, plane);
+            var floor3 = new Vector3(t.V1.x, plane, t.V1.z);
+            var floor4 = new Vector3(t.V2.x, plane, t.V2.z);
+            _horizontalMeshData.AddQuadrilateral(floor1, floor3, floor4, floor2, terraceIx, ref _vertexIndex);
 
             // Add wall
-            var v13PreviousPlane = new Vector3(v13Plane.x, previousPlane, v13Plane.z);
-            var v23PreviousPlane = new Vector3(v23Plane.x, previousPlane, v23Plane.z);
-            _verticalMeshData.AddQuadrilateral(v13Plane, v23Plane, v23PreviousPlane, v13PreviousPlane, terraceIx, ref _vertexIndex);
+            var wall1 = floor1;
+            var wall2 = floor2;
+            var wall3 = new Vector3(floor2.x, previousPlane, floor2.z);
+            var wall4 = new Vector3(floor1.x, previousPlane, floor1.z);
+            _verticalMeshData.AddQuadrilateral(wall1, wall2, wall3, wall4, terraceIx, ref _vertexIndex);
         }
 
         #endregion

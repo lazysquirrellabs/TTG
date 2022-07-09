@@ -1,4 +1,3 @@
-using System;
 using SneakySquirrelLabs.TerracedTerrainGenerator.Data;
 using UnityEngine;
 
