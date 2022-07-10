@@ -32,8 +32,8 @@ namespace SneakySquirrelLabs.TerracedTerrainGenerator.PolygonGeneration
             {
                 var vertices = new Vector3[4];
                 vertices[0] = new Vector3(-radius, 0f, radius);
-                vertices[1] = new Vector3(radius, 0f, radius);
-                vertices[2] = new Vector3(radius, 0f, -radius);
+                vertices[1] = new Vector3(radius,  0f, radius);
+                vertices[2] = new Vector3(radius,  0f, -radius);
                 vertices[3] = new Vector3(-radius, 0f, -radius);
                 return vertices;
             }

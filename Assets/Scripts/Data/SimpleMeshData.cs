@@ -41,6 +41,7 @@ namespace SneakySquirrelLabs.TerracedTerrainGenerator.Data
         internal SimpleMeshData(IEnumerable<Vector3> vertices, IEnumerable<int> indices)
         {
             Vertices = new List<Vector3>(vertices);
+            // A simple mesh on has 1 sub mesh
             IndicesPerSubMesh = new List<int>[1];
             IndicesPerSubMesh[0] = new List<int>(indices);
         }
@@ -53,6 +54,7 @@ namespace SneakySquirrelLabs.TerracedTerrainGenerator.Data
         internal SimpleMeshData(int vertexCount, int indicesCount)
         {
             Vertices = new List<Vector3>(vertexCount);
+            // A simple mesh on has 1 sub mesh
             IndicesPerSubMesh = new List<int>[1];
             IndicesPerSubMesh[0] = new List<int>(indicesCount);
         }

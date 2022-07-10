@@ -61,7 +61,7 @@ namespace SneakySquirrelLabs.TerracedTerrainGenerator.Data
             indices.Add(ix1);
             indices.Add(ix2);
             indices.Add(ix4);
-            // // Add triangle 2
+            // Add triangle 2
             indices.Add(ix2);
             indices.Add(ix3);
             indices.Add(ix4);

@@ -107,7 +107,7 @@ namespace SneakySquirrelLabs.TerracedTerrainGenerator
         #region Public
 
         /// <summary>
-        /// Generates the entire terraced terrain.
+        /// Generates the entire terraced terrain synchronously.
         /// </summary>
         /// <returns>The generated <see cref="Mesh"/>.</returns>
         public Mesh GenerateTerrain()
@@ -118,13 +118,24 @@ namespace SneakySquirrelLabs.TerracedTerrainGenerator
             return terracer.CreateMesh();
         }
 
+        /// <summary>
+        /// Generates the entire terraced terrain asynchronously.
+        /// </summary>
+        /// <param name="token">Token used for task cancellation.</param>
+        /// <returns>A task that represents the generation process. Should be awaited to retrieve the generated
+        /// <see cref="Mesh"/>.</returns>
         public async Task<Mesh> GenerateTerrainAsync(CancellationToken token)
         {
+            // Capture Unity's main thread's synchronization context
             var synchronizationContext = SynchronizationContext.Current;
+            // Run the mesh data generation (the heaviest part of the process) on the thread pool
             var terracer =  await Task.Run(GenerateTerracedTerrainData, token);
             var generationState = new GenerationState();
+            // Use the synchronization context to send the Mesh creation process (the lightest part of the process)
+            // to the main thread.
             synchronizationContext.Send(CreateMesh, generationState);
-            var mesh = await generationState.WaitForCompletion(token);
+            // Wait for the mesh generation to complete on the main thread
+            var mesh = await generationState.WaitForCompletionAsync(token);
             return mesh;
 
             Terracer GenerateTerracedTerrainData()

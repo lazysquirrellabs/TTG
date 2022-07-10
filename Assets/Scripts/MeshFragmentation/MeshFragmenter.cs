@@ -36,9 +36,10 @@ namespace SneakySquirrelLabs.TerracedTerrainGenerator.MeshFragmentation
         #region Internal
 
         /// <summary>
-        /// Fragments a mesh. It modifies the original mesh instead of returning a new one.
+        /// Fragments the provided mesh data.
         /// </summary>
-        /// <param name="meshData">The mesh data to be fragmented.</param>
+        /// <param name="meshData">The mesh data to be fragmented. It remains intact during fragmentation.</param>
+        /// <returns>A new mesh data representing the provided one, fragmented.</returns>
         internal SimpleMeshData Fragment(SimpleMeshData meshData)
         {
             if (_depth == 0)
@@ -52,8 +53,9 @@ namespace SneakySquirrelLabs.TerracedTerrainGenerator.MeshFragmentation
             var finalVertexCount = finalIndicesCount / 2;
 
             // Instead of creating a new array for each depth, we use the same 2 arrays everywhere: 1 for reading and
-            // one for writing. Both have exactly the number of elements necessary for the final depth.
-            // Every time we step into a new depth, we swap them to read from the last depth's write array.
+            // one for writing. Both have exactly the number of elements necessary for the final depth, but they will
+            // never (except for the last depth) be fully utilized. Every time we step into a new depth, we swap them
+            // to read from the last depth's write array. The final "read" arrays will hold the desired data.
             var readIndices = meshData.Indices.ToNativeNoAlloc(finalIndicesCount);
             var writeIndices = CreateNativeArray<int>(finalIndicesCount);
             var readVertices = meshData.Vertices.ToNativeNoAlloc(finalVertexCount);
@@ -63,6 +65,7 @@ namespace SneakySquirrelLabs.TerracedTerrainGenerator.MeshFragmentation
             for (var depth = 1; depth <= _depth; depth++)
                 FragmentAllTrianglesForDepth(depth, currentDepthTotalTriangles);
 
+            // Create the new mesh data.
             var newMeshData = new SimpleMeshData(readVertices, readIndices);
             // Dispose the native arrays
             readIndices.Dispose();
@@ -78,6 +81,7 @@ namespace SneakySquirrelLabs.TerracedTerrainGenerator.MeshFragmentation
                     FragmentTriangle(i, readIndices, writeIndices, readVertices, writeVertices);
                 
                 currentDepthTotalTriangles = GetTriangleCountForDepth(initialTriangleCount, depth);
+                // Swap read and write arrays
                 (readIndices, writeIndices) = (writeIndices, readIndices);
                 (readVertices, writeVertices) = (writeVertices, readVertices);
             }
@@ -104,10 +108,10 @@ namespace SneakySquirrelLabs.TerracedTerrainGenerator.MeshFragmentation
                 
                 // Read the original vertex data
                 var indexVertex1 = readTriangles[readTriangleIx];
-                var indexVertex2 = readTriangles[readTriangleIx+1];
-                var indexVertex3 = readTriangles[readTriangleIx+2];
+                var indexVertex2 = readTriangles[readTriangleIx + 1];
+                var indexVertex3 = readTriangles[readTriangleIx + 2];
                 
-                // Calculate the new vertices and add them
+                // Calculate the new vertices
                 var v1 = readVertices[indexVertex1];
                 var v2 = readVertices[indexVertex2];
                 var v3 = readVertices[indexVertex3];
@@ -115,6 +119,7 @@ namespace SneakySquirrelLabs.TerracedTerrainGenerator.MeshFragmentation
                 var v5 = (v2 + v3) / 2;
                 var v6 = (v3 + v1) / 2;
                 
+                // Add new vertices
                 var ix1 = AddVertex(v1);
                 var ix2 = AddVertex(v2);
                 var ix3 = AddVertex(v3);
@@ -139,8 +144,8 @@ namespace SneakySquirrelLabs.TerracedTerrainGenerator.MeshFragmentation
                 void AddTriangle(int i1, int i2, int i3)
                 {
                     writeTriangles[writeTriangleIx] = i1;
-                    writeTriangles[writeTriangleIx+1] = i2;
-                    writeTriangles[writeTriangleIx+2] = i3;
+                    writeTriangles[writeTriangleIx + 1] = i2;
+                    writeTriangles[writeTriangleIx + 2] = i3;
                     writeTriangleIx += 3;
                 }
             }

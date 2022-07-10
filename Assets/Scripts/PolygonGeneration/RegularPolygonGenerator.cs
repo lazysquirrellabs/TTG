@@ -6,7 +6,7 @@ using UnityEngine;
 namespace SneakySquirrelLabs.TerracedTerrainGenerator.PolygonGeneration
 {
     /// <summary>
-    /// Generates regular polygons with 5 or more sides.
+    /// Generates a regular polygon mesh with 5 or more sides.
     /// </summary>
     internal class RegularPolygonGenerator : PolygonGenerator
     {

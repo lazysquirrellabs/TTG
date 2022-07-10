@@ -3,6 +3,9 @@ using UnityEngine;
 
 namespace SneakySquirrelLabs.TerracedTerrainGenerator.TerraceGeneration
 {
+    /// <summary>
+    /// A triangle representation used for internal calculations.
+    /// </summary>
     internal readonly struct Triangle
     {
         #region Properties
@@ -15,13 +18,19 @@ namespace SneakySquirrelLabs.TerracedTerrainGenerator.TerraceGeneration
 
         #region Setup
 
-        internal Triangle(IReadOnlyList<int> triangles, List<Vector3> vertices, ref int index)
+        /// <summary>
+        /// Creates a triangle by reading from index and vertex data.
+        /// </summary>
+        /// <param name="indices">The index data to fetch the triangle indices from.</param>
+        /// <param name="vertices">The vertex data to fetch the triangle vertices from.</param>
+        /// <param name="index">The index of the first triangle index. Will be modified.</param>
+        internal Triangle(IReadOnlyList<int> indices, IReadOnlyList<Vector3> vertices, ref int index)
         {
-            var ix1 = triangles[index];
+            var ix1 = indices[index];
             index++;
-            var ix2 = triangles[index];
+            var ix2 = indices[index];
             index++;
-            var ix3 = triangles[index];
+            var ix3 = indices[index];
             index++;
 
             V1 = vertices[ix1];
@@ -29,6 +38,12 @@ namespace SneakySquirrelLabs.TerracedTerrainGenerator.TerraceGeneration
             V3 = vertices[ix3];
         }
 
+        /// <summary>
+        /// Creates a triangle by providing its vertices.
+        /// </summary>
+        /// <param name="v1">The triangle's first vertex.</param>
+        /// <param name="v2">The triangle's second vertex.</param>
+        /// <param name="v3">The triangle's third vertex.</param>
         internal Triangle(Vector3 v1, Vector3 v2, Vector3 v3)
         {
             V1 = v1;

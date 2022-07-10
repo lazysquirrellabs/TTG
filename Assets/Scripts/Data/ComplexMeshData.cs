@@ -34,6 +34,7 @@ namespace SneakySquirrelLabs.TerracedTerrainGenerator.Data
 
             Vertices = new Dictionary<Vector3, int>(vertexCount);
             IndicesPerSubMesh = new List<int>[subMeshes];
+            // Estimate the number of indices per sub mesh
             var indicesPerSubMesh = indicesCount / subMeshes;
             for (var i = 0; i < subMeshes; i++)
                 IndicesPerSubMesh[i] = new List<int>(indicesPerSubMesh);
