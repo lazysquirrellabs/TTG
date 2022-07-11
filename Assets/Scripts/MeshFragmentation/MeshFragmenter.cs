@@ -51,15 +51,21 @@ namespace SneakySquirrelLabs.TerracedTerrainGenerator.MeshFragmentation
             var finalTriangleCount = GetTriangleCountForDepth(initialTriangleCount, _depth);
             var finalIndicesCount = finalTriangleCount * 3;
             var finalVertexCount = finalIndicesCount / 2;
+            
+            // Create temporary index and vertex buffers
+            using var indicesBuffer1 = meshData.Indices.ToNativeNoAlloc(finalIndicesCount);
+            using var indicesBuffer2 = CreateNativeArray<int>(finalIndicesCount);
+            using var verticesBuffer1 = meshData.Vertices.ToNativeNoAlloc(finalVertexCount);
+            using var verticesBuffer2 = CreateNativeArray<Vector3>(finalVertexCount);
 
             // Instead of creating a new array for each depth, we use the same 2 arrays everywhere: 1 for reading and
             // one for writing. Both have exactly the number of elements necessary for the final depth, but they will
             // never (except for the last depth) be fully utilized. Every time we step into a new depth, we swap them
             // to read from the last depth's write array. The final "read" arrays will hold the desired data.
-            var readIndices = meshData.Indices.ToNativeNoAlloc(finalIndicesCount);
-            var writeIndices = CreateNativeArray<int>(finalIndicesCount);
-            var readVertices = meshData.Vertices.ToNativeNoAlloc(finalVertexCount);
-            var writeVertices = CreateNativeArray<Vector3>(finalVertexCount);
+            var readIndices = indicesBuffer1;
+            var writeIndices = indicesBuffer2;
+            var readVertices = verticesBuffer1;
+            var writeVertices = verticesBuffer2;
             double currentDepthTotalTriangles = initialTriangleCount;
 
             for (var depth = 1; depth <= _depth; depth++)
@@ -67,11 +73,6 @@ namespace SneakySquirrelLabs.TerracedTerrainGenerator.MeshFragmentation
 
             // Create the new mesh data.
             var newMeshData = new SimpleMeshData(readVertices, readIndices);
-            // Dispose the native arrays
-            readIndices.Dispose();
-            writeIndices.Dispose();
-            readVertices.Dispose();
-            writeVertices.Dispose();
             
             return newMeshData;
             
@@ -85,7 +86,7 @@ namespace SneakySquirrelLabs.TerracedTerrainGenerator.MeshFragmentation
                 (readIndices, writeIndices) = (writeIndices, readIndices);
                 (readVertices, writeVertices) = (writeVertices, readVertices);
             }
-            
+
             static int GetTriangleCountForDepth(int initialTriangleCount, int depth)
             {
                 return (int) (Math.Pow(4, depth) * initialTriangleCount);
