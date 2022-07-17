@@ -75,7 +75,6 @@ namespace SneakySquirrelLabs.TerracedTerrainGenerator.MeshFragmentation
             var newMeshData = new SimpleMeshData(readVertices, readIndices);
             writeIndices.Dispose();
             writeVertices.Dispose();
-            meshData.Dispose();
             
             return newMeshData;
             

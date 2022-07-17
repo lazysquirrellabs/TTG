@@ -115,7 +115,9 @@ namespace SneakySquirrelLabs.TerracedTerrainGenerator
             var meshData = GenerateTerrainData();
             var terracer = new Terracer(meshData, _terraces);
             terracer.CreateTerraces();
-            return terracer.CreateMesh();
+            var mesh = terracer.CreateMesh();
+            terracer.Dispose();
+            return mesh;
         }
 
         /// <summary>
@@ -140,8 +142,8 @@ namespace SneakySquirrelLabs.TerracedTerrainGenerator
 
             Terracer GenerateTerracedTerrainData()
             {
-                var meshDaTa = GenerateTerrainData();
-                var t = new Terracer(meshDaTa, _terraces);
+                var meshData = GenerateTerrainData();
+                var t = new Terracer(meshData, _terraces);
                 t.CreateTerraces();
                 return t;
             }
@@ -160,9 +162,10 @@ namespace SneakySquirrelLabs.TerracedTerrainGenerator
         private SimpleMeshData GenerateTerrainData()
         {
             var meshData = _polygonGenerator.Generate();
-            meshData = _fragmenter.Fragment(meshData);
-            _deformer.Deform(meshData);
-            return meshData;
+            var fragmentedMeshData = _fragmenter.Fragment(meshData);
+            meshData.Dispose();
+            _deformer.Deform(fragmentedMeshData);
+            return fragmentedMeshData;
         }
 
         private static int GetRandomSeed()
