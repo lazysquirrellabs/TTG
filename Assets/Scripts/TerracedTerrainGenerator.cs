@@ -142,7 +142,7 @@ namespace SneakySquirrelLabs.TerracedTerrainGenerator
             var synchronizationContext = SynchronizationContext.Current;
             // Run the mesh data generation (the heaviest part of the process) on the thread pool
             using var terracer =  await Task.Run(GenerateTerracedTerrainData, token);
-            var generationState = new GenerationState();
+            var generationState = new GenerationState(terracer.CreateMesh);
             // Use the synchronization context to send the Mesh creation process (the lightest part of the process)
             // to the main thread.
             synchronizationContext.Send(CreateMesh, generationState);
@@ -158,10 +158,10 @@ namespace SneakySquirrelLabs.TerracedTerrainGenerator
                 return t;
             }
             
-            void CreateMesh(object s)
+            static void CreateMesh(object s)
             {
                 var state = (GenerationState)s;
-                state.Mesh = terracer.CreateMesh();
+                state.CreateMesh();
             }
         }
 
