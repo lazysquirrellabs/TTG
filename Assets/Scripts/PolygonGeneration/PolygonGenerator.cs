@@ -1,4 +1,5 @@
 using SneakySquirrelLabs.TerracedTerrainGenerator.Data;
+using Unity.Collections;
 using UnityEngine;
 
 namespace SneakySquirrelLabs.TerracedTerrainGenerator.PolygonGeneration
@@ -36,8 +37,9 @@ namespace SneakySquirrelLabs.TerracedTerrainGenerator.PolygonGeneration
         /// <summary>
         /// Generates the polygon <see cref="Mesh"/>.
         /// </summary>
+        /// <param name="allocator">The allocation strategy used when creating vertex and index buffers.</param>
         /// <returns>The generated mesh.</returns>
-        internal abstract SimpleMeshData Generate();
+        internal abstract SimpleMeshData Generate(Allocator allocator);
 
         #endregion
     }

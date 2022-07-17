@@ -1,5 +1,6 @@
 using System;
-using System.Collections.Generic;
+using System.Linq;
+using Unity.Collections;
 using UnityEngine;
 
 namespace SneakySquirrelLabs.TerracedTerrainGenerator.Data
@@ -23,12 +24,25 @@ namespace SneakySquirrelLabs.TerracedTerrainGenerator.Data
         /// <summary>
         /// All the vertices in the mesh data. 
         /// </summary>
-        internal List<Vector3> Vertices { get; }
+        internal NativeList<Vector3> Vertices { get; private set; }
         /// <summary>
         /// All the (triangle) indices in the mesh data.
         /// </summary>
-        internal List<int> Indices => IndicesPerSubMesh[0];
+        internal NativeList<int> Indices => IndicesPerSubMesh[0];
         
+        #endregion
+
+        #region Public
+
+        public override void Dispose()
+        {
+            if (Vertices.IsCreated)
+                Vertices.Dispose();
+            
+            foreach (var indices in IndicesPerSubMesh.Where(i => i.IsCreated))
+                indices.Dispose();
+        }
+
         #endregion
         
         #region Setup
@@ -38,12 +52,12 @@ namespace SneakySquirrelLabs.TerracedTerrainGenerator.Data
         /// </summary>
         /// <param name="vertices">The initial mesh vertices.</param>
         /// <param name="indices">The initial mesh (triangle) indices.</param>
-        internal SimpleMeshData(IEnumerable<Vector3> vertices, IEnumerable<int> indices)
+        internal SimpleMeshData(NativeList<Vector3> vertices, NativeList<int> indices)
         {
-            Vertices = new List<Vector3>(vertices);
+            Vertices = vertices;
             // A simple mesh on has 1 sub mesh
-            IndicesPerSubMesh = new List<int>[1];
-            IndicesPerSubMesh[0] = new List<int>(indices);
+            IndicesPerSubMesh = new NativeList<int>[1];
+            IndicesPerSubMesh[0] = indices;
         }
 
         /// <summary>
@@ -51,12 +65,13 @@ namespace SneakySquirrelLabs.TerracedTerrainGenerator.Data
         /// </summary>
         /// <param name="vertexCount">The initial amount of mesh vertices.</param>
         /// <param name="indicesCount">The initial amount of mesh (triangle) indices.</param>
-        internal SimpleMeshData(int vertexCount, int indicesCount)
+        /// <param name="allocator">The allocation strategy used when creating vertex and index buffers.</param>
+        internal SimpleMeshData(int vertexCount, int indicesCount, Allocator allocator)
         {
-            Vertices = new List<Vector3>(vertexCount);
+            Vertices = new NativeList<Vector3>(vertexCount, allocator);
             // A simple mesh on has 1 sub mesh
-            IndicesPerSubMesh = new List<int>[1];
-            IndicesPerSubMesh[0] = new List<int>(indicesCount);
+            IndicesPerSubMesh = new NativeList<int>[1];
+            IndicesPerSubMesh[0] = new NativeList<int>(indicesCount, allocator);
         }
 
         #endregion
@@ -69,12 +84,15 @@ namespace SneakySquirrelLabs.TerracedTerrainGenerator.Data
         /// <param name="f">The function to be applied on all vertices.</param>
         internal void Map(Func<Vector3, Vector3> f)
         {
-            for (var i = 0; i < Vertices.Count; i++)
+            var vertices = Vertices;
+            for (var i = 0; i < Vertices.Length; i++)
             {
                 var vertex = Vertices[i];
                 vertex = f(vertex);
-                Vertices[i] = vertex;
+                vertices[i] = vertex;
             }
+
+            Vertices = vertices;
         }
         
         /// <summary>

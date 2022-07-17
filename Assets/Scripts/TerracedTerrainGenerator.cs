@@ -6,6 +6,7 @@ using SneakySquirrelLabs.TerracedTerrainGenerator.Deformation;
 using SneakySquirrelLabs.TerracedTerrainGenerator.MeshFragmentation;
 using SneakySquirrelLabs.TerracedTerrainGenerator.PolygonGeneration;
 using SneakySquirrelLabs.TerracedTerrainGenerator.TerraceGeneration;
+using Unity.Collections;
 using UnityEngine;
 
 namespace SneakySquirrelLabs.TerracedTerrainGenerator
@@ -17,6 +18,15 @@ namespace SneakySquirrelLabs.TerracedTerrainGenerator
     {
         #region Fields
 
+        /// <summary>
+        /// Allocation strategy used whenever the synchronous terrain generation is performed.
+        /// </summary>
+        private const Allocator SyncAllocator = Allocator.TempJob;
+        /// <summary>
+        /// Allocation strategy used whenever the asynchronous terrain generation is performed.
+        /// </summary>
+        private const Allocator AsyncAllocator = Allocator.Persistent;
+        
         /// <summary>
         /// The polygon generator used to create the terrain's basic shape.
         /// </summary>
@@ -112,10 +122,12 @@ namespace SneakySquirrelLabs.TerracedTerrainGenerator
         /// <returns>The generated <see cref="Mesh"/>.</returns>
         public Mesh GenerateTerrain()
         {
-            var meshData = GenerateTerrainData();
-            var terracer = new Terracer(meshData, _terraces);
+            var meshData = GenerateTerrainData(SyncAllocator);
+            var terracer = new Terracer(meshData, _terraces, SyncAllocator);
             terracer.CreateTerraces();
-            return terracer.CreateMesh();
+            var mesh = terracer.CreateMesh();
+            terracer.Dispose();
+            return mesh;
         }
 
         /// <summary>
@@ -129,8 +141,8 @@ namespace SneakySquirrelLabs.TerracedTerrainGenerator
             // Capture Unity's main thread's synchronization context
             var synchronizationContext = SynchronizationContext.Current;
             // Run the mesh data generation (the heaviest part of the process) on the thread pool
-            var terracer =  await Task.Run(GenerateTerracedTerrainData, token);
-            var generationState = new GenerationState();
+            using var terracer =  await Task.Run(GenerateTerracedTerrainData, token);
+            var generationState = new GenerationState(terracer.CreateMesh);
             // Use the synchronization context to send the Mesh creation process (the lightest part of the process)
             // to the main thread.
             synchronizationContext.Send(CreateMesh, generationState);
@@ -140,16 +152,16 @@ namespace SneakySquirrelLabs.TerracedTerrainGenerator
 
             Terracer GenerateTerracedTerrainData()
             {
-                var meshDaTa = GenerateTerrainData();
-                var t = new Terracer(meshDaTa, _terraces);
+                var meshData = GenerateTerrainData(AsyncAllocator);
+                var t = new Terracer(meshData, _terraces, AsyncAllocator);
                 t.CreateTerraces();
                 return t;
             }
             
-            void CreateMesh(object s)
+            static void CreateMesh(object s)
             {
                 var state = (GenerationState)s;
-                state.Mesh = terracer.CreateMesh();
+                state.CreateMesh();
             }
         }
 
@@ -157,12 +169,13 @@ namespace SneakySquirrelLabs.TerracedTerrainGenerator
 
         #region Private
 
-        private SimpleMeshData GenerateTerrainData()
+        private SimpleMeshData GenerateTerrainData(Allocator allocator)
         {
-            var meshData = _polygonGenerator.Generate();
-            meshData = _fragmenter.Fragment(meshData);
-            _deformer.Deform(meshData);
-            return meshData;
+            var meshData = _polygonGenerator.Generate(allocator);
+            var fragmentedMeshData = _fragmenter.Fragment(meshData, allocator);
+            meshData.Dispose();
+            _deformer.Deform(fragmentedMeshData);
+            return fragmentedMeshData;
         }
 
         private static int GetRandomSeed()

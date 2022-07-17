@@ -1,4 +1,4 @@
-using System.Collections.Generic;
+using Unity.Collections;
 using UnityEngine;
 
 namespace SneakySquirrelLabs.TerracedTerrainGenerator.TerraceGeneration
@@ -24,7 +24,7 @@ namespace SneakySquirrelLabs.TerracedTerrainGenerator.TerraceGeneration
         /// <param name="indices">The index data to fetch the triangle indices from.</param>
         /// <param name="vertices">The vertex data to fetch the triangle vertices from.</param>
         /// <param name="index">The index of the first triangle index. Will be modified.</param>
-        internal Triangle(IReadOnlyList<int> indices, IReadOnlyList<Vector3> vertices, ref int index)
+        internal Triangle(NativeList<int> indices, NativeList<Vector3> vertices, ref int index)
         {
             var ix1 = indices[index];
             index++;

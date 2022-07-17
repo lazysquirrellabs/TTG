@@ -39,24 +39,25 @@ namespace SneakySquirrelLabs.TerracedTerrainGenerator.MeshFragmentation
         /// Fragments the provided mesh data.
         /// </summary>
         /// <param name="meshData">The mesh data to be fragmented. It remains intact during fragmentation.</param>
+        /// <param name="allocator">The allocation strategy used when creating vertex and index buffers.</param>
         /// <returns>A new mesh data representing the provided one, fragmented.</returns>
-        internal SimpleMeshData Fragment(SimpleMeshData meshData)
+        internal SimpleMeshData Fragment(SimpleMeshData meshData, Allocator allocator)
         {
             if (_depth == 0)
                 return meshData;
 
             // Each triangle has 3 indices, so divide the number of indices by 3 to find the number of triangles
-            var initialTriangleCount = meshData.Indices.Count / 3;
+            var initialTriangleCount = meshData.Indices.Length / 3;
             // Find the number of triangles in the final mesh (at maximum depth)
             var finalTriangleCount = GetTriangleCountForDepth(initialTriangleCount, _depth);
             var finalIndicesCount = finalTriangleCount * 3;
             var finalVertexCount = finalIndicesCount / 2;
             
             // Create temporary index and vertex buffers
-            using var indicesBuffer1 = meshData.Indices.ToNativeNoAlloc(finalIndicesCount);
-            using var indicesBuffer2 = CreateNativeArray<int>(finalIndicesCount);
-            using var verticesBuffer1 = meshData.Vertices.ToNativeNoAlloc(finalVertexCount);
-            using var verticesBuffer2 = CreateNativeArray<Vector3>(finalVertexCount);
+            var indicesBuffer1 = meshData.Indices.Copy(finalIndicesCount, allocator);
+            var indicesBuffer2 = CreateNativeList<int>(finalIndicesCount, allocator);
+            var verticesBuffer1 = meshData.Vertices.Copy(finalVertexCount, allocator);
+            var verticesBuffer2 = CreateNativeList<Vector3>(finalVertexCount, allocator);
 
             // Instead of creating a new array for each depth, we use the same 2 arrays everywhere: 1 for reading and
             // one for writing. Both have exactly the number of elements necessary for the final depth, but they will
@@ -73,6 +74,8 @@ namespace SneakySquirrelLabs.TerracedTerrainGenerator.MeshFragmentation
 
             // Create the new mesh data.
             var newMeshData = new SimpleMeshData(readVertices, readIndices);
+            writeIndices.Dispose();
+            writeVertices.Dispose();
             
             return newMeshData;
             
@@ -92,13 +95,16 @@ namespace SneakySquirrelLabs.TerracedTerrainGenerator.MeshFragmentation
                 return (int) (Math.Pow(4, depth) * initialTriangleCount);
             }
 
-            static NativeArray<T> CreateNativeArray<T>(int length) where T : struct
+            static NativeList<T> CreateNativeList<T>(int length, Allocator allocator) where T : unmanaged
             {
-                return new NativeArray<T>(length, Allocator.TempJob, NativeArrayOptions.UninitializedMemory);
+                var list = new NativeList<T>(length, allocator);
+                for (var i = 0; i < length; i++)
+                    list.Add(default);
+                return list;
             }
 
-            static void FragmentTriangle(int triangleIx, NativeArray<int> readTriangles, NativeArray<int> writeTriangles, 
-                NativeArray<Vector3> readVertices, NativeArray<Vector3> writeVertices)
+            static void FragmentTriangle(int triangleIx, NativeList<int> readTriangles, NativeList<int> writeTriangles, 
+                NativeList<Vector3> readVertices, NativeList<Vector3> writeVertices)
             {
                 // Each original triangle has 3 vertices, so we need to offset that from reading
                 var readTriangleIx = triangleIx * 3;
