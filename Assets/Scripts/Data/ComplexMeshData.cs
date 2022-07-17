@@ -1,5 +1,7 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
+using Unity.Collections;
 using UnityEngine;
 
 namespace SneakySquirrelLabs.TerracedTerrainGenerator.Data
@@ -33,15 +35,25 @@ namespace SneakySquirrelLabs.TerracedTerrainGenerator.Data
                 throw new ArgumentException("Mesh data must contain at least 1 sub mesh");
 
             Vertices = new Dictionary<Vector3, int>(vertexCount);
-            IndicesPerSubMesh = new List<int>[subMeshes];
+            IndicesPerSubMesh = new NativeList<int>[subMeshes];
             // Estimate the number of indices per sub mesh
             var indicesPerSubMesh = indicesCount / subMeshes;
             for (var i = 0; i < subMeshes; i++)
-                IndicesPerSubMesh[i] = new List<int>(indicesPerSubMesh);
+                IndicesPerSubMesh[i] = new NativeList<int>(indicesPerSubMesh, Allocator.TempJob);
         }
 
         #endregion
 
+        #region Public
+
+        public override void Dispose()
+        {
+            foreach (var indices in IndicesPerSubMesh.Where(i => i.IsCreated))
+                indices.Dispose();
+        }
+
+        #endregion
+        
         #region Internal
 
         /// <inheritdoc cref="MeshData.AddTriangleAt"/>
@@ -65,7 +77,7 @@ namespace SneakySquirrelLabs.TerracedTerrainGenerator.Data
         /// </summary>
         /// <param name="subMesh">The index of the sub mesh to fetch the indices from.</param>
         /// <returns></returns>
-        internal List<int> GetIndices(int subMesh) => IndicesPerSubMesh[subMesh];
+        internal NativeList<int> GetIndices(int subMesh) => IndicesPerSubMesh[subMesh];
 
         #endregion
 

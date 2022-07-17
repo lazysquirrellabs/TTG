@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using SneakySquirrelLabs.TerracedTerrainGenerator.Data;
 using SneakySquirrelLabs.TerracedTerrainGenerator.Utils;
@@ -10,7 +11,7 @@ namespace SneakySquirrelLabs.TerracedTerrainGenerator.TerraceGeneration
     /// <summary>
     /// Helper entity responsible for easing the construction of a terraced terrain mesh.
     /// </summary>
-    internal sealed class TerracedMeshBuilder
+    internal sealed class TerracedMeshBuilder : IDisposable
     {
         #region Fields
 
@@ -58,9 +59,18 @@ namespace SneakySquirrelLabs.TerracedTerrainGenerator.TerraceGeneration
 
         #endregion
 
+        #region Public
+
+        public void Dispose()
+        {
+            _horizontalMeshData.Dispose();
+            _verticalMeshData.Dispose();
+        }
+
+        #endregion
+
         #region Internal
 
-        
         /// <summary>
         /// Adds a whole, flat <see cref="Triangle"/> to the to-be-generated terraced mesh.
         /// </summary>

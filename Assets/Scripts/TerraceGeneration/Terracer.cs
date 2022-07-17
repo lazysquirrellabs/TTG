@@ -1,6 +1,6 @@
 using System;
-using System.Collections.Generic;
 using SneakySquirrelLabs.TerracedTerrainGenerator.Data;
+using Unity.Collections;
 using UnityEngine;
 
 namespace SneakySquirrelLabs.TerracedTerrainGenerator.TerraceGeneration
@@ -9,7 +9,7 @@ namespace SneakySquirrelLabs.TerracedTerrainGenerator.TerraceGeneration
     /// Modified an existing terrain mesh by creating terraces on it. The strategy used is similar to the one described
     /// in https://icospheric.com/blog/2016/07/17/making-terraced-terrain/.
     /// </summary>
-    internal sealed class Terracer
+    internal sealed class Terracer : IDisposable
     {
         #region Delegates
 
@@ -53,13 +53,13 @@ namespace SneakySquirrelLabs.TerracedTerrainGenerator.TerraceGeneration
         {
             _meshData = meshData;
             // In the base case, there will be at least the same amount of vertices
-            _meshBuilder = new TerracedMeshBuilder(_meshData.Vertices.Count, _meshData.Indices.Count, terraces);
+            _meshBuilder = new TerracedMeshBuilder(_meshData.Vertices.Length, _meshData.Indices.Length, terraces);
             // Two extra planes are placed: one below and one above all points. This helps the algorithm.
             var planeCount = terraces + 2;
             _planeHeights = GetHeights(planeCount, meshData.Vertices);
             _terraces = terraces;
             
-            static float[] GetHeights(int count, List<Vector3> vertices)
+            static float[] GetHeights(int count, NativeList<Vector3> vertices)
             {
                 var lowestPoint = float.PositiveInfinity;
                 var highestPoint = float.NegativeInfinity;
@@ -89,6 +89,16 @@ namespace SneakySquirrelLabs.TerracedTerrainGenerator.TerraceGeneration
 
         #endregion
 
+        #region Public
+
+        public void Dispose()
+        {
+            _meshData?.Dispose();
+            _meshBuilder?.Dispose();
+        }
+
+        #endregion
+        
         #region Internal
 
         /// <summary>
@@ -101,7 +111,7 @@ namespace SneakySquirrelLabs.TerracedTerrainGenerator.TerraceGeneration
             if (_terraces == 0)
                 return;
             
-            var triangleCount = _meshData.Indices.Count / 3;
+            var triangleCount = _meshData.Indices.Length / 3;
             var triangleIndex = 0;
 
             // Loop through all triangles, slicing each one
@@ -229,6 +239,5 @@ namespace SneakySquirrelLabs.TerracedTerrainGenerator.TerraceGeneration
         }
         
         #endregion
-
     }
 }

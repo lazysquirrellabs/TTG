@@ -129,7 +129,7 @@ namespace SneakySquirrelLabs.TerracedTerrainGenerator
             // Capture Unity's main thread's synchronization context
             var synchronizationContext = SynchronizationContext.Current;
             // Run the mesh data generation (the heaviest part of the process) on the thread pool
-            var terracer =  await Task.Run(GenerateTerracedTerrainData, token);
+            using var terracer =  await Task.Run(GenerateTerracedTerrainData, token);
             var generationState = new GenerationState();
             // Use the synchronization context to send the Mesh creation process (the lightest part of the process)
             // to the main thread.

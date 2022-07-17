@@ -1,4 +1,5 @@
-using System.Collections.Generic;
+using System;
+using Unity.Collections;
 using UnityEngine;
 
 namespace SneakySquirrelLabs.TerracedTerrainGenerator.Data
@@ -6,14 +7,20 @@ namespace SneakySquirrelLabs.TerracedTerrainGenerator.Data
     /// <summary>
     /// Abstract class used to create data that can be used to create a <see cref="Mesh"/>.
     /// </summary>
-    internal abstract class MeshData
+    internal abstract class MeshData : IDisposable
     {
         #region Properties
 
         /// <summary>
         /// The mesh's (triangle) indices per sub mesh.
         /// </summary>
-        protected List<int>[] IndicesPerSubMesh { get; set; }
+        protected NativeList<int>[] IndicesPerSubMesh { get; set; }
+
+        #endregion
+
+        #region Public
+
+        public abstract void Dispose();
 
         #endregion
 
