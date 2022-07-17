@@ -39,8 +39,9 @@ namespace SneakySquirrelLabs.TerracedTerrainGenerator.MeshFragmentation
         /// Fragments the provided mesh data.
         /// </summary>
         /// <param name="meshData">The mesh data to be fragmented. It remains intact during fragmentation.</param>
+        /// <param name="allocator">The allocation strategy used when creating vertex and index buffers.</param>
         /// <returns>A new mesh data representing the provided one, fragmented.</returns>
-        internal SimpleMeshData Fragment(SimpleMeshData meshData)
+        internal SimpleMeshData Fragment(SimpleMeshData meshData, Allocator allocator)
         {
             if (_depth == 0)
                 return meshData;
@@ -53,10 +54,10 @@ namespace SneakySquirrelLabs.TerracedTerrainGenerator.MeshFragmentation
             var finalVertexCount = finalIndicesCount / 2;
             
             // Create temporary index and vertex buffers
-            var indicesBuffer1 = meshData.Indices.Copy(finalIndicesCount);
-            var indicesBuffer2 = CreateNativeList<int>(finalIndicesCount);
-            var verticesBuffer1 = meshData.Vertices.Copy(finalVertexCount);
-            var verticesBuffer2 = CreateNativeList<Vector3>(finalVertexCount);
+            var indicesBuffer1 = meshData.Indices.Copy(finalIndicesCount, allocator);
+            var indicesBuffer2 = CreateNativeList<int>(finalIndicesCount, allocator);
+            var verticesBuffer1 = meshData.Vertices.Copy(finalVertexCount, allocator);
+            var verticesBuffer2 = CreateNativeList<Vector3>(finalVertexCount, allocator);
 
             // Instead of creating a new array for each depth, we use the same 2 arrays everywhere: 1 for reading and
             // one for writing. Both have exactly the number of elements necessary for the final depth, but they will
@@ -94,9 +95,9 @@ namespace SneakySquirrelLabs.TerracedTerrainGenerator.MeshFragmentation
                 return (int) (Math.Pow(4, depth) * initialTriangleCount);
             }
 
-            static NativeList<T> CreateNativeList<T>(int length) where T : unmanaged
+            static NativeList<T> CreateNativeList<T>(int length, Allocator allocator) where T : unmanaged
             {
-                var list = new NativeList<T>(length, Allocator.TempJob);
+                var list = new NativeList<T>(length, allocator);
                 for (var i = 0; i < length; i++)
                     list.Add(default);
                 return list;

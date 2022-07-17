@@ -6,6 +6,7 @@ using SneakySquirrelLabs.TerracedTerrainGenerator.Deformation;
 using SneakySquirrelLabs.TerracedTerrainGenerator.MeshFragmentation;
 using SneakySquirrelLabs.TerracedTerrainGenerator.PolygonGeneration;
 using SneakySquirrelLabs.TerracedTerrainGenerator.TerraceGeneration;
+using Unity.Collections;
 using UnityEngine;
 
 namespace SneakySquirrelLabs.TerracedTerrainGenerator
@@ -17,6 +18,15 @@ namespace SneakySquirrelLabs.TerracedTerrainGenerator
     {
         #region Fields
 
+        /// <summary>
+        /// Allocation strategy used whenever the synchronous terrain generation is performed.
+        /// </summary>
+        private const Allocator SyncAllocator = Allocator.TempJob;
+        /// <summary>
+        /// Allocation strategy used whenever the asynchronous terrain generation is performed.
+        /// </summary>
+        private const Allocator AsyncAllocator = Allocator.Persistent;
+        
         /// <summary>
         /// The polygon generator used to create the terrain's basic shape.
         /// </summary>
@@ -112,8 +122,8 @@ namespace SneakySquirrelLabs.TerracedTerrainGenerator
         /// <returns>The generated <see cref="Mesh"/>.</returns>
         public Mesh GenerateTerrain()
         {
-            var meshData = GenerateTerrainData();
-            var terracer = new Terracer(meshData, _terraces);
+            var meshData = GenerateTerrainData(SyncAllocator);
+            var terracer = new Terracer(meshData, _terraces, SyncAllocator);
             terracer.CreateTerraces();
             var mesh = terracer.CreateMesh();
             terracer.Dispose();
@@ -142,8 +152,8 @@ namespace SneakySquirrelLabs.TerracedTerrainGenerator
 
             Terracer GenerateTerracedTerrainData()
             {
-                var meshData = GenerateTerrainData();
-                var t = new Terracer(meshData, _terraces);
+                var meshData = GenerateTerrainData(AsyncAllocator);
+                var t = new Terracer(meshData, _terraces, AsyncAllocator);
                 t.CreateTerraces();
                 return t;
             }
@@ -159,10 +169,10 @@ namespace SneakySquirrelLabs.TerracedTerrainGenerator
 
         #region Private
 
-        private SimpleMeshData GenerateTerrainData()
+        private SimpleMeshData GenerateTerrainData(Allocator allocator)
         {
-            var meshData = _polygonGenerator.Generate();
-            var fragmentedMeshData = _fragmenter.Fragment(meshData);
+            var meshData = _polygonGenerator.Generate(allocator);
+            var fragmentedMeshData = _fragmenter.Fragment(meshData, allocator);
             meshData.Dispose();
             _deformer.Deform(fragmentedMeshData);
             return fragmentedMeshData;

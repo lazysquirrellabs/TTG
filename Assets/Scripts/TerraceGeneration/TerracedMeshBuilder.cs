@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using SneakySquirrelLabs.TerracedTerrainGenerator.Data;
 using SneakySquirrelLabs.TerracedTerrainGenerator.Utils;
+using Unity.Collections;
 using UnityEngine;
 using UnityEngine.Rendering;
 using Vector3 = UnityEngine.Vector3;
@@ -47,14 +48,15 @@ namespace SneakySquirrelLabs.TerracedTerrainGenerator.TerraceGeneration
         /// <param name="vertexCount">The initial number of vertices.</param>
         /// <param name="indicesCount">The initial number of indices.</param>
         /// <param name="terraceCount">The number of terraces to be created.</param>
-        internal TerracedMeshBuilder(int vertexCount, int indicesCount, int terraceCount)
+        /// <param name="allocator">The allocation strategy used when creating vertex and index buffers.</param>
+        internal TerracedMeshBuilder(int vertexCount, int indicesCount, int terraceCount, Allocator allocator)
         {
             _terraceCount = terraceCount;
             // Both horizontal and vertical mesh data are initialized with the given vertex and indices count because
             // the number of generated data (both vertices and indices) is usually much larger than the provided, 
             // initial values. These initial values are used just to avoid late buffer resizing.
-            _horizontalMeshData = new ComplexMeshData(vertexCount, indicesCount, terraceCount);
-            _verticalMeshData = new ComplexMeshData(vertexCount, indicesCount, terraceCount);
+            _horizontalMeshData = new ComplexMeshData(vertexCount, indicesCount, terraceCount, allocator);
+            _verticalMeshData = new ComplexMeshData(vertexCount, indicesCount, terraceCount, allocator);
         }
 
         #endregion

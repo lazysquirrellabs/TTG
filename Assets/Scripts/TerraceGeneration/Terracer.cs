@@ -49,11 +49,14 @@ namespace SneakySquirrelLabs.TerracedTerrainGenerator.TerraceGeneration
         /// <param name="meshData">The terrain's original mesh data. It will be used to read data from and remains
         /// unmodified.</param>
         /// <param name="terraces">The number of terraces to be created.</param>
-        internal Terracer(SimpleMeshData meshData, int terraces)
+        /// <param name="allocator">The allocation strategy used when creating vertex and index buffers.</param>
+        internal Terracer(SimpleMeshData meshData, int terraces, Allocator allocator)
         {
             _meshData = meshData;
             // In the base case, there will be at least the same amount of vertices
-            _meshBuilder = new TerracedMeshBuilder(_meshData.Vertices.Length, _meshData.Indices.Length, terraces);
+            var vertexCount = _meshData.Vertices.Length;
+            var indexCount = _meshData.Indices.Length;
+            _meshBuilder = new TerracedMeshBuilder(vertexCount, indexCount, terraces, allocator);
             // Two extra planes are placed: one below and one above all points. This helps the algorithm.
             var planeCount = terraces + 2;
             _planeHeights = GetHeights(planeCount, meshData.Vertices);

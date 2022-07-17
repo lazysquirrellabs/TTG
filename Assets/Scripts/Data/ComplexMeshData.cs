@@ -28,8 +28,9 @@ namespace SneakySquirrelLabs.TerracedTerrainGenerator.Data
         /// <param name="vertexCount">The initial amount of mesh vertices.</param>
         /// <param name="indicesCount">The initial amount of mesh (triangle) indices.</param>
         /// <param name="subMeshes">The number of sub meshes.</param>
+        /// <param name="allocator">The allocation strategy used when creating vertex and index buffers.</param>
         /// <exception cref="ArgumentException">Thrown whenever an invalid number of sub meshes is provided.</exception>
-        internal ComplexMeshData(int vertexCount, int indicesCount, int subMeshes)
+        internal ComplexMeshData(int vertexCount, int indicesCount, int subMeshes, Allocator allocator)
         {
             if (subMeshes < 1)
                 throw new ArgumentException("Mesh data must contain at least 1 sub mesh");
@@ -39,7 +40,7 @@ namespace SneakySquirrelLabs.TerracedTerrainGenerator.Data
             // Estimate the number of indices per sub mesh
             var indicesPerSubMesh = indicesCount / subMeshes;
             for (var i = 0; i < subMeshes; i++)
-                IndicesPerSubMesh[i] = new NativeList<int>(indicesPerSubMesh, Allocator.TempJob);
+                IndicesPerSubMesh[i] = new NativeList<int>(indicesPerSubMesh, allocator);
         }
 
         #endregion

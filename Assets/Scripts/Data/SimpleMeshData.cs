@@ -65,12 +65,13 @@ namespace SneakySquirrelLabs.TerracedTerrainGenerator.Data
         /// </summary>
         /// <param name="vertexCount">The initial amount of mesh vertices.</param>
         /// <param name="indicesCount">The initial amount of mesh (triangle) indices.</param>
-        internal SimpleMeshData(int vertexCount, int indicesCount)
+        /// <param name="allocator">The allocation strategy used when creating vertex and index buffers.</param>
+        internal SimpleMeshData(int vertexCount, int indicesCount, Allocator allocator)
         {
-            Vertices = new NativeList<Vector3>(vertexCount, Allocator.TempJob);
+            Vertices = new NativeList<Vector3>(vertexCount, allocator);
             // A simple mesh on has 1 sub mesh
             IndicesPerSubMesh = new NativeList<int>[1];
-            IndicesPerSubMesh[0] = new NativeList<int>(indicesCount, Allocator.TempJob);
+            IndicesPerSubMesh[0] = new NativeList<int>(indicesCount, allocator);
         }
 
         #endregion

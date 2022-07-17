@@ -33,14 +33,16 @@ namespace SneakySquirrelLabs.TerracedTerrainGenerator.Utils
         /// <param name="list">The original list.</param>
         /// <param name="capacity">The initial capacity of the copy list. It's assumed to be at least the length of the
         /// original list, but it can also be greater.</param>
+        /// <param name="allocator">The allocation strategy used when creating vertex and index buffers.</param>
         /// <typeparam name="T">The type of the elements of both the original <paramref name="list"/> and the copy
         /// list.</typeparam>
         /// <returns>A <see cref="NativeList{T}"/> containing all elements of the original list and potentially more
         /// elements.</returns>
-        internal static NativeList<T> Copy<T>(this NativeList<T> list, int capacity) where T : unmanaged
+        internal static NativeList<T> Copy<T>(this NativeList<T> list, int capacity, Allocator allocator) 
+            where T : unmanaged
         {
             // Allocate the list.
-            var newList = new NativeList<T>(capacity, Allocator.TempJob);
+            var newList = new NativeList<T>(capacity, allocator);
             // Copy data into the list.
             foreach (var t in list)
                 newList.Add(t);
