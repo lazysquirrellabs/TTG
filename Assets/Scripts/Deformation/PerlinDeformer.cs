@@ -1,4 +1,5 @@
 using SneakySquirrelLabs.TerracedTerrainGenerator.Data;
+using SneakySquirrelLabs.TerracedTerrainGenerator.Settings;
 using UnityEngine;
 using Random = System.Random;
 
@@ -33,20 +34,15 @@ namespace SneakySquirrelLabs.TerracedTerrainGenerator.Deformation
         #region Setup
 
         /// <summary>
-        /// Creates a <see cref="PerlinDeformer"/> with the given <paramref name="seed"/>. If you want deterministic
-        /// output, use this function.
+        /// Creates a <see cref="PerlinDeformer"/> with the given settings.
         /// </summary>
-        /// <param name="seed">Seed used by the randomizer.</param>
-        /// <param name="maximumHeight">The Y coordinate of the highest possible vertex after deformation.</param>
-        /// <param name="frequency">The frequency of deformation (how many elements in a given area).</param>
-        /// <param name="heightDistribution">The curve used to change the height distribution. If it's null, the
-        /// distribution won't be affected, thus it will be linear.</param>
-        internal PerlinDeformer(int seed, float maximumHeight, float frequency, AnimationCurve heightDistribution)
+        /// <param name="deformationSettings">The settings used for deformation.</param>
+        internal PerlinDeformer(DeformationSettings deformationSettings)
         {
-            _random = new Random(seed);
-            _maximumHeight = maximumHeight;
-            _frequency = frequency;
-            _heightDistribution = heightDistribution;
+            _random = new Random(deformationSettings.Seed);
+            _maximumHeight = deformationSettings.MaximumHeight;
+            _frequency = deformationSettings.Frequency;
+            _heightDistribution = deformationSettings.HeightDistribution;
         }
 
         #endregion

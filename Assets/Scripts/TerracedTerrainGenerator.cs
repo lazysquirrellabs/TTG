@@ -5,6 +5,7 @@ using SneakySquirrelLabs.TerracedTerrainGenerator.Data;
 using SneakySquirrelLabs.TerracedTerrainGenerator.Deformation;
 using SneakySquirrelLabs.TerracedTerrainGenerator.MeshFragmentation;
 using SneakySquirrelLabs.TerracedTerrainGenerator.PolygonGeneration;
+using SneakySquirrelLabs.TerracedTerrainGenerator.Settings;
 using SneakySquirrelLabs.TerracedTerrainGenerator.TerraceGeneration;
 using Unity.Collections;
 using UnityEngine;
@@ -51,30 +52,18 @@ namespace SneakySquirrelLabs.TerracedTerrainGenerator
         /// <summary>
         /// <see cref="TerrainGenerator"/>'s constructor.
         /// </summary>
-        /// <param name="seed">Seed used by the randomizer to generate the terrain. Use this call if you'd like
-        ///     reproducible generation.</param>
         /// <param name="sides">Number of sides of the terrain's basic shape. Value must be between 3 and 10. </param>
         /// <param name="radius">The terrain's radius?</param>
-        /// <param name="maximumHeight">The maximum height of the generated terrain.</param>
-        /// <param name="frequency">The frequency of deformation.</param>
+        /// <param name="deformationSettings">The settings used during the deformation phase.</param>
         /// <param name="depth">Depth to fragment the basic mesh.</param>
         /// <param name="terraces">The number of terraces to create.</param>
-        /// <param name="heightDistribution">The curve used to modify the height distribution during the deformation
-        /// (valley/hill) generation phase. If no curve is provided, the distribution won't be modified (thus it will be
-        /// linear).</param>
         /// <exception cref="NotImplementedException">Thrown if the provided number of sides is
         /// not supported.</exception>
-        public TerrainGenerator(int seed, ushort sides, float radius, float maximumHeight, float frequency, ushort depth, 
-            int terraces, AnimationCurve heightDistribution = null)
+        public TerrainGenerator(ushort sides, float radius, DeformationSettings deformationSettings, ushort depth, 
+            int terraces)
         {
             if (radius <= 0)
                 throw new ArgumentOutOfRangeException(nameof(radius));
-
-            if (maximumHeight <= 0)
-                throw new ArgumentOutOfRangeException(nameof(maximumHeight));
-
-            if (frequency <= 0)
-                throw new ArgumentOutOfRangeException(nameof(frequency));
 
             if (terraces <= 0)
                 throw new ArgumentOutOfRangeException(nameof(terraces));
@@ -88,29 +77,10 @@ namespace SneakySquirrelLabs.TerracedTerrainGenerator
             };
 
             _fragmenter = new MeshFragmenter(depth);
-            _deformer = new PerlinDeformer(seed, maximumHeight, frequency, heightDistribution);
+            _deformer = new PerlinDeformer(deformationSettings);
             _terraces = terraces;
         }
 
-        /// <summary>
-        /// <see cref="TerrainGenerator"/>'s constructor.
-        /// </summary>
-        /// <param name="sides">Number of sides of the terrain's basic shape. Value must be between 3 and 10. </param>
-        /// <param name="radius">The terrain's radius?</param>
-        /// <param name="maximumHeight">The maximum height of the generated terrain.</param>
-        /// <param name="frequency">The frequency of deformation.</param>
-        /// <param name="depth">Depth to fragment the basic mesh.</param>
-        /// <param name="terraces">The number of terraces to create.</param>
-        /// <param name="heightDistribution">The curve used to modify the height distribution during the deformation
-        /// (valley/hill) generation phase. If no curve is provided, the distribution won't be modified (thus it will be
-        /// linear).</param>
-        /// <exception cref="NotImplementedException">Thrown if the provided number of <paramref name="sides"/> is
-        /// not supported.</exception>
-        public TerrainGenerator(ushort sides, float radius, float maximumHeight, float frequency, ushort depth,
-            int terraces, AnimationCurve heightDistribution = null)
-            : this(GetRandomSeed(), sides, radius, maximumHeight, frequency, depth, terraces, heightDistribution)
-        {
-        }
 
         #endregion
         
@@ -176,12 +146,6 @@ namespace SneakySquirrelLabs.TerracedTerrainGenerator
             meshData.Dispose();
             _deformer.Deform(fragmentedMeshData);
             return fragmentedMeshData;
-        }
-
-        private static int GetRandomSeed()
-        {
-            var random = new System.Random();
-            return random.Next();
         }
 
         #endregion
