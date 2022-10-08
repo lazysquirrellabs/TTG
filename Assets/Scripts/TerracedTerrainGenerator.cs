@@ -81,7 +81,6 @@ namespace SneakySquirrelLabs.TerracedTerrainGenerator
             _terraces = terraces;
         }
 
-
         #endregion
         
         #region Public

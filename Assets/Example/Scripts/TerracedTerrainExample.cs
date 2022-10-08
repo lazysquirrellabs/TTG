@@ -2,6 +2,7 @@ using System;
 using System.Threading;
 using System.Threading.Tasks;
 using SneakySquirrelLabs.TerracedTerrainGenerator;
+using SneakySquirrelLabs.TerracedTerrainGenerator.Settings;
 using UnityEngine;
 
 public class TerracedTerrainExample : MonoBehaviour
@@ -11,7 +12,7 @@ public class TerracedTerrainExample : MonoBehaviour
     [SerializeField, Range(3,10)] private ushort _sides;
     [SerializeField, Range(0, 10)] private ushort _depth;
     [SerializeField, Range(1,100)] private float _radius;
-    [SerializeField, Range(0.1f, 10)] private float _height;
+    [SerializeField, Range(0.1f, 100)] private float _height;
     [SerializeField, Range(0.01f, 1f)] private float _frequency;
     [SerializeField, Range(1, 50)] private int _terraceCount;
     [SerializeField] private MeshFilter _meshFilter;
@@ -30,13 +31,29 @@ public class TerracedTerrainExample : MonoBehaviour
 
     private void Awake()
     {
-        Application.targetFrameRate = 30;
+        Application.targetFrameRate = 60;
         _cancellationTokenSource = new CancellationTokenSource();
     }
 
-    private async void Start()
+    private void Update()
     {
-        var generator = new TerrainGenerator(1, _sides, _radius, _height, _frequency, _depth, _terraceCount, _heightCurve);
+        if (Input.GetKeyDown(KeyCode.G))
+            Generate();
+    }
+
+    private void OnDestroy()
+    {
+        _cancellationTokenSource.Cancel();
+    }
+
+    #endregion
+
+    #region Private
+
+    private async void Generate()
+    {
+        var deformerSettings = new DeformationSettings(_height, _frequency, _heightCurve);
+        var generator = new TerrainGenerator(_sides, _radius, deformerSettings, _depth, _terraceCount);
         if (_async)
             await GenerateAsync(generator);
         else
@@ -60,11 +77,6 @@ public class TerracedTerrainExample : MonoBehaviour
                 Debug.Log("Terrain generation was cancelled.");
             }
         }
-    }
-
-    private void OnDestroy()
-    {
-        _cancellationTokenSource.Cancel();
     }
 
     #endregion
