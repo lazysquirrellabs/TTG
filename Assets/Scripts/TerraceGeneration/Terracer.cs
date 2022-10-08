@@ -116,7 +116,9 @@ namespace SneakySquirrelLabs.TerracedTerrainGenerator.TerraceGeneration
         {
             if (_terraces == 0)
                 return;
-            
+
+            Slicer addSlicedTriangle1Above = _meshBuilder.AddSlicedTriangle1Above;
+            Slicer addSlicedTriangle2Above = _meshBuilder.AddSlicedTriangle2Above;
             var triangleCount = _meshData.Indices.Length / 3;
             var triangleIndex = 0;
 
@@ -165,11 +167,11 @@ namespace SneakySquirrelLabs.TerracedTerrainGenerator.TerraceGeneration
                             return;
                         // Triangle has 1 point above the current plane. Slice it and continue.
                         case 1:
-                            SliceTriangle(_meshBuilder.AddSlicedTriangle1Above);
+                            SliceTriangle(addSlicedTriangle1Above);
                             break;
                         // Triangle has 2 points above the current plane. Slice it and continue.
                         case 2:
-                            SliceTriangle(_meshBuilder.AddSlicedTriangle2Above);
+                            SliceTriangle(addSlicedTriangle2Above);
                             break;
                         // Plane hasn't reached triangle yet. Skip and continue. 
                         case 3: 
