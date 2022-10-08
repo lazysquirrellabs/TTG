@@ -108,7 +108,7 @@ namespace SneakySquirrelLabs.TerracedTerrainGenerator
         public async Task<Mesh> GenerateTerrainAsync(CancellationToken token)
         {
             // Run the mesh data generation (the heaviest part of the process) on the thread pool
-            using var terracer =  await Task.Run(GenerateTerracedTerrainData, token);
+            using var terracer = await Task.Run(GenerateTerracedTerrainData, token);
             var mesh = terracer.CreateMesh();
             return mesh;
 
@@ -116,7 +116,16 @@ namespace SneakySquirrelLabs.TerracedTerrainGenerator
             {
                 var meshData = GenerateTerrainData(AsyncAllocator);
                 var t = new Terracer(meshData, _terraces, AsyncAllocator);
-                t.CreateTerraces();
+                try
+                {
+                    t.CreateTerraces();
+                }
+                catch (Exception)
+                {
+                    t.Dispose();
+                    throw;
+                }
+
                 return t;
             }
         }
