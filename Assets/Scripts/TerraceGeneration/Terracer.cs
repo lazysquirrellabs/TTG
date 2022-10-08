@@ -136,15 +136,15 @@ namespace SneakySquirrelLabs.TerracedTerrainGenerator.TerraceGeneration
                 {
                     // There is one plane below the first terrace, so offset its index by 1
                     var terraceHeight = _planeHeights[terraceIx + 1];
-                    SliceTriangleAtHeight(terraceHeight, terraceIx);
+                    SliceTriangleAtHeight(terraceHeight, terraceIx, true);
                 }
                 
                 // Handle the last terrace separately because it's a special case
                 var lastHeight = _planeHeights[planeCount - 1];
                 var lastTerraceIx = _terraces - 1;
-                SliceTriangleAtHeight(lastHeight, lastTerraceIx);
+                SliceTriangleAtHeight(lastHeight, lastTerraceIx, false);
 
-                void SliceTriangleAtHeight(float height, int terraceIx)
+                void SliceTriangleAtHeight(float height, int terraceIx, bool placeOnTerraceAbove)
                 {
                     int pointsAbove;
                     // Rearrange the triangle based on how many of its vertices are above the given plane, and store
@@ -182,8 +182,9 @@ namespace SneakySquirrelLabs.TerracedTerrainGenerator.TerraceGeneration
                         // If this is the fist slice, place the bottom triangle
                         if (!added)
                             PlacePlane();
+                        var terraceIncrement = placeOnTerraceAbove ? 1 : 0;
                         // Actually slice the triangle.
-                        slice(t, height, previousHeight, terraceIx + 1);
+                        slice(t, height, previousHeight, terraceIx + terraceIncrement);
                         added = true;
                     }
                 
