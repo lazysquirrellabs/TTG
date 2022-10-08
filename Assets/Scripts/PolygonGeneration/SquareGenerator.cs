@@ -24,14 +24,14 @@ namespace SneakySquirrelLabs.TerracedTerrainGenerator.PolygonGeneration
         internal override SimpleMeshData Generate(Allocator allocator)
         {
             var meshData = new SimpleMeshData(4, 6, allocator);
-            var vertices = CreateVertices(Radius);
+            using var vertices = CreateVertices(Radius, allocator);
             meshData.AddQuadrilateral(vertices[0], vertices[1], vertices[2], vertices[3]);
             
             return meshData;
 
-            static Vector3[] CreateVertices(float radius)
+            static NativeArray<Vector3> CreateVertices(float radius, Allocator allocator)
             {
-                var vertices = new Vector3[4];
+                var vertices = new NativeArray<Vector3>(4, allocator);
                 vertices[0] = new Vector3(-radius, 0f, radius);
                 vertices[1] = new Vector3(radius,  0f, radius);
                 vertices[2] = new Vector3(radius,  0f, -radius);

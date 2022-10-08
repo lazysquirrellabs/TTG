@@ -33,7 +33,7 @@ namespace SneakySquirrelLabs.TerracedTerrainGenerator.TerraceGeneration
         /// <summary>
         /// The height of all the planes used to slice the triangles.
         /// </summary>
-        private readonly float[] _planeHeights;
+        private readonly NativeArray<float> _planeHeights;
         /// <summary>
         /// The number of terraces to be created.
         /// </summary>
@@ -59,14 +59,14 @@ namespace SneakySquirrelLabs.TerracedTerrainGenerator.TerraceGeneration
             _meshBuilder = new TerracedMeshBuilder(vertexCount, indexCount, terraces, allocator);
             // Two extra planes are placed: one below and one above all points. This helps the algorithm.
             var planeCount = terraces + 2;
-            _planeHeights = GetHeights(planeCount, meshData.Vertices);
+            _planeHeights = GetHeights(planeCount, meshData.Vertices, allocator);
             _terraces = terraces;
             
-            static float[] GetHeights(int count, NativeList<Vector3> vertices)
+            static NativeArray<float> GetHeights(int count, NativeList<Vector3> vertices, Allocator allocator)
             {
                 var lowestPoint = float.PositiveInfinity;
                 var highestPoint = float.NegativeInfinity;
-                var heights = new float[count];
+                var heights = new NativeArray<float>(count, allocator);
             
                 // Find the lowest and the highest points
                 foreach (var vertex in vertices)
@@ -98,6 +98,9 @@ namespace SneakySquirrelLabs.TerracedTerrainGenerator.TerraceGeneration
         {
             _meshData?.Dispose();
             _meshBuilder?.Dispose();
+            var heights = _planeHeights;
+            if (heights.IsCreated)
+                heights.Dispose();
         }
 
         #endregion

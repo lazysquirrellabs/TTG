@@ -49,7 +49,7 @@ namespace SneakySquirrelLabs.TerracedTerrainGenerator.PolygonGeneration
             var indicesCount = _sides * 3;
             var meshData = new SimpleMeshData(vertexCount, indicesCount, allocator);
 
-            var vertices = CreateEdges(Radius, angleDelta, _sides);
+            using var vertices = CreateEdges(Radius, angleDelta, _sides, allocator);
             var center = Vector3.zero;
 
             // Add all triangles, except the "knot" one
@@ -65,9 +65,9 @@ namespace SneakySquirrelLabs.TerracedTerrainGenerator.PolygonGeneration
             
             return meshData;
 
-            static Vector3[] CreateEdges(float radius, float delta, uint sides)
+            static NativeArray<Vector3> CreateEdges(float radius, float delta, uint sides, Allocator allocator)
             {
-                var vertices = new Vector3[sides];
+                var vertices = new NativeArray<Vector3>((int) sides, allocator);
                 // Place the first vertex Radius units away
                 vertices[0] = new Vector3(radius, 0f, 0f);
                 

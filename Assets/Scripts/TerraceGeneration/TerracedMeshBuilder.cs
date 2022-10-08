@@ -1,5 +1,4 @@
 using System;
-using System.Collections.Generic;
 using SneakySquirrelLabs.TerracedTerrainGenerator.Data;
 using SneakySquirrelLabs.TerracedTerrainGenerator.Utils;
 using Unity.Collections;
@@ -184,18 +183,18 @@ namespace SneakySquirrelLabs.TerracedTerrainGenerator.TerraceGeneration
 
             _baked = true;
             
-            static NativeArray<Vector3> MergeVertices(Dictionary<Vector3,int> v1, Dictionary<Vector3,int> v2, 
+            static NativeArray<Vector3> MergeVertices(NativeHashMap<Vector3,int> v1, NativeHashMap<Vector3,int> v2, 
                 Allocator allocator)
             {
-                var vertices = new NativeArray<Vector3>(v1.Count + v2.Count, allocator);
+                var vertices = new NativeArray<Vector3>(v1.Count() + v2.Count(), allocator);
                 AddVertices(v1);
                 AddVertices(v2);
                 return vertices;
 
-                void AddVertices(Dictionary<Vector3, int> v)
+                void AddVertices(NativeHashMap<Vector3, int> v)
                 {
-                    foreach (var (vertex, index) in v)
-                        vertices[index] = vertex;
+                    foreach (var kvp in v)
+                        vertices[kvp.Value] = kvp.Key;
                 }
             }
         }

@@ -1,5 +1,4 @@
 using System;
-using System.Collections.Generic;
 using System.Linq;
 using Unity.Collections;
 using UnityEngine;
@@ -13,10 +12,12 @@ namespace SneakySquirrelLabs.TerracedTerrainGenerator.Data
     {
         #region Fields
 
+        private NativeHashMap<Vector3, int> _vertices;
+
         /// <summary>
         /// All the vertices in the mesh data. 
         /// </summary>
-        internal Dictionary<Vector3, int> Vertices { get; }
+        internal NativeHashMap<Vector3, int> Vertices => _vertices;
 
         #endregion
         
@@ -35,7 +36,7 @@ namespace SneakySquirrelLabs.TerracedTerrainGenerator.Data
             if (subMeshes < 1)
                 throw new ArgumentException("Mesh data must contain at least 1 sub mesh");
 
-            Vertices = new Dictionary<Vector3, int>(vertexCount);
+            _vertices = new NativeHashMap<Vector3, int>(vertexCount, allocator);
             IndicesPerSubMesh = new NativeList<int>[subMeshes];
             // Estimate the number of indices per sub mesh
             var indicesPerSubMesh = indicesCount / subMeshes;
@@ -51,6 +52,8 @@ namespace SneakySquirrelLabs.TerracedTerrainGenerator.Data
         {
             foreach (var indices in IndicesPerSubMesh.Where(i => i.IsCreated))
                 indices.Dispose();
+            if (_vertices.IsCreated)
+                _vertices.Dispose();
         }
 
         #endregion
@@ -86,9 +89,9 @@ namespace SneakySquirrelLabs.TerracedTerrainGenerator.Data
 
         protected override int AddVertex(Vector3 vertex, ref int index)
         {
-            if (Vertices.TryGetValue(vertex, out var existingIndex))
+            if (_vertices.TryGetValue(vertex, out var existingIndex))
                 return existingIndex;
-            Vertices[vertex] = index;
+            _vertices[vertex] = index;
             var newIndex = index;
             index++;
             return newIndex;
