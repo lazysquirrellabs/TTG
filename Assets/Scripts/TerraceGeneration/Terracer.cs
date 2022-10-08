@@ -234,7 +234,19 @@ namespace SneakySquirrelLabs.TerracedTerrainGenerator.TerraceGeneration
         }
 
         /// <summary>
-        /// Actually creates the terraced terrain mesh.
+        /// Bakes the terraced mesh data. Usually followed by a call to <see cref="CreateMesh"/>. The baking and
+        /// creation steps are separate to allow callers to invoke the baking in a separate thread to maximize
+        /// performance.
+        /// </summary>
+        /// <param name="allocator">The allocation strategy used during the baking.</param>
+        internal void BakeMeshData(Allocator allocator)
+        {
+            _meshBuilder.Bake(allocator);
+        }
+        
+        /// <summary>
+        /// Actually creates the previously baked terraced terrain mesh. This method must be called from the
+        /// main thread, otherwise the Unity <see cref="Mesh"/> API will throw an exception.
         /// </summary>
         /// <returns>The terraced terrain's mesh.</returns>
         internal Mesh CreateMesh()

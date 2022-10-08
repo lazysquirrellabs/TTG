@@ -94,6 +94,7 @@ namespace SneakySquirrelLabs.TerracedTerrainGenerator
             var meshData = GenerateTerrainData(SyncAllocator);
             var terracer = new Terracer(meshData, _terraces, SyncAllocator);
             terracer.CreateTerraces();
+            terracer.BakeMeshData(SyncAllocator);
             var mesh = terracer.CreateMesh();
             terracer.Dispose();
             return mesh;
@@ -119,6 +120,7 @@ namespace SneakySquirrelLabs.TerracedTerrainGenerator
                 try
                 {
                     t.CreateTerraces();
+                    t.BakeMeshData(AsyncAllocator);
                 }
                 catch (Exception)
                 {
