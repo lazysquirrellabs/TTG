@@ -40,19 +40,26 @@ namespace SneakySquirrelLabs.TerracedTerrainGenerator.Samples
 			_cancellationTokenSource = new CancellationTokenSource();
 		}
 
-		private async void Update()
+		private async void Start()
 		{
-			var currentTime = Time.realtimeSinceStartup;
-			if (currentTime - _lastGeneration < Interval)
-				return;
-
-			_lastGeneration = currentTime;
 			await Generate();
 		}
 
 		private void OnDestroy()
 		{
 			_cancellationTokenSource.Cancel();
+		}
+
+		#endregion
+
+		#region Update
+
+		private async void Update()
+		{
+			if (Time.realtimeSinceStartup - _lastGeneration < Interval)
+				return;
+
+			await Generate();
 		}
 
 		#endregion
@@ -80,6 +87,7 @@ namespace SneakySquirrelLabs.TerracedTerrainGenerator.Samples
 
 		private async Task Generate()
 		{
+			_lastGeneration = Time.realtimeSinceStartup;
 			var deformerSettings = new DeformationSettings(_height, _frequency, _heightCurve);
 			var generator = new TerrainGenerator(_sides, _radius, deformerSettings, _depth, _terraceCount);
 			var startTime = Time.realtimeSinceStartup;
