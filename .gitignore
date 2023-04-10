@@ -15,6 +15,7 @@
 /*.booproj
 *.csproj
 *.csproj.meta
+*.csproj.DotSettings
 
 
 # Created by https://www.gitignore.io/api/rider
