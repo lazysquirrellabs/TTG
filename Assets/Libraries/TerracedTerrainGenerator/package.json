@@ -24,9 +24,9 @@
   },
   "samples": [
     {
-        "displayName": "Terraced Terrain 1",
-        "description": "Terraced Terrain 1",
-        "path": "Samples~/Sample1"
+        "displayName": "Parameters test",
+        "description": "This sample simply creates completely random terraced terrains every five seconds. It's a great display of the tool's capabilities and the different types of terrains it can create.",
+        "path": "Samples~/ParametersTest"
     }
   ]
 }

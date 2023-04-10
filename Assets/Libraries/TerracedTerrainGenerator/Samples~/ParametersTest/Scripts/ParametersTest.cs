@@ -26,7 +26,7 @@ namespace SneakySquirrelLabs.TerracedTerrainGenerator.Samples
 
 		#region Fields
 
-		private const float Interval = 3f;
+		private const float Interval = 5f;
 		private CancellationTokenSource _cancellationTokenSource;
 		private float _lastGeneration;
 
