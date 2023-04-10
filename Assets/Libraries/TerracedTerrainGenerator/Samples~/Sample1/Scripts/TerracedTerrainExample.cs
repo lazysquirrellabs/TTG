@@ -23,7 +23,9 @@ public class TerracedTerrainExample : MonoBehaviour
 
     #region Fields
 
+    private const float Interval = 3f;
     private CancellationTokenSource _cancellationTokenSource;
+    private float _lastGeneration;
 
     #endregion
     
@@ -35,10 +37,14 @@ public class TerracedTerrainExample : MonoBehaviour
         _cancellationTokenSource = new CancellationTokenSource();
     }
 
-    private void Update()
+    private async void Update()
     {
-        if (Input.GetKeyDown(KeyCode.G))
-            Generate();
+	    var currentTime = Time.realtimeSinceStartup;
+	    if (currentTime - _lastGeneration < Interval)
+		    return;
+	    
+	    _lastGeneration = currentTime;
+	    await Generate();
     }
 
     private void OnDestroy()
@@ -50,7 +56,7 @@ public class TerracedTerrainExample : MonoBehaviour
 
     #region Private
 
-    private async void Generate()
+    private async Task Generate()
     {
         var deformerSettings = new DeformationSettings(_height, _frequency, _heightCurve);
         var generator = new TerrainGenerator(_sides, _radius, deformerSettings, _depth, _terraceCount);
