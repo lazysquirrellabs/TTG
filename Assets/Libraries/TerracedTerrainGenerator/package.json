@@ -1,0 +1,32 @@
+{
+  "name": "com.sneakysquirrellabs.terracedterraingenerator",
+  "version": "1.0.0",
+  "displayName": "Terraced Terrain Generator",
+  "description": "Generate terraced terrains procedurally.",
+  "unity": "2021.3",
+  "documentationUrl": "https://sneakysquirrellabs.com/ttg",
+  "changelogUrl": "https://sneakysquirrellabs.com/ttg/changelog",
+  "licensesUrl": "https://sneakysquirrellabs.com/ttg/license",
+  "dependencies": {
+    "com.unity.collections": "1.2.4"
+  },
+  "keywords": [
+    "tools",
+    "terrain",
+    "terrain generator",
+    "procedural terrain",
+    "procedural"
+  ],
+  "author": {
+    "name": "Matheus Amazonas",
+    "email": "matheus.amazonas@gmail.com",
+    "url": "https://matheusamazonas.net"
+  },
+  "samples": [
+    {
+        "displayName": "Terraced Terrain 1",
+        "description": "Terraced Terrain 1",
+        "path": "Samples~/Sample1"
+    }
+  ]
+}
