@@ -6,6 +6,7 @@ using UnityEngine;
 
 namespace SneakySquirrelLabs.TerracedTerrainGenerator.Samples
 {
+	[RequireComponent(typeof(Renderer))]
 	public class ParametersTest : MonoBehaviour
 	{
 		#region Serialized fields
@@ -16,6 +17,7 @@ namespace SneakySquirrelLabs.TerracedTerrainGenerator.Samples
 		[SerializeField, Range(0.1f, 100)] private float _height;
 		[SerializeField, Range(0.01f, 1f)] private float _frequency;
 		[SerializeField, Range(1, 50)] private int _terraceCount;
+		[SerializeField] private Renderer _renderer;
 		[SerializeField] private MeshFilter _meshFilter;
 		[SerializeField] private AnimationCurve _heightCurve;
 		[SerializeField] private bool _async;
@@ -51,6 +53,25 @@ namespace SneakySquirrelLabs.TerracedTerrainGenerator.Samples
 		private void OnDestroy()
 		{
 			_cancellationTokenSource.Cancel();
+		}
+
+		#endregion
+
+		#region Event handlers
+
+		private void OnValidate()
+		{
+			if (_renderer == null) return;
+
+			var materials = _renderer.sharedMaterials;
+			if (materials.Length >= _terraceCount) return;
+			
+			var newMaterials = new Material[_terraceCount];
+			Array.Copy(materials, newMaterials, materials.Length);
+			var lastMaterial = materials[^1];
+			for (var i = materials.Length; i < _terraceCount; i++)
+				newMaterials[i] = lastMaterial;
+			_renderer.sharedMaterials = newMaterials;
 		}
 
 		#endregion
