@@ -6,7 +6,6 @@ using UnityEngine;
 
 namespace SneakySquirrelLabs.TerracedTerrainGenerator
 {
-	[RequireComponent(typeof(Renderer), typeof(MeshFilter))]
 	public class TerrainGeneratorController : MonoBehaviour
 	{
 		#region Serialized fields
@@ -62,6 +61,31 @@ namespace SneakySquirrelLabs.TerracedTerrainGenerator
 		private void OnDestroy()
 		{
 			_cancellationTokenSource?.Cancel();
+		}
+
+		private void Reset()
+		{
+			var meshRenderer = GetComponent<MeshRenderer>();
+			if (meshRenderer == null)
+			{
+				meshRenderer = gameObject.AddComponent<MeshRenderer>();
+				var urpLit = Shader.Find("Universal Render Pipeline/Lit");
+				if (!urpLit)
+				{
+					Debug.LogError("Failed to create URP Lit material when resetting the terrain generator " +
+					                 "controller. Please assign renderer materials manually.");
+					return;
+				}
+				var newMaterial = new Material(urpLit);
+				newMaterial.name = "[Replace this] Placeholder material";
+				meshRenderer.sharedMaterials = new[] { newMaterial };
+			}
+			_renderer = meshRenderer;
+
+			var meshFilter = GetComponent<MeshFilter>();
+			if (meshFilter == null)
+				meshFilter = gameObject.AddComponent<MeshFilter>();
+			_meshFilter = meshFilter;
 		}
 
 		#endregion
