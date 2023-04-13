@@ -1,5 +1,5 @@
 # Terraced Terrain Generator (TTG)
-Terraced Terrain Generator (TTG) is a tool that can be used in Unity projects to procedurally generate terraced terrain meshes. 
+Terraced Terrain Generator (TTG) is a Unity tool for procedural generation of terraced terrain meshes.
 
 ## Contents
 - [Features](#features)
