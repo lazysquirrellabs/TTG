@@ -61,6 +61,12 @@ namespace SneakySquirrelLabs.TerracedTerrainGenerator
 		private void OnDestroy()
 		{
 			_cancellationTokenSource?.Cancel();
+			var mesh = _meshFilter.mesh;
+			if (mesh)
+			{
+				mesh.Clear();
+				Destroy(mesh);
+			}
 		}
 
 		private void Reset()
