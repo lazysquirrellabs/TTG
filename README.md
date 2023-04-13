@@ -64,13 +64,13 @@ This component contains all parameters explained in the previous section, in add
 `TerrainGeneratorController` exposes four generation methods:
 ```csharp
 // For pseudorandom synchronous generation:
-public void GenerateTerrain()
+public void GenerateTerrain();
 // For pseudorandom asynchronous generation:
-public async Task GenerateTerrainAsync(CancellationToken token)
+public async Task GenerateTerrainAsync(CancellationToken token);
 // For predictable, synchronous generation:
-public void GenerateTerrain(int seed)
+public void GenerateTerrain(int seed);
 // For predictable asynchronous generation:
-public async Task GenerateTerrainAsync(int seed, CancellationToken token)
+public async Task GenerateTerrainAsync(int seed, CancellationToken token);
 ```
 
 The first two methods are meant for pseudorandom procedural generation—when the generated terrain doesn't need to be reproduced in the future. The other methods are meant for reproducible procedural generation—when we would like to generate the exact same terrain in the future. The `seed` parameter will be used to feed the randomizer and it's enough to reproduce an entire terrain. If you're aiming for reproducible terrains, use the second method. The task of generating random seed values is up to the user. The asynchronous methods support task cancellation via a cancellation token. If the token's source is cancelled, a `TaskCanceledException` might be thrown.
@@ -95,14 +95,14 @@ The parameters (including the deformation settings) are the same ones explained 
 // For pseudorandom procedural generation
 public DeformationSettings(float maximumHeight, float frequency, AnimationCurve heightDistribution)
 // For reproducible procedural generation
- public DeformationSettings(int seed, float maximumHeight, float frequency, AnimationCurve heightDistribution)
+public DeformationSettings(int seed, float maximumHeight, float frequency, AnimationCurve heightDistribution)
 ```
 Once the `TerrainGenerator` instance is created, we can actually generate terrains using its two generation methods:
 ```csharp
 // For synchronous generation
-public Mesh GenerateTerrain()
+public Mesh GenerateTerrain();
 // For asynchronous generation
-public async Task<Mesh> GenerateTerrainAsync(CancellationToken token)
+public async Task<Mesh> GenerateTerrainAsync(CancellationToken token);
 ```
 The asynchronous method supports task cancellation via a cancellation token. If the token's source is cancelled, a `TaskCanceledException` might be thrown.
 
