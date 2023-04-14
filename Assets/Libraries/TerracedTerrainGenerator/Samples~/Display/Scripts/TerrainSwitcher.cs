@@ -3,7 +3,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using UnityEngine;
 
-namespace SneakySquirrelLabs.TerracedTerrainGenerator.Marketing
+namespace SneakySquirrelLabs.TerracedTerrainGenerator.Samples.Display
 {
 	internal class TerrainSwitcher : MonoBehaviour
 	{
@@ -47,7 +47,7 @@ namespace SneakySquirrelLabs.TerracedTerrainGenerator.Marketing
 			}
 			catch (OperationCanceledException)
 			{
-				Debug.Log($"Terrain switching stopped because the operation was cancelled.");
+				Debug.Log("Terrain switching stopped because the operation was cancelled.");
 			}
 		}
 
