@@ -1,6 +1,6 @@
 {
     "name": "SneakySquirrelLabs.TerracedTerrainGenerator.Samples",
-    "rootNamespace": "",
+    "rootNamespace": "SneakySquirrelLabs.TerracedTerrainGenerator.Samples",
     "references": [
         "GUID:3a0a9c0c8ea5546ce85aca8e39ded36b"
     ],
