@@ -15,7 +15,8 @@
     "terrain",
     "terrain generator",
     "procedural terrain",
-    "procedural"
+    "procedural",
+    "procedural generation"
   ],
   "author": {
     "name": "Matheus Amazonas",
@@ -24,14 +25,19 @@
   },
   "samples": [
     {
+      "displayName": "Display",
+      "description": "This sample generates five hand-picked terrains with different characteristic. It's a great display of how the materials used by the terrains might influence its mood.",
+      "path": "Samples~/Display"
+    },
+    {
+      "displayName": "Randomizer",
+      "description": "This sample repeatedly creates completely random terraced terrains. It's a great display of the tool's capabilities and the different types of terrains it can create.",
+      "path": "Samples~/Randomizer"
+    },
+    {
         "displayName": "Parameters test",
         "description": "This sample simply creates completely random terraced terrains every five seconds. It's a great display of the tool's capabilities and the different types of terrains it can create.",
         "path": "Samples~/ParametersTest"
-    },
-    {
-      "displayName": "Display",
-      "description": "A display of 5 terraced terrains based on different types of terrains. This sample was used to create the looping GIF at the top of this page.",
-      "path": "Samples~/Display"
     }
   ]
 }
