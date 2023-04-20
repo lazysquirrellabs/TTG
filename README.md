@@ -34,9 +34,9 @@ Terraced Terrain Generator (TTG) is a Unity tool for procedural generation of te
 The first step to get started with TTG is to import the library into your Unity project. So far, the only easy way to import TTG into your project is via UPM, using a git URL. To do so, navigate to `Window > Package Manager` in Unity. Then click on the `+` and select "Add package from git URL":
 
 ![](https://matheusamazonas.net/ttg_site/assets/images/upm_adding.png)
-Next, enter the following URL in the "URL" input field:
+Next, enter the following URL in the "URL" input field to install the latest version of TTG:
 ```
-https://github.com/matheusamazonas/ttg.git?path=Assets/Libraries/TerracedTerrainGenerator#1.0.0
+https://github.com/matheusamazonas/ttg.git?path=Assets/Libraries/TerracedTerrainGenerator#latest
 ```
 Finally, click on the "Add" button. The importing process should start automatically. Once it's done, TTG is ready to be used in the project. Check the [Usage](#usage) section on how to use TTG and the [Samples](#samples) section on how to import and use the package samples.
 
