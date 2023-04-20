@@ -143,12 +143,12 @@ _meshFilter.mesh = mesh;
 The `TerrainGeneratorController`'s  source code (described in the [previous section](#component-based-usage)) offers  great examples of API usage and can server as inspiration to API newcomers.
 
 ## Samples
-The package contains two samples:
+The package contains three samples:
 - Display: this sample generates five hand-picked terrains with different characteristic. It's a great display of how the materials used by the terrains might influence its mood. This sample was used to generate the looping GIF at the top of this page. 
 - Randomizer: this sample simply repeatedly creates completely random terraced terrains. It's a great display of the tool's capabilities and the different types of terrains it can create. 
 - Parameters test: this sample repeatedly creates random terraced terrains that can be somewhat customized. It's a great tool to quickly test generation parameters. Play with the values in the `TerrainGeneratorController` component attached to the `Generator` game object in the `ParametersTest` scene to see how the parameters affect the generated terrains.
 
-To import the samples, open the Package Manager and select TTG in the packages list. Then find the Samples section on the right panel, and click on the "Import" button right next to the sample you would like to import. Once importing is finished, navigate to the `Assets/Samples/Terraced Terrain Generator`. Finally, open and play the scene from the sample you would like to test.
+To import the samples, open the Package Manager and select TTG in the packages list. Then find the Samples section on the right panel, and click on the "Import" button right next to the sample you would like to import. Once importing is finished, navigate to the `Assets/Samples/Terraced Terrain Generator` folder. Finally, open and play the scene from the sample you would like to test.
 
 ## Compatibility and dependencies
 TTG requires Unity 2021.3.X or above, its target API compatibility level is .NET Standard 2.1, and depends on the following packages:
