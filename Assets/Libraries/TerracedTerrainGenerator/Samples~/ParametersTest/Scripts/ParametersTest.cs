@@ -1,9 +1,10 @@
+using System;
 using System.Threading;
 using UnityEngine;
 
 namespace SneakySquirrelLabs.TerracedTerrainGenerator.Samples.ParametersTest
 {
-	public class ParametersTest : MonoBehaviour
+	internal class ParametersTest : MonoBehaviour
 	{
 		#region Serialized fields
 
@@ -53,7 +54,14 @@ namespace SneakySquirrelLabs.TerracedTerrainGenerator.Samples.ParametersTest
 			if (_async)
 			{
 				synchronicity = "asynchronously";
-				await _generatorController.GenerateTerrainAsync(_cancellationTokenSource.Token);
+				try
+				{
+					await _generatorController.GenerateTerrainAsync(_cancellationTokenSource.Token);
+				}
+				catch (OperationCanceledException)
+				{
+					Debug.Log("Terrain generation stopped because the operation was cancelled.");
+				}
 			}
 			else
 			{
@@ -61,7 +69,6 @@ namespace SneakySquirrelLabs.TerracedTerrainGenerator.Samples.ParametersTest
 				_generatorController.GenerateTerrain();
 			}
 			var endTime = Time.realtimeSinceStartup;
-			_lastGeneration = endTime;
 			Debug.Log($"Generated terrain {synchronicity} in {(endTime - startTime) * 1_000} milliseconds.");
 		}
 
