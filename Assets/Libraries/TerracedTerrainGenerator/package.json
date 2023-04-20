@@ -1,0 +1,43 @@
+{
+  "name": "com.sneakysquirrellabs.terracedterraingenerator",
+  "version": "1.0.0",
+  "displayName": "Terraced Terrain Generator",
+  "description": "Generate terraced terrains procedurally.",
+  "unity": "2021.3",
+  "documentationUrl": "http://ttg.matheusamazonas.net",
+  "changelogUrl": "https://github.com/matheusamazonas/TTG",
+  "licensesUrl": "https://github.com/matheusamazonas/TTG/blob/master/LICENSE",
+  "dependencies": {
+    "com.unity.collections": "1.2.4"
+  },
+  "keywords": [
+    "tools",
+    "terrain",
+    "terrain generator",
+    "procedural terrain",
+    "procedural",
+    "procedural generation"
+  ],
+  "author": {
+    "name": "Matheus Amazonas",
+    "email": "matheus.amazonas@gmail.com",
+    "url": "https://matheusamazonas.net"
+  },
+  "samples": [
+    {
+      "displayName": "Display",
+      "description": "This sample generates five hand-picked terrains with different characteristic. It's a great display of how the materials used by the terrains might influence its mood.",
+      "path": "Samples~/Display"
+    },
+    {
+      "displayName": "Randomizer",
+      "description": "This sample repeatedly creates completely random terraced terrains. It's a great display of the tool's capabilities and the different types of terrains it can create.",
+      "path": "Samples~/Randomizer"
+    },
+    {
+        "displayName": "Parameters test",
+        "description": "This sample simply creates completely random terraced terrains every five seconds. It's a great display of the tool's capabilities and the different types of terrains it can create.",
+        "path": "Samples~/ParametersTest"
+    }
+  ]
+}
