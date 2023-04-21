@@ -1,4 +1,5 @@
 
+
 # Terraced Terrain Generator (TTG)
 Terraced Terrain Generator (TTG) is a Unity tool for procedural generation of terraced terrain meshes.
 
@@ -7,6 +8,9 @@ Terraced Terrain Generator (TTG) is a Unity tool for procedural generation of te
 ## Contents
 - [Features](#features)
 - [Importing](#importing)
+	- [Import using a git URL](#import-using-a-git-url)
+	- [Import with OpenUPM](#import-with-openupm)
+	- [After importing](#after-importing)
 - [Usage](#usage)
 	- [Component-based](#component-based-usage)
 	- [API](#api-usage)
@@ -32,14 +36,28 @@ Terraced Terrain Generator (TTG) is a Unity tool for procedural generation of te
 	- Height distribution.
 
 ## Importing
-The first step to get started with TTG is to import the library into your Unity project. So far, the only easy way to import TTG into your project is via UPM, using a git URL. To do so, navigate to `Window > Package Manager` in Unity. Then click on the `+` and select "Add package from git URL":
+The first step to get started with TTG is to import the library into your Unity project. There are two ways to do so: via the Package Manager using a git URL, and via OpenUPM.
+
+### Import using a git URL
+This approach uses Unity's Package Manager to add TTG to your project using the repo's git URL. To do so, navigate to `Window > Package Manager` in Unity. Then click on the `+` and select "Add package from git URL":
 
 ![](https://matheusamazonas.net/ttg_site/assets/images/upm_adding.png)
-Next, enter the following URL in the "URL" input field to install the latest version of TTG:
+Next, enter the following in the "URL" input field to install the latest version of TTG:
 ```
 https://github.com/matheusamazonas/ttg.git?path=Assets/Libraries/TerracedTerrainGenerator#latest
 ```
-Finally, click on the "Add" button. The importing process should start automatically. Once it's done, TTG is ready to be used in the project. Check the [Usage](#usage) section on how to use TTG and the [Samples](#samples) section on how to import and use the package samples.
+Finally, click on the "Add" button. The importing process should start automatically. Once it's done, TTG is ready to be used in the project. 
+
+### Import with OpenUPM
+TTG is available as a package on [OpenUPM](https://openupm.com/packages/com.sneakysquirrellabs.terracedterraingenerator/). To import TTG into your project via the command line, run the following command:
+```
+openupm add com.sneakysquirrellabs.terracedterraingenerator
+```
+Once the importing process is complete, TTG is ready to be used in the project. 
+
+### After importing
+After importing TTG, check the [Usage](#usage) section on how to use it and the [Samples](#samples) section on how to import and use the package samples.
+
 
 ## Usage
 
