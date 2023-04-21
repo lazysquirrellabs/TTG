@@ -140,6 +140,8 @@ Once we've got a reference to the terrain mesh, we can use it with a mesh filter
 // ...
 _meshFilter.mesh = mesh;
 ```
+The generated Mesh will contain as many submeshes as the number of generated terraces. Consequently, the MeshRenderer component that will render the terrain requires the same amount of materials to properly render all terraces. Failing to assign the necessary materials will cause some terrains (the highest ones) to not be rendered.
+
 The `TerrainGeneratorController`'s  source code (described in the [previous section](#component-based-usage)) offers  great examples of API usage and can server as inspiration to API newcomers.
 
 ## Samples
