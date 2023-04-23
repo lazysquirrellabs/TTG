@@ -95,7 +95,7 @@ public void GenerateTerrain(int seed);
 public async Task GenerateTerrainAsync(int seed, CancellationToken token);
 ```
 
-The first two methods are meant for pseudorandom procedural generation—when the generated terrain doesn't need to be reproduced in the future. The other methods are meant for reproducible procedural generation—when we would like to generate the exact same terrain in the future. The `seed` parameter will be used to feed the randomizer and it's enough to reproduce an entire terrain. If you're aiming for reproducible terrains, use the second method. The task of generating random seed values is up to the user. The asynchronous methods support task cancellation via a cancellation token. If the token's source is cancelled, a `TaskCanceledException` might be thrown.
+The first two methods are meant for pseudorandom procedural generation—when the generated terrain doesn't need to be reproduced in the future. The other methods are meant for reproducible procedural generation—when we would like to generate the exact same terrain in the future. The `seed` parameter will be used to feed the randomizer and it's enough to reproduce an entire terrain. If you're aiming for reproducible terrains, use the second methods. The task of generating random seed values is up to the user. The asynchronous methods support task cancellation via a cancellation token. If the token's source is cancelled, a `TaskCanceledException` might be thrown.
 
 The controller manages the lifetime of the meshes it generates, and it destroys them once they're not being used anymore (including when the component itself is destroyed). If you would like to manage mesh lifetime yourself, use the API (described below) instead.
 
@@ -159,15 +159,15 @@ Once we've got a reference to the terrain mesh, we can use it with a mesh filter
 // ...
 _meshFilter.mesh = mesh;
 ```
-The generated Mesh will contain as many submeshes as the number of generated terraces. Consequently, the MeshRenderer component that will render the terrain requires the same amount of materials to properly render all terraces. Failing to assign the necessary materials will cause some terrains (the highest ones) to not be rendered.
+The generated Mesh will contain as many submeshes as the number of generated terraces. Consequently, the `MeshRenderer` component that will render the terrain requires the same amount of materials to properly render all terraces. Failing to assign the necessary materials will cause some terrains (the highest ones) to not be rendered.
 
-The `TerrainGeneratorController`'s  source code (described in the [previous section](#component-based-usage)) offers  great examples of API usage and can server as inspiration to API newcomers.
+The `TerrainGeneratorController`'s  source code (described in the [previous section](#component-based-usage)) offers  great examples of API usage and can serve as inspiration to API newcomers.
 
 ## Samples
 The package contains three samples:
 - Display: this sample generates five hand-picked terrains with different characteristic. It's a great display of how the materials used by the terrains might influence its mood. This sample was used to generate the looping GIF at the top of this page. 
 - Randomizer: this sample simply repeatedly creates completely random terraced terrains. It's a great display of the tool's capabilities and the different types of terrains it can create. 
-- Parameters test: this sample repeatedly creates random terraced terrains that can be somewhat customized. It's a great tool to quickly test generation parameters. Play with the values in the `TerrainGeneratorController` component attached to the `Generator` game object in the `ParametersTest` scene to see how the parameters affect the generated terrains.
+- Parameters test: this sample repeatedly creates random terraced terrains that can be somewhat customized. It's a great tool to quickly test generation parameters. Play with the values in the `TerrainGeneratorController` component attached to the `Generator` game object to see how the parameters affect the generated terrains.
 
 To import the samples, open the Package Manager and select TTG in the packages list. Then find the Samples section on the right panel, and click on the "Import" button right next to the sample you would like to import. Once importing is finished, navigate to the `Assets/Samples/Terraced Terrain Generator` folder. Finally, open and play the scene from the sample you would like to test.
 
