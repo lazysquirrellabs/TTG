@@ -30,7 +30,7 @@ namespace SneakySquirrelLabs.TerracedTerrainGenerator.PolygonGeneration
         /// vertices).</param>
         /// <exception cref="ArgumentException">Thrown if the number of sides is less than 5. For squares and triangles,
         /// check <see cref="SquareGenerator"/> and <see cref="TriangleGenerator"/>.</exception>
-        public RegularPolygonGenerator(ushort sides, float radius) : base(radius)
+        internal RegularPolygonGenerator(ushort sides, float radius) : base(radius)
         {
             if (sides < 5)
                 throw new ArgumentException("Regular polygons should have at least 5 sides");

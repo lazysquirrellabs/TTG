@@ -15,7 +15,7 @@ namespace SneakySquirrelLabs.TerracedTerrainGenerator.PolygonGeneration
         /// Creates a square generator.
         /// </summary>
         /// <param name="size">The size of the generated square (length of one side).</param>
-        public SquareGenerator(float size) : base(size) { }
+        internal SquareGenerator(float size) : base(size) { }
         
         #endregion
 

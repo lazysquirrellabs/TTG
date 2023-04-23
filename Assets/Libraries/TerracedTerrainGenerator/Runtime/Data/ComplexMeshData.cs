@@ -14,6 +14,10 @@ namespace SneakySquirrelLabs.TerracedTerrainGenerator.Data
 
         private NativeHashMap<Vector3, int> _vertices;
 
+        #endregion
+
+        #region Properties
+
         /// <summary>
         /// All the vertices in the mesh data. 
         /// </summary>
@@ -71,10 +75,6 @@ namespace SneakySquirrelLabs.TerracedTerrainGenerator.Data
         {
             AddQuadrilateralAt(v1, v2, v3, v4, subMesh, ref index);
         }
-
-        #endregion
-
-        #region Internal
 
         /// <summary>
         /// Fetches the mesh (triangle) indices for a given <paramref name="subMesh"/> index.
