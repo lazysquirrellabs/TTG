@@ -42,6 +42,7 @@ The first step to get started with TTG is to import the library into your Unity 
 This approach uses Unity's Package Manager to add TTG to your project using the repo's git URL. To do so, navigate to `Window > Package Manager` in Unity. Then click on the `+` and select "Add package from git URL":
 
 ![](https://matheusamazonas.net/ttg_site/assets/images/upm_adding.png)
+
 Next, enter the following in the "URL" input field to install the latest version of TTG:
 ```
 https://github.com/matheusamazonas/ttg.git?path=Assets/Libraries/TerracedTerrainGenerator#1.0.1
