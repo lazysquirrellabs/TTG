@@ -31,7 +31,7 @@ Terraced Terrain Generator (TTG) is a Unity tool for procedural generation of te
 	- Basic terrain shapes from 3 to 10 sizes.
 	- Number of terraces (1 to 50).
 	- Terrain size (radius and height).
-	- Level 
+	- Detail level (a.k.a. fragmentation depth).
 	- Feature (hills and valleys) frequency.
 	- Height distribution.
 
