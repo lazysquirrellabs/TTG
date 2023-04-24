@@ -165,7 +165,7 @@ The `TerrainGeneratorController`'s  source code (described in the [previous sect
 
 ## Samples
 The package contains three samples:
-- Display: this sample generates five hand-picked terrains with different characteristic. It's a great display of how the materials used by the terrains might influence its mood. This sample was used to generate the looping GIF at the top of this page. 
+- Display: this sample generates five hand-picked terrains with different characteristics. It's a great display of how the materials used by the terrains might influence its mood. This sample was used to generate the looping GIF at the top of this page. 
 - Randomizer: this sample simply repeatedly creates completely random terraced terrains. It's a great display of the tool's capabilities and the different types of terrains it can create. 
 - Parameters test: this sample repeatedly creates random terraced terrains that can be somewhat customized. It's a great tool to quickly test generation parameters. Play with the values in the `TerrainGeneratorController` component attached to the `Generator` game object to see how the parameters affect the generated terrains.
 
