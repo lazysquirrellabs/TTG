@@ -1,12 +1,16 @@
-
 # Terraced Terrain Generator (TTG)
-Terraced Terrain Generator (TTG) is a Unity tool for procedural generation of terraced terrain meshes.
+![openupm](https://img.shields.io/npm/v/com.sneakysquirrellabs.terracedterraingenerator?label=openupm&registry_uri=https://package.openupm.com)
+
+Terraced Terrain Generator (TTG) is a free Unity tool for procedural generation of terraced terrain meshes.
 
 ![Five images of generated terraced terrains looping.](https://matheusamazonas.net/ttg_site/assets/images/loop.gif)
 
 ## Contents
 - [Features](#features)
 - [Importing](#importing)
+	- [Import using a git URL](#import-using-a-git-url)
+	- [Import with OpenUPM](#import-with-openupm)
+	- [After importing](#after-importing)
 - [Usage](#usage)
 	- [Component-based](#component-based-usage)
 	- [API](#api-usage)
@@ -27,19 +31,34 @@ Terraced Terrain Generator (TTG) is a Unity tool for procedural generation of te
 	- Basic terrain shapes from 3 to 10 sizes.
 	- Number of terraces (1 to 50).
 	- Terrain size (radius and height).
-	- Level 
+	- Detail level (a.k.a. fragmentation depth).
 	- Feature (hills and valleys) frequency.
 	- Height distribution.
 
 ## Importing
-The first step to get started with TTG is to import the library into your Unity project. So far, the only easy way to import TTG into your project is via UPM, using a git URL. To do so, navigate to `Window > Package Manager` in Unity. Then click on the `+` and select "Add package from git URL":
+The first step to get started with TTG is to import the library into your Unity project. There are two ways to do so: via the Package Manager using a git URL, and via OpenUPM.
+
+### Import using a git URL
+This approach uses Unity's Package Manager to add TTG to your project using the repo's git URL. To do so, navigate to `Window > Package Manager` in Unity. Then click on the `+` and select "Add package from git URL":
 
 ![](https://matheusamazonas.net/ttg_site/assets/images/upm_adding.png)
-Next, enter the following URL in the "URL" input field to install the latest version of TTG:
+
+Next, enter the following in the "URL" input field to install the latest version of TTG:
 ```
-https://github.com/matheusamazonas/ttg.git?path=Assets/Libraries/TerracedTerrainGenerator#latest
+https://github.com/matheusamazonas/ttg.git?path=Assets/Libraries/TerracedTerrainGenerator#1.0.1
 ```
-Finally, click on the "Add" button. The importing process should start automatically. Once it's done, TTG is ready to be used in the project. Check the [Usage](#usage) section on how to use TTG and the [Samples](#samples) section on how to import and use the package samples.
+Finally, click on the "Add" button. The importing process should start automatically. Once it's done, TTG is ready to be used in the project. 
+
+### Import with OpenUPM
+TTG is available as a package on [OpenUPM](https://openupm.com/packages/com.sneakysquirrellabs.terracedterraingenerator/). To import TTG into your project via the command line, run the following command:
+```
+openupm add com.sneakysquirrellabs.terracedterraingenerator
+```
+Once the importing process is complete, TTG is ready to be used in the project. 
+
+### After importing
+After importing TTG, check the [Usage](#usage) section on how to use it and the [Samples](#samples) section on how to import and use the package samples.
+
 
 ## Usage
 
@@ -76,7 +95,7 @@ public void GenerateTerrain(int seed);
 public async Task GenerateTerrainAsync(int seed, CancellationToken token);
 ```
 
-The first two methods are meant for pseudorandom procedural generation—when the generated terrain doesn't need to be reproduced in the future. The other methods are meant for reproducible procedural generation—when we would like to generate the exact same terrain in the future. The `seed` parameter will be used to feed the randomizer and it's enough to reproduce an entire terrain. If you're aiming for reproducible terrains, use the second method. The task of generating random seed values is up to the user. The asynchronous methods support task cancellation via a cancellation token. If the token's source is cancelled, a `TaskCanceledException` might be thrown.
+The first two methods are meant for pseudorandom procedural generation—when the generated terrain doesn't need to be reproduced in the future. The other methods are meant for reproducible procedural generation—when we would like to generate the exact same terrain in the future. The `seed` parameter will be used to feed the randomizer and it's enough to reproduce an entire terrain. If you're aiming for reproducible terrains, use the second methods. The task of generating random seed values is up to the user. The asynchronous methods support task cancellation via a cancellation token. If the token's source is cancelled, a `TaskCanceledException` might be thrown.
 
 The controller manages the lifetime of the meshes it generates, and it destroys them once they're not being used anymore (including when the component itself is destroyed). If you would like to manage mesh lifetime yourself, use the API (described below) instead.
 
@@ -140,13 +159,15 @@ Once we've got a reference to the terrain mesh, we can use it with a mesh filter
 // ...
 _meshFilter.mesh = mesh;
 ```
-The `TerrainGeneratorController`'s  source code (described in the [previous section](#component-based-usage)) offers  great examples of API usage and can server as inspiration to API newcomers.
+The generated Mesh will contain as many submeshes as the number of generated terraces. Consequently, the `MeshRenderer` component that will render the terrain requires the same amount of materials to properly render all terraces. Failing to assign the necessary materials will cause some terrains (the highest ones) to not be rendered.
+
+The `TerrainGeneratorController`'s  source code (described in the [previous section](#component-based-usage)) offers  great examples of API usage and can serve as inspiration to API newcomers.
 
 ## Samples
 The package contains three samples:
-- Display: this sample generates five hand-picked terrains with different characteristic. It's a great display of how the materials used by the terrains might influence its mood. This sample was used to generate the looping GIF at the top of this page. 
+- Display: this sample generates five hand-picked terrains with different characteristics. It's a great display of how the materials used by the terrains might influence its mood. This sample was used to generate the looping GIF at the top of this page. 
 - Randomizer: this sample simply repeatedly creates completely random terraced terrains. It's a great display of the tool's capabilities and the different types of terrains it can create. 
-- Parameters test: this sample repeatedly creates random terraced terrains that can be somewhat customized. It's a great tool to quickly test generation parameters. Play with the values in the `TerrainGeneratorController` component attached to the `Generator` game object in the `ParametersTest` scene to see how the parameters affect the generated terrains.
+- Parameters test: this sample repeatedly creates random terraced terrains that can be somewhat customized. It's a great tool to quickly test generation parameters. Play with the values in the `TerrainGeneratorController` component attached to the `Generator` game object to see how the parameters affect the generated terrains.
 
 To import the samples, open the Package Manager and select TTG in the packages list. Then find the Samples section on the right panel, and click on the "Import" button right next to the sample you would like to import. Once importing is finished, navigate to the `Assets/Samples/Terraced Terrain Generator` folder. Finally, open and play the scene from the sample you would like to test.
 
@@ -167,11 +188,11 @@ You can follow TTG's development progress on its [Trello board](https://trello.c
 ## Technical aspects
 Technical aspects of TTG were described in the following blogs posts:
 
-- [Developing a Terraced Terrain Generator](https://www.matheusamazonas.net/blog/2023/04/08/ttg).
+- [Developing a Terraced Terrain Generator](https://www.matheusamazonas.net/blog/2023/04/08/ttg)
 - [Terraced Terrain Generator performance improvements](https://www.matheusamazonas.net/blog/2023/04/09/ttg-performance).
 
 ## Contributing
-If you would like to report e bug, please create an [issue](https://github.com/matheusamazonas/ttg/issues). If you would like to contribute with bug fixing or small improvements, please open a Pull Request. If you would like to contribute with a new feature (regardless ff it's in the roadmap or not),  [contact the developer](https://matheusamazonas.net/contact.html).  
+If you would like to report e bug, please create an [issue](https://github.com/matheusamazonas/ttg/issues). If you would like to contribute with bug fixing or small improvements, please open a Pull Request. If you would like to contribute with a new feature (regardless if it's in the roadmap or not),  [contact the developer](https://matheusamazonas.net/contact.html).  
 
 ## Getting help
 Use the [issues page](https://github.com/matheusamazonas/ttg/issues) if there's a problem with your TTG setup, if something isn't working as expected, or if you would like to ask questions about the tool and its usage.
