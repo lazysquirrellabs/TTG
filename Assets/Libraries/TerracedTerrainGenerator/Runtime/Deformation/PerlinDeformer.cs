@@ -74,8 +74,9 @@ namespace SneakySquirrelLabs.TerracedTerrainGenerator.Deformation
                 {
                     // Step 1, fetch the noise value at the given point
                     var noise = Mathf.PerlinNoise(x, y);
+                    var clampedNoise = Mathf.Clamp(noise, 0, maximum);
                     // Step 2, apply the height deformation curve (if it's not null) to the noise value
-                    var modifier = heightDistribution?.Evaluate(noise) ?? 1;
+                    var modifier = heightDistribution?.Evaluate(clampedNoise) ?? 1;
                     // Step 3, apply the modifier to the maximum height
                     return maximum * modifier;
                 }
