@@ -248,7 +248,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3559f8bf650d43038bb417ef5300517a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _generateOnStart: 1
+  _generateOnStart: 0
   _renderer: {fileID: 826162131}
   _meshFilter: {fileID: 826162130}
   _sides: 8
