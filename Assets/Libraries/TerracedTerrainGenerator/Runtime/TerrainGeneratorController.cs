@@ -105,7 +105,7 @@ namespace SneakySquirrelLabs.TerracedTerrainGenerator
 		private void OnValidate()
 		{
 			if (_renderer == null) return;
-
+			if (_relativeTerraceHeights == null) return;
 			// If there's more materials then terraces, don't do anything.
 			var materials = _renderer.sharedMaterials;
 			var terraceCount = _relativeTerraceHeights.Length;
