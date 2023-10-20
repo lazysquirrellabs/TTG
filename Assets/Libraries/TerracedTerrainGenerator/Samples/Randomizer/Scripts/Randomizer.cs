@@ -102,12 +102,24 @@ namespace SneakySquirrelLabs.TerracedTerrainGenerator.Samples.Randomizer
 			var sides = (ushort) Random.Range(SidesMin, SidesMax);
 			var depth = (ushort) Random.Range(DepthMin, DepthMax);
 			var terraceCount = Random.Range(TerraceCountMin, TerraceCountMax);
+			var terraceHeights = GetTerraceHeights(terraceCount);
 			
-			var generator = new TerrainGenerator(sides, Radius, deformationSettings, depth, terraceCount);
+			var generator = new TerrainGenerator(sides, Radius, deformationSettings, depth, terraceHeights);
 			_lastGeneration = Time.realtimeSinceStartup;
 			_meshFilter.mesh = await generator.GenerateTerrainAsync(_cancellationTokenSource.Token);
 			Debug.Log($"Generated a terrain with {sides} sides, height {height}, depth {depth}, " +
 			          $"{terraceCount} terraces and detail frequency {frequency:F3}.");
+
+			static float[] GetTerraceHeights(int count)
+			{
+				var heights = new float[count];
+				for (var i = 0; i < count; i++)
+				{
+					heights[i] = (float)i / count;
+				}
+
+				return heights;
+			}
 		}
 
 		#endregion
