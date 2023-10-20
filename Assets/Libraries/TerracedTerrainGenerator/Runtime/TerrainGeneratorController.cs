@@ -41,6 +41,9 @@ namespace SneakySquirrelLabs.TerracedTerrainGenerator
 		         " by the terrain's height.")]
 		[SerializeField] private float[] _relativeTerraceHeights;
 
+		// Used by its inspector to keep track of whether custom terrace heights are being used.
+		[SerializeField] private bool _useCustomHeights;
+
 		#endregion
 
 		#region Fields
