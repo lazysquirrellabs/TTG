@@ -243,9 +243,8 @@ MonoBehaviour:
   _meshFilter: {fileID: 826162130}
   _sides: 8
   _radius: 20
-  _terraceCount: 20
   _depth: 7
-  _height: 10
+  _height: 6
   _frequency: 0.1
   _heightCurve:
     serializedVersion: 2
@@ -280,6 +279,28 @@ MonoBehaviour:
     m_PreInfinity: 2
     m_PostInfinity: 2
     m_RotationOrder: 4
+  _relativeTerraceHeights:
+  - 0
+  - 0.05263158
+  - 0.10526316
+  - 0.15789473
+  - 0.21052632
+  - 0.2631579
+  - 0.31578946
+  - 0.36842105
+  - 0.42105263
+  - 0.47368422
+  - 0.5263158
+  - 0.57894737
+  - 0.6315789
+  - 0.68421054
+  - 0.7368421
+  - 0.7894737
+  - 0.84210527
+  - 0.8947368
+  - 0.94736844
+  - 1
+  _useCustomHeights: 0
 --- !u!1 &1012788108
 GameObject:
   m_ObjectHideFlags: 0
@@ -293,7 +314,7 @@ GameObject:
   - component: {fileID: 1012788111}
   - component: {fileID: 1012788110}
   m_Layer: 0
-  m_Name: Generator 3
+  m_Name: Generator 4
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -312,7 +333,7 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 1956311790}
-  m_RootOrder: 2
+  m_RootOrder: 3
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!33 &1012788110
 MeshFilter:
@@ -395,9 +416,8 @@ MonoBehaviour:
   _meshFilter: {fileID: 1012788110}
   _sides: 10
   _radius: 20
-  _terraceCount: 15
   _depth: 7
-  _height: 19.9
+  _height: 12
   _frequency: 0.11
   _heightCurve:
     serializedVersion: 2
@@ -441,6 +461,23 @@ MonoBehaviour:
     m_PreInfinity: 2
     m_PostInfinity: 2
     m_RotationOrder: 4
+  _relativeTerraceHeights:
+  - 0
+  - 0.071428575
+  - 0.14285715
+  - 0.21428572
+  - 0.2857143
+  - 0.35714287
+  - 0.42857143
+  - 0.5
+  - 0.5714286
+  - 0.64285713
+  - 0.71428573
+  - 0.78571427
+  - 0.85714287
+  - 0.9285714
+  - 1
+  _useCustomHeights: 0
 --- !u!1 &1171427300
 GameObject:
   m_ObjectHideFlags: 0
@@ -519,7 +556,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1171427300}
   m_LocalRotation: {x: 0.40114862, y: 0, z: 0, w: 0.91601306}
-  m_LocalPosition: {x: 0, y: 22.3, z: -26.3}
+  m_LocalPosition: {x: 0, y: 22.3, z: -25}
   m_LocalScale: {x: 1.0000001, y: 1, z: 1.0000001}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -687,7 +724,7 @@ GameObject:
   - component: {fileID: 1383736271}
   - component: {fileID: 1383736270}
   m_Layer: 0
-  m_Name: Generator 4
+  m_Name: Generator 5
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -706,7 +743,7 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 1956311790}
-  m_RootOrder: 3
+  m_RootOrder: 4
   m_LocalEulerAnglesHint: {x: 0, y: 180, z: 0}
 --- !u!33 &1383736270
 MeshFilter:
@@ -789,9 +826,8 @@ MonoBehaviour:
   _meshFilter: {fileID: 1383736270}
   _sides: 4
   _radius: 18
-  _terraceCount: 15
   _depth: 7
-  _height: 15
+  _height: 5
   _frequency: 0.115
   _heightCurve:
     serializedVersion: 2
@@ -826,6 +862,23 @@ MonoBehaviour:
     m_PreInfinity: 2
     m_PostInfinity: 2
     m_RotationOrder: 4
+  _relativeTerraceHeights:
+  - 0
+  - 0.071428575
+  - 0.14285715
+  - 0.21428572
+  - 0.2857143
+  - 0.35714287
+  - 0.42857143
+  - 0.5
+  - 0.5714286
+  - 0.64285713
+  - 0.71428573
+  - 0.78571427
+  - 0.85714287
+  - 0.9285714
+  - 1
+  _useCustomHeights: 0
 --- !u!1 &1642614723
 GameObject:
   m_ObjectHideFlags: 0
@@ -839,7 +892,7 @@ GameObject:
   - component: {fileID: 1642614726}
   - component: {fileID: 1642614725}
   m_Layer: 0
-  m_Name: Generator 2
+  m_Name: Generator 3
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -862,9 +915,8 @@ MonoBehaviour:
   _meshFilter: {fileID: 1642614725}
   _sides: 6
   _radius: 20
-  _terraceCount: 15
   _depth: 7
-  _height: 3
+  _height: 2
   _frequency: 0.09
   _heightCurve:
     serializedVersion: 2
@@ -890,6 +942,23 @@ MonoBehaviour:
     m_PreInfinity: 2
     m_PostInfinity: 2
     m_RotationOrder: 4
+  _relativeTerraceHeights:
+  - 0
+  - 0.071428575
+  - 0.14285715
+  - 0.21428572
+  - 0.2857143
+  - 0.35714287
+  - 0.42857143
+  - 0.5
+  - 0.5714286
+  - 0.64285713
+  - 0.71428573
+  - 0.78571427
+  - 0.85714287
+  - 0.9285714
+  - 1
+  _useCustomHeights: 0
 --- !u!33 &1642614725
 MeshFilter:
   m_ObjectHideFlags: 0
@@ -967,7 +1036,7 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 1956311790}
-  m_RootOrder: 1
+  m_RootOrder: 2
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1901063281
 GameObject:
@@ -982,7 +1051,7 @@ GameObject:
   - component: {fileID: 1901063284}
   - component: {fileID: 1901063283}
   m_Layer: 0
-  m_Name: Generator 5
+  m_Name: Generator 2
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -1001,7 +1070,7 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 1956311790}
-  m_RootOrder: 4
+  m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 0, y: 12.5, z: 0}
 --- !u!33 &1901063283
 MeshFilter:
@@ -1094,9 +1163,8 @@ MonoBehaviour:
   _meshFilter: {fileID: 1901063283}
   _sides: 7
   _radius: 20
-  _terraceCount: 25
   _depth: 7
-  _height: 10
+  _height: 7
   _frequency: 0.095
   _heightCurve:
     serializedVersion: 2
@@ -1131,6 +1199,33 @@ MonoBehaviour:
     m_PreInfinity: 2
     m_PostInfinity: 2
     m_RotationOrder: 4
+  _relativeTerraceHeights:
+  - 0
+  - 0.041666668
+  - 0.083333336
+  - 0.125
+  - 0.16666667
+  - 0.20833333
+  - 0.25
+  - 0.29166666
+  - 0.33333334
+  - 0.375
+  - 0.41666666
+  - 0.45833334
+  - 0.5
+  - 0.5416667
+  - 0.5833333
+  - 0.625
+  - 0.6666667
+  - 0.7083333
+  - 0.75
+  - 0.7916667
+  - 0.8333333
+  - 0.875
+  - 0.9166667
+  - 0.9583333
+  - 1
+  _useCustomHeights: 0
 --- !u!1 &1956311788
 GameObject:
   m_ObjectHideFlags: 0
@@ -1185,10 +1280,10 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 826162129}
+  - {fileID: 1901063282}
   - {fileID: 1642614727}
   - {fileID: 1012788109}
   - {fileID: 1383736269}
-  - {fileID: 1901063282}
   m_Father: {fileID: 0}
   m_RootOrder: 2
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}

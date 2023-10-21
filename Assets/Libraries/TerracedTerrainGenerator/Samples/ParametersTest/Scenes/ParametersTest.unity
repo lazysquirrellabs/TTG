@@ -253,9 +253,8 @@ MonoBehaviour:
   _meshFilter: {fileID: 826162130}
   _sides: 8
   _radius: 20
-  _terraceCount: 15
   _depth: 5
-  _height: 10
+  _height: 8
   _frequency: 0.075
   _heightCurve:
     serializedVersion: 2
@@ -281,6 +280,23 @@ MonoBehaviour:
     m_PreInfinity: 2
     m_PostInfinity: 2
     m_RotationOrder: 4
+  _relativeTerraceHeights:
+  - 0
+  - 0.071428575
+  - 0.14285715
+  - 0.21428572
+  - 0.2857143
+  - 0.35714287
+  - 0.42857143
+  - 0.5
+  - 0.5714286
+  - 0.64285713
+  - 0.71428573
+  - 0.78571427
+  - 0.85714287
+  - 0.9285714
+  - 1
+  _useCustomHeights: 0
 --- !u!1 &1171427300
 GameObject:
   m_ObjectHideFlags: 0
