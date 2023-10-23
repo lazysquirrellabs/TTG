@@ -1,9 +1,8 @@
 using SneakySquirrelLabs.TerracedTerrainGenerator.Data;
-using SneakySquirrelLabs.TerracedTerrainGenerator.Sculpting;
 using UnityEngine;
 using Random = System.Random;
 
-namespace SneakySquirrelLabs.TerracedTerrainGenerator.Deformation
+namespace SneakySquirrelLabs.TerracedTerrainGenerator.Sculpting
 {
     /// <summary>
     /// Deforms a terrain mesh using a planar Perlin filter. The deformation is applied on the Y axis, upwards.
@@ -37,10 +36,11 @@ namespace SneakySquirrelLabs.TerracedTerrainGenerator.Deformation
         /// Creates a <see cref="PerlinDeformer"/> with the given settings.
         /// </summary>
         /// <param name="deformationSettings">The settings used for deformation.</param>
-        internal PerlinDeformer(DeformationSettings deformationSettings)
+        /// <param name="maximumHeight"> The Y coordinate of the highest possible vertex after sculpting.</param>
+        internal PerlinDeformer(DeformationSettings deformationSettings, float maximumHeight)
         {
             _random = new Random(deformationSettings.Seed);
-            _maximumHeight = deformationSettings.MaximumHeight;
+            _maximumHeight = maximumHeight;
             _frequency = deformationSettings.Frequency;
             _heightDistribution = deformationSettings.HeightDistribution;
         }

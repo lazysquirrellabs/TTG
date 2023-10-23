@@ -3,7 +3,6 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using SneakySquirrelLabs.TerracedTerrainGenerator.Data;
-using SneakySquirrelLabs.TerracedTerrainGenerator.Deformation;
 using SneakySquirrelLabs.TerracedTerrainGenerator.MeshFragmentation;
 using SneakySquirrelLabs.TerracedTerrainGenerator.PolygonGeneration;
 using SneakySquirrelLabs.TerracedTerrainGenerator.Sculpting;
@@ -28,7 +27,6 @@ namespace SneakySquirrelLabs.TerracedTerrainGenerator
         /// Allocation strategy used whenever the asynchronous terrain generation is performed.
         /// </summary>
         private const Allocator AsyncAllocator = Allocator.Persistent;
-        
         /// <summary>
         /// The polygon generator used to create the terrain's basic shape.
         /// </summary>
@@ -41,6 +39,10 @@ namespace SneakySquirrelLabs.TerracedTerrainGenerator
         /// The deformer used to create hills/valleys on the mesh.
         /// </summary>
         private readonly PerlinDeformer _deformer;
+		/// <summary>
+		/// The maximum height of the terrain, in units. In order words, distance between its lowest and highest point.
+		/// </summary>
+        private readonly float _height;
         /// <summary>
         /// The height of the terraces (in units), in ascending order.
         /// </summary>
@@ -55,6 +57,8 @@ namespace SneakySquirrelLabs.TerracedTerrainGenerator
         /// </summary>
         /// <param name="sides">Number of sides of the terrain's basic shape. Value must be between 3 and 10. </param>
         /// <param name="radius">The terrain's radius?</param>
+        /// <param name="height">The maximum height of the terrain, in units. In order words, distance between its
+        /// lowest and highest point.</param>
         /// <param name="deformationSettings">The settings used during the deformation phase.</param>
         /// <param name="depth">Depth to fragment the basic mesh.</param>
         /// <param name="relativeTerraceHeights">Terrace heights, relative to the terrain's maximum height. Values
@@ -66,8 +70,8 @@ namespace SneakySquirrelLabs.TerracedTerrainGenerator
         /// than zero or whenever <paramref name="relativeTerraceHeights"/> is either empty or if its values are
         /// invalid (not between [0,1] and in ascending order).
         /// </exception>
-        public TerrainGenerator(ushort sides, float radius, DeformationSettings deformationSettings, ushort depth, 
-            float[] relativeTerraceHeights)
+        public TerrainGenerator(ushort sides, float radius, float height, DeformationSettings deformationSettings, 
+	        ushort depth, float[] relativeTerraceHeights)
         {
             if (radius <= 0)
                 throw new ArgumentOutOfRangeException(nameof(radius));
@@ -78,14 +82,14 @@ namespace SneakySquirrelLabs.TerracedTerrainGenerator
             // Check if relative terrace heights are valid.
             for (var i = 0; i < relativeTerraceHeights.Length; i++)
             {
-	            var height = relativeTerraceHeights[i];
-	            if (height is < 0 or > 1)
+	            var relativeHeight = relativeTerraceHeights[i];
+	            if (relativeHeight is < 0 or > 1)
 	            {
 		            throw new ArgumentOutOfRangeException(nameof(relativeTerraceHeights),
 			            "Relative heights must be greater than 0 and less than 1.");
 	            }
 
-	            if (i != 0 && height <= relativeTerraceHeights[i - 1])
+	            if (i != 0 && relativeHeight <= relativeTerraceHeights[i - 1])
 	            {
 		            throw new ArgumentOutOfRangeException(nameof(relativeTerraceHeights),
 			            "Relative heights must be in ascending order.");
@@ -101,8 +105,9 @@ namespace SneakySquirrelLabs.TerracedTerrainGenerator
             };
 
             _fragmenter = new MeshFragmenter(depth);
-            _deformer = new PerlinDeformer(deformationSettings);
-            _terraceHeights = relativeTerraceHeights.Select(h => h * deformationSettings.MaximumHeight).ToArray();
+            _height = height;
+            _deformer = new PerlinDeformer(deformationSettings, _height);
+            _terraceHeights = relativeTerraceHeights.Select(h => h * _height).ToArray();
         }
 
         #endregion

@@ -133,7 +133,7 @@ namespace SneakySquirrelLabs.TerracedTerrainGenerator
 		/// </summary>
 		public void GenerateTerrain()
 		{
-			var deformationSettings = new DeformationSettings(_height, _frequency, _heightCurve);
+			var deformationSettings = new DeformationSettings(_frequency, _heightCurve);
 			Generate(deformationSettings);
 		}
 
@@ -144,7 +144,7 @@ namespace SneakySquirrelLabs.TerracedTerrainGenerator
 		/// terrain.</param>
 		public void GenerateTerrain(int seed)
 		{
-			var deformationSettings = new DeformationSettings(seed, _height, _frequency, _heightCurve);
+			var deformationSettings = new DeformationSettings(seed, _frequency, _heightCurve);
 			Generate(deformationSettings);
 		}
 		
@@ -155,7 +155,7 @@ namespace SneakySquirrelLabs.TerracedTerrainGenerator
 		/// <returns>An awaitable Task that represents the terrain generation process.</returns>
 		public async Task GenerateTerrainAsync(CancellationToken token)
 		{
-			var deformationSettings = new DeformationSettings(_height, _frequency, _heightCurve);
+			var deformationSettings = new DeformationSettings(_frequency, _heightCurve);
 			await GenerateAsync(deformationSettings, token);
 		}
 
@@ -168,7 +168,7 @@ namespace SneakySquirrelLabs.TerracedTerrainGenerator
 		/// <returns>An awaitable Task that represents the terrain generation process.</returns>
 		public async Task GenerateTerrainAsync(int seed, CancellationToken token)
 		{
-			var deformationSettings = new DeformationSettings(seed, _height, _frequency, _heightCurve);
+			var deformationSettings = new DeformationSettings(seed, _frequency, _heightCurve);
 			await GenerateAsync(deformationSettings, token);
 		}
 
@@ -183,7 +183,7 @@ namespace SneakySquirrelLabs.TerracedTerrainGenerator
 		private void Generate(DeformationSettings deformationSettings)
 		{
 			// Generate
-			var generator = new TerrainGenerator(_sides, _radius, deformationSettings, _depth, _relativeTerraceHeights);
+			var generator = new TerrainGenerator(_sides, _radius, _height, deformationSettings, _depth, _relativeTerraceHeights);
 			var previousMesh = _meshFilter.mesh;
 			_meshFilter.mesh = generator.GenerateTerrain();
 			// Cleanup
@@ -195,7 +195,7 @@ namespace SneakySquirrelLabs.TerracedTerrainGenerator
 		private async Task GenerateAsync(DeformationSettings deformationSettings, CancellationToken token)
 		{
 			// Generate
-			var generator = new TerrainGenerator(_sides, _radius, deformationSettings, _depth, _relativeTerraceHeights);
+			var generator = new TerrainGenerator(_sides, _radius, _height, deformationSettings, _depth, _relativeTerraceHeights);
 			var internalToken = _cancellationTokenSource.Token;
 			var combinedSource = CancellationTokenSource.CreateLinkedTokenSource(internalToken, token);
 			var previousMesh = _meshFilter.mesh;
