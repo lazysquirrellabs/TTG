@@ -17,10 +17,10 @@ namespace SneakySquirrelLabs.TerracedTerrainGenerator.Samples.Randomizer
 		
 		#region Fields
 
-		// Generation settings
 		private const int TerraceCountMin = 3;
 		private const int TerraceCountMax = 20;
-
+		
+		// Generation settings
 		private const ushort SidesMin = 3;
 		private const ushort SidesMax = 10;
 
@@ -28,14 +28,15 @@ namespace SneakySquirrelLabs.TerracedTerrainGenerator.Samples.Randomizer
 		private const ushort DepthMax = 9;
 
 		private const float Radius = 20;
-		private static readonly AnimationCurve HeightCurve = AnimationCurve.Linear(0, 0, 1, 1);
 
-		// Deformation settings
+		// Height
 		private const float HeightMin = 8f;
 		private const float HeightMax = 25f;
 
+		// Sculpting settings
 		private const float FrequencyMin = 0.02f;
 		private const float FrequencyMax = 0.45f;
+		private static readonly AnimationCurve HeightCurve = AnimationCurve.Linear(0, 0, 1, 1);
 		
 		// Loop fields  
 		private const float Interval = 5f;
@@ -94,8 +95,8 @@ namespace SneakySquirrelLabs.TerracedTerrainGenerator.Samples.Randomizer
 
 		private async Task GenerateTerrain()
 		{
-			// Deformation settings
 			var height = Random.Range(HeightMin, HeightMax);
+			// Sculpting settings
 			var frequency = Random.Range(FrequencyMin, FrequencyMax);
 			var sculptingSettings = new SculptingSettings(frequency, HeightCurve);
 			// Generation settings
