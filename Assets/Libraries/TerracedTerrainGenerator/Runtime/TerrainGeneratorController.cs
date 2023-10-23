@@ -39,7 +39,7 @@ namespace SneakySquirrelLabs.TerracedTerrainGenerator
 		[Tooltip("Terrace heights, relative to the terrain's height. Values must be in the [0, 1] range, in " +
 		         "ascending order. Each terrace's final height will be calculated by multiplying the relative height" +
 		         " by the terrain's height.")]
-		[SerializeField] private float[] _relativeTerraceHeights;
+		[SerializeField] private float[] _relativeHeights;
 
 		// Used by its inspector to keep track of whether custom terrace heights are being used.
 		[SerializeField] private bool _useCustomHeights;
@@ -108,10 +108,10 @@ namespace SneakySquirrelLabs.TerracedTerrainGenerator
 		private void OnValidate()
 		{
 			if (_renderer == null) return;
-			if (_relativeTerraceHeights == null) return;
+			if (_relativeHeights == null) return;
 			// If there's more materials then terraces, don't do anything.
 			var materials = _renderer.sharedMaterials;
-			var terraceCount = _relativeTerraceHeights.Length;
+			var terraceCount = _relativeHeights.Length;
 			if (materials.Length >= terraceCount) return;
 			
 			// If the current number of materials is less than the terrace count, create more materials. This simply
@@ -183,7 +183,7 @@ namespace SneakySquirrelLabs.TerracedTerrainGenerator
 		private void Generate(SculptingSettings sculptingSettings)
 		{
 			// Generate
-			var generator = new TerrainGenerator(_sides, _radius, _height, sculptingSettings, _depth, _relativeTerraceHeights);
+			var generator = new TerrainGenerator(_sides, _radius, _height, sculptingSettings, _depth, _relativeHeights);
 			var previousMesh = _meshFilter.mesh;
 			_meshFilter.mesh = generator.GenerateTerrain();
 			// Cleanup
@@ -195,7 +195,7 @@ namespace SneakySquirrelLabs.TerracedTerrainGenerator
 		private async Task GenerateAsync(SculptingSettings sculptingSettings, CancellationToken token)
 		{
 			// Generate
-			var generator = new TerrainGenerator(_sides, _radius, _height, sculptingSettings, _depth, _relativeTerraceHeights);
+			var generator = new TerrainGenerator(_sides, _radius, _height, sculptingSettings, _depth, _relativeHeights);
 			var internalToken = _cancellationTokenSource.Token;
 			var combinedSource = CancellationTokenSource.CreateLinkedTokenSource(internalToken, token);
 			var previousMesh = _meshFilter.mesh;

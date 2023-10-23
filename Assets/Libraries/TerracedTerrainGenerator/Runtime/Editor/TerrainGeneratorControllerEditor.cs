@@ -57,7 +57,7 @@ namespace SneakySquirrelLabs.TerracedTerrainGenerator.Editor
 			_radius = serializedObject.FindProperty("_radius");
 			_depth = serializedObject.FindProperty("_depth");
 			_useCustomHeights = serializedObject.FindProperty("_useCustomHeights");
-			_relativeHeights = serializedObject.FindProperty("_relativeTerraceHeights");
+			_relativeHeights = serializedObject.FindProperty("_relativeHeights");
 			_height = serializedObject.FindProperty("_height");
 			_frequency = serializedObject.FindProperty("_frequency");
 			_heightCurve = serializedObject.FindProperty("_heightCurve");
