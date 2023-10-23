@@ -1,7 +1,7 @@
+using SneakySquirrelLabs.TerracedTerrainGenerator.Sculpting;
 using System;
 using System.Threading;
 using System.Threading.Tasks;
-using SneakySquirrelLabs.TerracedTerrainGenerator.Settings;
 using UnityEngine;
 using Random = UnityEngine.Random;
 
@@ -97,14 +97,14 @@ namespace SneakySquirrelLabs.TerracedTerrainGenerator.Samples.Randomizer
 			// Deformation settings
 			var height = Random.Range(HeightMin, HeightMax);
 			var frequency = Random.Range(FrequencyMin, FrequencyMax);
-			var deformationSettings = new DeformationSettings(height, frequency, HeightCurve);
+			var sculptingSettings = new SculptingSettings(frequency, HeightCurve);
 			// Generation settings
 			var sides = (ushort) Random.Range(SidesMin, SidesMax);
 			var depth = (ushort) Random.Range(DepthMin, DepthMax);
 			var terraceCount = Random.Range(TerraceCountMin, TerraceCountMax);
 			var terraceHeights = GetTerraceHeights(terraceCount);
 			
-			var generator = new TerrainGenerator(sides, Radius, deformationSettings, depth, terraceHeights);
+			var generator = new TerrainGenerator(sides, Radius, height, sculptingSettings, depth, terraceHeights);
 			_lastGeneration = Time.realtimeSinceStartup;
 			_meshFilter.mesh = await generator.GenerateTerrainAsync(_cancellationTokenSource.Token);
 			Debug.Log($"Generated a terrain with {sides} sides, height {height}, depth {depth}, " +
