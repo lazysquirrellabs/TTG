@@ -4,9 +4,9 @@ using UnityEngine;
 namespace SneakySquirrelLabs.TerracedTerrainGenerator.Sculpting
 {
 	/// <summary>
-	/// Settings used during mesh deformation, the step that creates hills and valleys on the terrain.
+	/// Settings used during terrain sculpting, the step that creates hills and valleys on the terrain.
 	/// </summary>
-	public readonly struct DeformationSettings
+	public readonly struct SculptingSettings
 	{
 		#region Properties
 
@@ -16,7 +16,7 @@ namespace SneakySquirrelLabs.TerracedTerrainGenerator.Sculpting
 		public int Seed { get; }
 
 		/// <summary>
-		/// The frequency of deformation (how many elements in a given area).
+		/// The frequency of sculpting details (how many elements in a given area).
 		/// </summary>
 		public float Frequency { get; }
 
@@ -30,25 +30,25 @@ namespace SneakySquirrelLabs.TerracedTerrainGenerator.Sculpting
 		#region Setup
 
 		/// <summary>
-		/// <see cref="DeformationSettings"/>'s constructor. Initializes the deformer with a random seed.
+		/// <see cref="SculptingSettings"/>'s constructor. Initializes the sculptor with a random seed.
 		/// </summary>
-		/// <param name="frequency">The frequency of deformation (how many elements in a given area).</param>
+		/// <param name="frequency">The frequency of sculpting details (how many elements in a given area).</param>
 		/// <param name="heightDistribution">The curve used to change the height distribution. If it's null, the
 		/// distribution won't be affected, thus it will be linear.</param>
-		public DeformationSettings(float frequency, AnimationCurve heightDistribution)
+		public SculptingSettings(float frequency, AnimationCurve heightDistribution)
 			: this(GetRandomSeed(), frequency, heightDistribution)
 		{
 
 		}
 
 		/// <summary>
-		/// <see cref="DeformationSettings"/>'s constructor.
+		/// <see cref="SculptingSettings"/>'s constructor.
 		/// </summary>
 		/// <param name="seed">Seed used by the randomizer.</param>
-		/// <param name="frequency">The frequency of deformation (how many elements in a given area).</param>
+		/// <param name="frequency">The frequency of sculpting details (how many elements in a given area).</param>
 		/// <param name="heightDistribution">The curve used to change the height distribution. If it's null, the
 		/// distribution won't be affected, thus it will be linear.</param>
-		public DeformationSettings(int seed, float frequency, AnimationCurve heightDistribution)
+		public SculptingSettings(int seed, float frequency, AnimationCurve heightDistribution)
 		{
 			if (frequency <= 0)
 				throw new ArgumentOutOfRangeException(nameof(frequency));

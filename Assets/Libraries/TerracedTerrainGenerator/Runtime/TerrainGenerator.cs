@@ -36,13 +36,9 @@ namespace SneakySquirrelLabs.TerracedTerrainGenerator
         /// </summary>
         private readonly MeshFragmenter _fragmenter;
         /// <summary>
-        /// The deformer used to create hills/valleys on the mesh.
+        /// The sculptor used to create hills/valleys on the mesh.
         /// </summary>
-        private readonly PerlinDeformer _deformer;
-		/// <summary>
-		/// The maximum height of the terrain, in units. In order words, distance between its lowest and highest point.
-		/// </summary>
-        private readonly float _height;
+        private readonly PerlinSculptor _sculptor;
         /// <summary>
         /// The height of the terraces (in units), in ascending order.
         /// </summary>
@@ -59,7 +55,7 @@ namespace SneakySquirrelLabs.TerracedTerrainGenerator
         /// <param name="radius">The terrain's radius?</param>
         /// <param name="height">The maximum height of the terrain, in units. In order words, distance between its
         /// lowest and highest point.</param>
-        /// <param name="deformationSettings">The settings used during the deformation phase.</param>
+        /// <param name="sculptingSettings">The settings used during the sculpting phase.</param>
         /// <param name="depth">Depth to fragment the basic mesh.</param>
         /// <param name="relativeTerraceHeights">Terrace heights, relative to the terrain's maximum height. Values
         /// must be in the  [0, 1] range, in ascending order. Each terrace's final height will be calculated by
@@ -70,7 +66,7 @@ namespace SneakySquirrelLabs.TerracedTerrainGenerator
         /// than zero or whenever <paramref name="relativeTerraceHeights"/> is either empty or if its values are
         /// invalid (not between [0,1] and in ascending order).
         /// </exception>
-        public TerrainGenerator(ushort sides, float radius, float height, DeformationSettings deformationSettings, 
+        public TerrainGenerator(ushort sides, float radius, float height, SculptingSettings sculptingSettings, 
 	        ushort depth, float[] relativeTerraceHeights)
         {
             if (radius <= 0)
@@ -105,9 +101,8 @@ namespace SneakySquirrelLabs.TerracedTerrainGenerator
             };
 
             _fragmenter = new MeshFragmenter(depth);
-            _height = height;
-            _deformer = new PerlinDeformer(deformationSettings, _height);
-            _terraceHeights = relativeTerraceHeights.Select(h => h * _height).ToArray();
+            _sculptor = new PerlinSculptor(sculptingSettings, height);
+            _terraceHeights = relativeTerraceHeights.Select(h => h * height).ToArray();
         }
 
         #endregion
@@ -170,7 +165,7 @@ namespace SneakySquirrelLabs.TerracedTerrainGenerator
             var meshData = _polygonGenerator.Generate(allocator);
             var fragmentedMeshData = _fragmenter.Fragment(meshData, allocator);
             meshData.Dispose();
-            _deformer.Deform(fragmentedMeshData);
+            _sculptor.Sculpt(fragmentedMeshData);
             return fragmentedMeshData;
         }
 
