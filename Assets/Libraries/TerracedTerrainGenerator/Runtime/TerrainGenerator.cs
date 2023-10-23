@@ -6,7 +6,7 @@ using SneakySquirrelLabs.TerracedTerrainGenerator.Data;
 using SneakySquirrelLabs.TerracedTerrainGenerator.Deformation;
 using SneakySquirrelLabs.TerracedTerrainGenerator.MeshFragmentation;
 using SneakySquirrelLabs.TerracedTerrainGenerator.PolygonGeneration;
-using SneakySquirrelLabs.TerracedTerrainGenerator.Settings;
+using SneakySquirrelLabs.TerracedTerrainGenerator.Sculpting;
 using SneakySquirrelLabs.TerracedTerrainGenerator.TerraceGeneration;
 using Unity.Collections;
 using UnityEngine;

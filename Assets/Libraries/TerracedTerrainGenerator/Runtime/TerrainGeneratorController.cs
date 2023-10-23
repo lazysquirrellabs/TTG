@@ -1,7 +1,7 @@
 using System;
 using System.Threading;
 using System.Threading.Tasks;
-using SneakySquirrelLabs.TerracedTerrainGenerator.Settings;
+using SneakySquirrelLabs.TerracedTerrainGenerator.Sculpting;
 using UnityEngine;
 
 namespace SneakySquirrelLabs.TerracedTerrainGenerator

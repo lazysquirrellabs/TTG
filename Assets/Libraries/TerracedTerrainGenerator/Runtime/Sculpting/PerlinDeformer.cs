@@ -1,5 +1,5 @@
 using SneakySquirrelLabs.TerracedTerrainGenerator.Data;
-using SneakySquirrelLabs.TerracedTerrainGenerator.Settings;
+using SneakySquirrelLabs.TerracedTerrainGenerator.Sculpting;
 using UnityEngine;
 using Random = System.Random;
 
