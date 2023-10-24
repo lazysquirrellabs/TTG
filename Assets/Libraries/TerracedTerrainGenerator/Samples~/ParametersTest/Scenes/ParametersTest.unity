@@ -254,7 +254,7 @@ MonoBehaviour:
   _sides: 8
   _radius: 20
   _depth: 5
-  _height: 8
+  _maximumHeight: 8
   _frequency: 0.075
   _heightCurve:
     serializedVersion: 2

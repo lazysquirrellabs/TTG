@@ -24,11 +24,11 @@ namespace SneakySquirrelLabs.TerracedTerrainGenerator
 		[Tooltip("How many times the basic shape will be fragmented to form the terrain. " +
 		         "The larger the value, the greater the level of detail will be (more triangles and vertices) and " +
 		         "the longer the generation process takes.")]
-		[SerializeField, Range(0, 10)] private ushort _depth = 5;
+		[SerializeField, Range(1, 10)] private ushort _depth = 5;
 		
 		[Header("Sculpting settings")]
 		[Tooltip("The maximum height of the generated terrain, in units.")]
-		[SerializeField, Range(0.1f, 100)] private float _height = 10;
+		[SerializeField, Range(0.1f, 100)] private float _maximumHeight = 10;
 		[Tooltip("The degree of detail in the generated terrain (hills and valleys) in a given area.")]
 		[SerializeField, Range(0.01f, 1f)] private float _frequency = 0.075f;
 		[Tooltip("Height distribution over the terrain: how low valleys and how high hills should be, " +
@@ -183,7 +183,7 @@ namespace SneakySquirrelLabs.TerracedTerrainGenerator
 		private void Generate(SculptingSettings sculptingSettings)
 		{
 			// Generate
-			var generator = new TerrainGenerator(_sides, _radius, _height, sculptingSettings, _depth, _relativeHeights);
+			var generator = new TerrainGenerator(_sides, _radius, _maximumHeight, sculptingSettings, _depth, _relativeHeights);
 			var previousMesh = _meshFilter.mesh;
 			_meshFilter.mesh = generator.GenerateTerrain();
 			// Cleanup
@@ -195,7 +195,7 @@ namespace SneakySquirrelLabs.TerracedTerrainGenerator
 		private async Task GenerateAsync(SculptingSettings sculptingSettings, CancellationToken token)
 		{
 			// Generate
-			var generator = new TerrainGenerator(_sides, _radius, _height, sculptingSettings, _depth, _relativeHeights);
+			var generator = new TerrainGenerator(_sides, _radius, _maximumHeight, sculptingSettings, _depth, _relativeHeights);
 			var internalToken = _cancellationTokenSource.Token;
 			var combinedSource = CancellationTokenSource.CreateLinkedTokenSource(internalToken, token);
 			var previousMesh = _meshFilter.mesh;
