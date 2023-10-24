@@ -53,10 +53,10 @@ namespace SneakySquirrelLabs.TerracedTerrainGenerator
         /// </summary>
         /// <param name="sides">Number of sides of the terrain's basic shape. Value must be between 3 and 10. </param>
         /// <param name="radius">The terrain's radius?</param>
-        /// <param name="height">The maximum height of the terrain, in units. In order words, distance between its
-        /// lowest and highest point.</param>
+        /// <param name="maximumHeight">The maximum height of the terrain, in units. In order words, distance
+        /// between its lowest and highest point.</param>
         /// <param name="sculptingSettings">The settings used during the sculpting phase.</param>
-        /// <param name="depth">Depth to fragment the basic mesh.</param>
+        /// <param name="depth">Depth to fragment the basic mesh. Value must be greater than zero.</param>
         /// <param name="relativeTerraceHeights">Terrace heights, relative to the terrain's maximum height. Values
         /// must be in the  [0, 1] range, in ascending order. Each terrace's final height will be calculated by
         /// multiplying the relative height by the terrain's height.</param>
@@ -66,14 +66,23 @@ namespace SneakySquirrelLabs.TerracedTerrainGenerator
         /// than zero or whenever <paramref name="relativeTerraceHeights"/> is either empty or if its values are
         /// invalid (not between [0,1] and in ascending order).
         /// </exception>
-        public TerrainGenerator(ushort sides, float radius, float height, SculptingSettings sculptingSettings, 
+        public TerrainGenerator(ushort sides, float radius, float maximumHeight, SculptingSettings sculptingSettings, 
 	        ushort depth, float[] relativeTerraceHeights)
         {
+	        if (sides < 3)
+		        throw new ArgumentOutOfRangeException(nameof(sides), "Sides must be greater than 2.");
+	        
             if (radius <= 0)
-                throw new ArgumentOutOfRangeException(nameof(radius));
+                throw new ArgumentOutOfRangeException(nameof(radius), "Radius must be greater than zero.");
+            
+            if (maximumHeight <= 0)
+	            throw new ArgumentOutOfRangeException(nameof(maximumHeight), "Height must be greater than zero.");
+            
+            if (depth == 0)
+	            throw new ArgumentOutOfRangeException(nameof(depth), "Depth must be greater than zero.");
 
             if (relativeTerraceHeights.Length == 0)
-                throw new ArgumentOutOfRangeException(nameof(relativeTerraceHeights));
+                throw new ArgumentOutOfRangeException(nameof(relativeTerraceHeights), "Relative heights is empty.");
 
             // Check if relative terrace heights are valid.
             for (var i = 0; i < relativeTerraceHeights.Length; i++)
@@ -101,8 +110,8 @@ namespace SneakySquirrelLabs.TerracedTerrainGenerator
             };
 
             _fragmenter = new MeshFragmenter(depth);
-            _sculptor = new PerlinSculptor(sculptingSettings, height);
-            _terraceHeights = relativeTerraceHeights.Select(h => h * height).ToArray();
+            _sculptor = new PerlinSculptor(sculptingSettings, maximumHeight);
+            _terraceHeights = relativeTerraceHeights.Select(h => h * maximumHeight).ToArray();
         }
 
         #endregion
