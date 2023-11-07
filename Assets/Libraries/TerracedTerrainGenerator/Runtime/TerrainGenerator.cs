@@ -55,19 +55,19 @@ namespace SneakySquirrelLabs.TerracedTerrainGenerator
         /// <param name="radius">The terrain's radius?</param>
         /// <param name="maximumHeight">The maximum height of the terrain, in units. In order words, distance
         /// between its lowest and highest point.</param>
-        /// <param name="sculptingSettings">The settings used during the sculpting phase.</param>
-        /// <param name="depth">Depth to fragment the basic mesh. Value must be greater than zero.</param>
         /// <param name="relativeTerraceHeights">Terrace heights, relative to the terrain's maximum height. Values
         /// must be in the  [0, 1] range, in ascending order. Each terrace's final height will be calculated by
         /// multiplying the relative height by the terrain's height.</param>
+        /// <param name="sculptingSettings">The settings used during the sculpting phase.</param>
+        /// <param name="depth">Depth to fragment the basic mesh. Value must be greater than zero.</param>
         /// <exception cref="NotImplementedException">Thrown if the provided number of sides is not supported.
         /// </exception>
         /// <exception cref="ArgumentOutOfRangeException">Thrown whenever <paramref name="radius"/> is less or equal
         /// than zero or whenever <paramref name="relativeTerraceHeights"/> is either empty or if its values are
         /// invalid (not between [0,1] and in ascending order).
         /// </exception>
-        public TerrainGenerator(ushort sides, float radius, float maximumHeight, SculptingSettings sculptingSettings, 
-	        ushort depth, float[] relativeTerraceHeights)
+        public TerrainGenerator(ushort sides, float radius, float maximumHeight, float[] relativeTerraceHeights, 
+	        SculptingSettings sculptingSettings, ushort depth)
         {
 	        if (sides < 3)
 		        throw new ArgumentOutOfRangeException(nameof(sides), "Sides must be greater than 2.");

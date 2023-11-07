@@ -77,10 +77,8 @@ namespace SneakySquirrelLabs.TerracedTerrainGenerator.Editor
 			DrawIntSlider(_sides, SidesTooltip, 3, 10);
 			DrawFloatSlider(_radius, RadiusTooltip, 1f, 100f);
 			DrawIntSlider(_depth, DepthTooltip, 1, 10);
-			DrawSpacedHeader("Sculpting settings");
-			DrawFloatSlider(_frequency, FrequencyTooltip, 0.01f, 1f);
-			DrawProperty(_heightCurve, HeightCurveTooltip);
 			EditorGUILayout.Space();
+			DrawSpacedHeader("Height");
 			DrawFloatSlider(_maximumHeight, HeightTooltip, 0.1f, 100f);
 			var useCustomHeights = _useCustomHeights.boolValue;
 			DrawProperty(_useCustomHeights, UseCustomHeightsTooltip);
@@ -102,6 +100,11 @@ namespace SneakySquirrelLabs.TerracedTerrainGenerator.Editor
 						_relativeHeights.GetArrayElementAtIndex(i).floatValue = (float)i / (newLength - 1);
 				}
 			}
+			DrawSpacedHeader("Sculpting settings");
+			DrawFloatSlider(_frequency, FrequencyTooltip, 0.01f, 1f);
+			DrawProperty(_heightCurve, HeightCurveTooltip);
+			
+			
 			
 			serializedObject.ApplyModifiedProperties();
 			

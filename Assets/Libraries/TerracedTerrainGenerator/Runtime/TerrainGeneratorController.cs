@@ -183,7 +183,8 @@ namespace SneakySquirrelLabs.TerracedTerrainGenerator
 		private void Generate(SculptingSettings sculptingSettings)
 		{
 			// Generate
-			var generator = new TerrainGenerator(_sides, _radius, _maximumHeight, sculptingSettings, _depth, _relativeHeights);
+			var generator = new TerrainGenerator(_sides, _radius, _maximumHeight, _relativeHeights, sculptingSettings, 
+				_depth);
 			var previousMesh = _meshFilter.mesh;
 			_meshFilter.mesh = generator.GenerateTerrain();
 			// Cleanup
@@ -195,7 +196,8 @@ namespace SneakySquirrelLabs.TerracedTerrainGenerator
 		private async Task GenerateAsync(SculptingSettings sculptingSettings, CancellationToken token)
 		{
 			// Generate
-			var generator = new TerrainGenerator(_sides, _radius, _maximumHeight, sculptingSettings, _depth, _relativeHeights);
+			var generator = new TerrainGenerator(_sides, _radius, _maximumHeight, _relativeHeights, sculptingSettings, 
+				_depth);
 			var internalToken = _cancellationTokenSource.Token;
 			var combinedSource = CancellationTokenSource.CreateLinkedTokenSource(internalToken, token);
 			var previousMesh = _meshFilter.mesh;
