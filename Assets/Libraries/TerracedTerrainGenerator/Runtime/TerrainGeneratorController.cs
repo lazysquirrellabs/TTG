@@ -10,35 +10,15 @@ namespace SneakySquirrelLabs.TerracedTerrainGenerator
 	{
 		#region Serialized fields
 
-		[Tooltip("Should a new, random terrain be generated on start?")]
 		[SerializeField] private bool _generateOnStart = true;
 		[SerializeField] private Renderer _renderer;
 		[SerializeField] private MeshFilter _meshFilter;
-		
-		[Header("Generation settings")]
-		[Tooltip("The number of sides of the terrain's basic shape.")]
-		[SerializeField, Range(3, 10)] private ushort _sides = 8;
-		[Tooltip("The greatest distance between the center of the mesh and all of its vertices " +
-		         "(ignoring their position's Y coordinate).")]
-		[SerializeField, Range(1, 100)] private float _radius = 20;
-		[Tooltip("How many times the basic shape will be fragmented to form the terrain. " +
-		         "The larger the value, the greater the level of detail will be (more triangles and vertices) and " +
-		         "the longer the generation process takes.")]
-		[SerializeField, Range(1, 10)] private ushort _depth = 5;
-		
-		[Header("Sculpting settings")]
-		[Tooltip("The maximum height of the generated terrain, in units.")]
-		[SerializeField, Range(0.1f, 100)] private float _maximumHeight = 10;
-		[Tooltip("The degree of detail in the generated terrain (hills and valleys) in a given area.")]
-		[SerializeField, Range(0.01f, 1f)] private float _frequency = 0.075f;
-		[Tooltip("Height distribution over the terrain: how low valleys and how high hills should be, " +
-		         "and everything in between. This curve must start in (0,0) and end in (1,1).")]
+		[SerializeField] private ushort _sides = 8;
+		[SerializeField] private float _radius = 20;
+		[SerializeField] private ushort _depth = 5;
+		[SerializeField] private float _maximumHeight = 10;
+		[SerializeField] private float _frequency = 0.075f;
 		[SerializeField] private AnimationCurve _heightCurve = AnimationCurve.Linear(0f, 0f, 1f, 1f);
-		
-		[Space(10)]
-		[Tooltip("Terrace heights, relative to the terrain's height. Values must be in the [0, 1] range, in " +
-		         "ascending order. Each terrace's final height will be calculated by multiplying the relative height" +
-		         " by the terrain's height.")]
 		[SerializeField] private float[] _relativeHeights;
 
 		// Used by its inspector to keep track of whether custom terrace heights are being used.
