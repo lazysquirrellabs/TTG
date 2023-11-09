@@ -101,3 +101,6 @@ fabric.properties
 
 ## Unity editor user settings
 UserSettings/*
+
+# Obsidian
+.obsidian/

@@ -1,14 +1,13 @@
 using SneakySquirrelLabs.TerracedTerrainGenerator.Data;
-using SneakySquirrelLabs.TerracedTerrainGenerator.Settings;
 using UnityEngine;
 using Random = System.Random;
 
-namespace SneakySquirrelLabs.TerracedTerrainGenerator.Deformation
+namespace SneakySquirrelLabs.TerracedTerrainGenerator.Sculpting
 {
     /// <summary>
-    /// Deforms a terrain mesh using a planar Perlin filter. The deformation is applied on the Y axis, upwards.
+    /// Sculpts a terrain mesh using a planar Perlin filter. The sculpting is applied on the Y axis, upwards.
     /// </summary>
-    internal class PerlinDeformer
+    internal class PerlinSculptor
     {
         #region Fields
 
@@ -17,11 +16,11 @@ namespace SneakySquirrelLabs.TerracedTerrainGenerator.Deformation
         /// </summary>
         private readonly Random _random;
         /// <summary>
-        /// The Y coordinate of the highest possible vertex after deformation.
+        /// The Y coordinate of the highest possible vertex after sculpting.
         /// </summary>
         private readonly float _maximumHeight;
         /// <summary>
-        /// The frequency of deformation (how many elements in a given area).
+        /// The frequency of sculpture detail (how many elements in a given area).
         /// </summary>
         private readonly float _frequency;
         /// <summary>
@@ -34,15 +33,16 @@ namespace SneakySquirrelLabs.TerracedTerrainGenerator.Deformation
         #region Setup
 
         /// <summary>
-        /// Creates a <see cref="PerlinDeformer"/> with the given settings.
+        /// Creates a <see cref="PerlinSculptor"/> with the given settings.
         /// </summary>
-        /// <param name="deformationSettings">The settings used for deformation.</param>
-        internal PerlinDeformer(DeformationSettings deformationSettings)
+        /// <param name="sculptingSettings">The settings used for sculpting.</param>
+        /// <param name="maximumHeight"> The Y coordinate of the highest possible vertex after sculpting.</param>
+        internal PerlinSculptor(SculptingSettings sculptingSettings, float maximumHeight)
         {
-            _random = new Random(deformationSettings.Seed);
-            _maximumHeight = deformationSettings.MaximumHeight;
-            _frequency = deformationSettings.Frequency;
-            _heightDistribution = deformationSettings.HeightDistribution;
+            _random = new Random(sculptingSettings.Seed);
+            _maximumHeight = maximumHeight;
+            _frequency = sculptingSettings.Frequency;
+            _heightDistribution = sculptingSettings.HeightDistribution;
         }
 
         #endregion
@@ -50,18 +50,18 @@ namespace SneakySquirrelLabs.TerracedTerrainGenerator.Deformation
         #region Internal
 
         /// <summary>
-        /// Deforms the given terrain mesh.
+        /// Sculpts the given terrain mesh.
         /// </summary>
-        /// <param name="meshData">The mesh data to be deformed.</param>
-        internal void Deform(SimpleMeshData meshData)
+        /// <param name="meshData">The mesh data to be sculpted.</param>
+        internal void Sculpt(SimpleMeshData meshData)
         {
             // Randomization. Fetch random offsets to increment coordinates.
             var xOffset = _random.Next(-1_000, 1_000);
             var yOffset = _random.Next(-1_000, 1_000);
             // Actually apply the Perlin noise modifier.
-            meshData.Map(DeformVertex);
+            meshData.Map(SculptVertex);
 
-            Vector3 DeformVertex(Vector3 vertex)
+            Vector3 SculptVertex(Vector3 vertex)
             {
                 // Get the X and Y coordinates to be fed into the filter
                 var filterX = (vertex.x + xOffset) * _frequency;
@@ -75,7 +75,7 @@ namespace SneakySquirrelLabs.TerracedTerrainGenerator.Deformation
                     // Step 1, fetch the noise value at the given point
                     var noise = Mathf.PerlinNoise(x, y);
                     var clampedNoise = Mathf.Clamp(noise, 0, maximum);
-                    // Step 2, apply the height deformation curve (if it's not null) to the noise value
+                    // Step 2, apply the height curve (if it's not null) to the noise value
                     var modifier = heightDistribution?.Evaluate(clampedNoise) ?? 1;
                     // Step 3, apply the modifier to the maximum height
                     return maximum * modifier;

@@ -1,7 +1,7 @@
+using SneakySquirrelLabs.TerracedTerrainGenerator.Sculpting;
 using System;
 using System.Threading;
 using System.Threading.Tasks;
-using SneakySquirrelLabs.TerracedTerrainGenerator.Settings;
 using UnityEngine;
 using Random = UnityEngine.Random;
 
@@ -17,10 +17,10 @@ namespace SneakySquirrelLabs.TerracedTerrainGenerator.Samples.Randomizer
 		
 		#region Fields
 
-		// Generation settings
 		private const int TerraceCountMin = 3;
 		private const int TerraceCountMax = 20;
-
+		
+		// Generation settings
 		private const ushort SidesMin = 3;
 		private const ushort SidesMax = 10;
 
@@ -28,14 +28,15 @@ namespace SneakySquirrelLabs.TerracedTerrainGenerator.Samples.Randomizer
 		private const ushort DepthMax = 9;
 
 		private const float Radius = 20;
-		private static readonly AnimationCurve HeightCurve = AnimationCurve.Linear(0, 0, 1, 1);
 
-		// Deformation settings
+		// Height
 		private const float HeightMin = 8f;
 		private const float HeightMax = 25f;
 
+		// Sculpting settings
 		private const float FrequencyMin = 0.02f;
 		private const float FrequencyMax = 0.45f;
+		private static readonly AnimationCurve HeightCurve = AnimationCurve.Linear(0, 0, 1, 1);
 		
 		// Loop fields  
 		private const float Interval = 5f;
@@ -94,17 +95,17 @@ namespace SneakySquirrelLabs.TerracedTerrainGenerator.Samples.Randomizer
 
 		private async Task GenerateTerrain()
 		{
-			// Deformation settings
 			var height = Random.Range(HeightMin, HeightMax);
+			// Sculpting settings
 			var frequency = Random.Range(FrequencyMin, FrequencyMax);
-			var deformationSettings = new DeformationSettings(height, frequency, HeightCurve);
+			var sculptingSettings = new SculptingSettings(frequency, HeightCurve);
 			// Generation settings
 			var sides = (ushort) Random.Range(SidesMin, SidesMax);
 			var depth = (ushort) Random.Range(DepthMin, DepthMax);
 			var terraceCount = Random.Range(TerraceCountMin, TerraceCountMax);
 			var terraceHeights = GetTerraceHeights(terraceCount);
 			
-			var generator = new TerrainGenerator(sides, Radius, deformationSettings, depth, terraceHeights);
+			var generator = new TerrainGenerator(sides, Radius, height, terraceHeights, sculptingSettings, depth);
 			_lastGeneration = Time.realtimeSinceStartup;
 			_meshFilter.mesh = await generator.GenerateTerrainAsync(_cancellationTokenSource.Token);
 			Debug.Log($"Generated a terrain with {sides} sides, height {height}, depth {depth}, " +

@@ -244,7 +244,7 @@ MonoBehaviour:
   _sides: 8
   _radius: 20
   _depth: 7
-  _height: 6
+  _maximumHeight: 6
   _frequency: 0.1
   _heightCurve:
     serializedVersion: 2
@@ -279,7 +279,7 @@ MonoBehaviour:
     m_PreInfinity: 2
     m_PostInfinity: 2
     m_RotationOrder: 4
-  _relativeTerraceHeights:
+  _relativeHeights:
   - 0
   - 0.05263158
   - 0.10526316
@@ -417,7 +417,7 @@ MonoBehaviour:
   _sides: 10
   _radius: 20
   _depth: 7
-  _height: 12
+  _maximumHeight: 12
   _frequency: 0.11
   _heightCurve:
     serializedVersion: 2
@@ -461,7 +461,7 @@ MonoBehaviour:
     m_PreInfinity: 2
     m_PostInfinity: 2
     m_RotationOrder: 4
-  _relativeTerraceHeights:
+  _relativeHeights:
   - 0
   - 0.071428575
   - 0.14285715
@@ -827,7 +827,7 @@ MonoBehaviour:
   _sides: 4
   _radius: 18
   _depth: 7
-  _height: 5
+  _maximumHeight: 5
   _frequency: 0.115
   _heightCurve:
     serializedVersion: 2
@@ -862,7 +862,7 @@ MonoBehaviour:
     m_PreInfinity: 2
     m_PostInfinity: 2
     m_RotationOrder: 4
-  _relativeTerraceHeights:
+  _relativeHeights:
   - 0
   - 0.071428575
   - 0.14285715
@@ -916,7 +916,7 @@ MonoBehaviour:
   _sides: 6
   _radius: 20
   _depth: 7
-  _height: 2
+  _maximumHeight: 2
   _frequency: 0.09
   _heightCurve:
     serializedVersion: 2
@@ -942,7 +942,7 @@ MonoBehaviour:
     m_PreInfinity: 2
     m_PostInfinity: 2
     m_RotationOrder: 4
-  _relativeTerraceHeights:
+  _relativeHeights:
   - 0
   - 0.071428575
   - 0.14285715
@@ -1164,7 +1164,7 @@ MonoBehaviour:
   _sides: 7
   _radius: 20
   _depth: 7
-  _height: 7
+  _maximumHeight: 7
   _frequency: 0.095
   _heightCurve:
     serializedVersion: 2
@@ -1199,7 +1199,7 @@ MonoBehaviour:
     m_PreInfinity: 2
     m_PostInfinity: 2
     m_RotationOrder: 4
-  _relativeTerraceHeights:
+  _relativeHeights:
   - 0
   - 0.041666668
   - 0.083333336
