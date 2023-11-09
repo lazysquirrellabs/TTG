@@ -16,10 +16,6 @@ namespace SneakySquirrelLabs.TerracedTerrainGenerator.Sculpting
         /// </summary>
         private readonly Random _random;
         /// <summary>
-        /// The Y coordinate of the highest possible vertex after sculpting.
-        /// </summary>
-        private readonly float _maximumHeight;
-        /// <summary>
         /// The frequency of sculpture detail (how many elements in a given area).
         /// </summary>
         private readonly float _frequency;
@@ -27,6 +23,10 @@ namespace SneakySquirrelLabs.TerracedTerrainGenerator.Sculpting
         /// The curve used to change the height distribution.
         /// </summary>
         private readonly AnimationCurve _heightDistribution;
+        /// <summary>
+        /// The Y coordinate of the highest possible vertex after sculpting.
+        /// </summary>
+        private readonly float _maximumHeight;
 
         #endregion
         
@@ -40,9 +40,9 @@ namespace SneakySquirrelLabs.TerracedTerrainGenerator.Sculpting
         internal PerlinSculptor(SculptingSettings sculptingSettings, float maximumHeight)
         {
             _random = new Random(sculptingSettings.Seed);
-            _maximumHeight = maximumHeight;
             _frequency = sculptingSettings.Frequency;
             _heightDistribution = sculptingSettings.HeightDistribution;
+            _maximumHeight = maximumHeight;
         }
 
         #endregion

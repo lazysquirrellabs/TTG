@@ -36,10 +36,7 @@ namespace SneakySquirrelLabs.TerracedTerrainGenerator.Sculpting
 		/// <param name="heightDistribution">The curve used to change the height distribution. If it's null, the
 		/// distribution won't be affected, thus it will be linear.</param>
 		public SculptingSettings(float frequency, AnimationCurve heightDistribution)
-			: this(GetRandomSeed(), frequency, heightDistribution)
-		{
-
-		}
+			: this(GetRandomSeed(), frequency, heightDistribution) { }
 
 		/// <summary>
 		/// <see cref="SculptingSettings"/>'s constructor.
