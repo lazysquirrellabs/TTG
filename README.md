@@ -181,6 +181,7 @@ TTG requires Unity 2021.3.X or above, its target API compatibility level is .NET
 
 ## Roadmap
 Although the first version of TTG is out, it's still under (casual) development. The following features are planned in the next versions:
+- ~~Custom terrain heights: instead of evenly spacing the terraces between the terrain's lowest and highest points, allow custom heights to be chosen.~~ Implemented on version 1.1.0.
 - Sphere as a basic shape: let's create completely terraced planets!
 - Improve terrain detailing: use Perlin noise octaves to create more natural terrains.
 - Real-time sculpting: instead of letting an algorithm generate the hills, let the user interactively sculpt them.
