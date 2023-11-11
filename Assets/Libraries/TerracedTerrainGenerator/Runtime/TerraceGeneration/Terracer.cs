@@ -16,7 +16,7 @@ namespace SneakySquirrelLabs.TerracedTerrainGenerator.TerraceGeneration
         /// <summary>
         /// Delegate used to slice a given <see cref="Triangle"/>.
         /// </summary>
-        private delegate void Slicer(Triangle t, float height, int terraceIndex);
+        private delegate void Slicer(Triangle t, float height, float previousHeight, int terraceIndex);
 
         #endregion
         
@@ -52,42 +52,23 @@ namespace SneakySquirrelLabs.TerracedTerrainGenerator.TerraceGeneration
         /// <param name="allocator">The allocation strategy used when creating vertex and index buffers.</param>
         internal Terracer(SimpleMeshData meshData, float[] terraceHeights, Allocator allocator)
         {
-            _meshData = meshData;
-            _terraceCount = terraceHeights.Length;
-            // In the base case, there will be at least the same amount of vertices
-            var vertexCount = _meshData.Vertices.Length;
-            var indexCount = _meshData.Indices.Length;
-            _meshBuilder = new TerracedMeshBuilder(vertexCount, indexCount, terraceHeights, allocator);
-            // Two extra planes are placed: one below and one above all points. This helps the algorithm.
-            var planeCount = _terraceCount + 2;
-            _planeHeights = GetHeights(planeCount, meshData.Vertices, allocator);
+	        _meshData = meshData;
+	        // In the base case, there will be at least the same amount of vertices
+	        var vertexCount = _meshData.Vertices.Length;
+	        var indexCount = _meshData.Indices.Length;
+	        _terraceCount = terraceHeights.Length;
+	        _meshBuilder = new TerracedMeshBuilder(vertexCount, indexCount, _terraceCount, allocator);
+	        // Two extra planes are placed: one below and one above all points. This helps the algorithm.
+	        var planeCount = _terraceCount + 1;
+	        _planeHeights = GetHeights(planeCount, terraceHeights, allocator);
             
-            static NativeArray<float> GetHeights(int count, NativeList<Vector3> vertices, Allocator allocator)
-            {
-                var lowestPoint = float.PositiveInfinity;
-                var highestPoint = float.NegativeInfinity;
-                var heights = new NativeArray<float>(count, allocator);
-            
-                // Find the lowest and the highest points
-                foreach (var vertex in vertices)
-                {
-                    lowestPoint = Mathf.Min(vertex.y, lowestPoint);
-                    highestPoint = Mathf.Max(vertex.y, highestPoint);
-                }
-            
-                // Ensure that all points are above the lowest plane
-                lowestPoint -= float.Epsilon;
-                
-                // Find all the intermediate planes
-                var delta = (highestPoint - lowestPoint) / (count - 1);
-                for (var i = 1; i < count; i++)
-                    heights[i] = lowestPoint + i * delta;
-
-                // Ensure that all points are below the highest plane
-                heights[count - 1] += 0.001f;
-            
-                return heights;
-            }
+	        static NativeArray<float> GetHeights(int count, float[] terraceHeights, Allocator allocator)
+	        {
+		        var heights = new NativeArray<float>(count, allocator);
+		        NativeArray<float>.Copy(terraceHeights, 0, heights, 0, terraceHeights.Length);
+		        heights[^1] = terraceHeights[^1] + float.Epsilon;
+		        return heights;
+	        }
         }
 
         #endregion
@@ -133,6 +114,7 @@ namespace SneakySquirrelLabs.TerracedTerrainGenerator.TerraceGeneration
             {
                 var planeCount = _planeHeights.Length;
                 // Keep track of the previous plane because some slice cases need to add triangles on it
+                var previousHeight = _planeHeights[0];
                 var added = false;
 
                 // Loop through all planes, except the last one, and try to slice the triangle at the current one
@@ -148,13 +130,13 @@ namespace SneakySquirrelLabs.TerracedTerrainGenerator.TerraceGeneration
                 var lastTerraceIx = _terraceCount - 1;
                 SliceTriangleAtHeight(lastHeight, lastTerraceIx, false);
 
-                void SliceTriangleAtHeight(float sliceHeight, int terraceIx, bool placeOnTerraceAbove)
+                void SliceTriangleAtHeight(float height, int terraceIx, bool placeOnTerraceAbove)
                 {
                     int pointsAbove;
                     // Rearrange the triangle based on how many of its vertices are above the given plane, and store
                     // that number as well. The rearranging is just to simplify the slicing algorithm. The number of
                     // points above is necessary for further calculation.
-                    (t, pointsAbove) = RearrangeAccordingToPlane(t, sliceHeight);
+                    (t, pointsAbove) = RearrangeAccordingToPlane(t, height);
                     switch (pointsAbove)
                     {
                         // Triangle is between previous and current planes, add it and stop.
@@ -179,6 +161,8 @@ namespace SneakySquirrelLabs.TerracedTerrainGenerator.TerraceGeneration
                             throw new NotSupportedException($"Points above not supported: {pointsAbove}");
                     }
                     
+                    previousHeight = height;
+                    
                     void SliceTriangle(Slicer slice)
                     {
                         // If this is the fist slice, place the bottom triangle
@@ -186,14 +170,14 @@ namespace SneakySquirrelLabs.TerracedTerrainGenerator.TerraceGeneration
                             PlacePlane();
                         var terraceIncrement = placeOnTerraceAbove ? 1 : 0;
                         // Actually slice the triangle.
-                        slice(t, sliceHeight, terraceIx + terraceIncrement);
+                        slice(t, height, previousHeight, terraceIx + terraceIncrement);
                         added = true;
                     }
                 
                     void PlacePlane()
                     {
                         // Fully places the triangle as a plane parallel to the terraces.
-                        _meshBuilder.AddWholeTriangle(t, terraceIx);
+                        _meshBuilder.AddWholeTriangle(t, previousHeight, terraceIx);
                         added = true;
                     }
                     
