@@ -32,11 +32,6 @@ namespace SneakySquirrelLabs.TerracedTerrainGenerator.TerraceGeneration
         /// </summary>
         private readonly int _terraceCount;
         /// <summary>
-        /// The heights of all terraces, in ascending order. This data is only used to place vertices, not to slice
-        /// triangles.
-        /// </summary>
-        private readonly float[] _terraceHeights;
-        /// <summary>
         /// The index of the next vertex to be added to the terrain mesh. It's shared between both vertical and
         /// horizontal mesh data.
         /// </summary>
@@ -63,12 +58,11 @@ namespace SneakySquirrelLabs.TerracedTerrainGenerator.TerraceGeneration
         /// </summary>
         /// <param name="vertexCount">The initial number of vertices.</param>
         /// <param name="indicesCount">The initial number of indices.</param>
-        /// <param name="terraceHeights">The heights of all terraces, in ascending order.</param>
+        /// <param name="terraceCount">The number of terraces to be created.</param>
         /// <param name="allocator">The allocation strategy used when creating vertex and index buffers.</param>
-        internal TerracedMeshBuilder(int vertexCount, int indicesCount, float[] terraceHeights, Allocator allocator)
+        internal TerracedMeshBuilder(int vertexCount, int indicesCount, int terraceCount, Allocator allocator)
         {
-	        _terraceHeights = terraceHeights;
-            _terraceCount = _terraceHeights.Length;
+            _terraceCount = terraceCount;
             // Both horizontal and vertical mesh data are initialized with the given vertex and indices count because
             // the number of generated data (both vertices and indices) is usually much larger than the provided, 
             // initial values. These initial values are used just to avoid late buffer resizing.
@@ -102,15 +96,15 @@ namespace SneakySquirrelLabs.TerracedTerrainGenerator.TerraceGeneration
         /// Adds a whole, flat <see cref="Triangle"/> to the to-be-generated terraced mesh.
         /// </summary>
         /// <param name="triangle">The original triangle.</param>
+        /// <param name="height">The height which the triangle will be added at.</param>
         /// <param name="terraceIx">The index of the terrace the provided triangle will be added to.</param>
-        internal void AddWholeTriangle(Triangle triangle, int terraceIx)
+        internal void AddWholeTriangle(Triangle triangle, float height, int terraceIx)
         {
             ThrowIfAlreadyBaked();
             
-            var terraceHeight = _terraceHeights[terraceIx];
-            var v1 = new Vector3(triangle.V1.x, terraceHeight, triangle.V1.z);
-            var v2 = new Vector3(triangle.V2.x, terraceHeight, triangle.V2.z);
-            var v3 = new Vector3(triangle.V3.x, terraceHeight, triangle.V3.z);
+            var v1 = new Vector3(triangle.V1.x, height, triangle.V1.z);
+            var v2 = new Vector3(triangle.V2.x, height, triangle.V2.z);
+            var v3 = new Vector3(triangle.V3.x, height, triangle.V3.z);
             _horizontalMeshData.AddTriangle(v1, v2, v3, terraceIx, ref _nextVertexIndex);
         }
         
@@ -118,26 +112,22 @@ namespace SneakySquirrelLabs.TerracedTerrainGenerator.TerraceGeneration
         /// Adds a triangle which has 1 vertex above the given <paramref name="plane"/>.
         /// </summary>
         /// <param name="t">The original <see cref="Triangle"/>.</param>
-        /// <param name="plane">The plane to slice the triangle with, leaving 1 vertex above it.</param>
+        /// <param name="plane">The plane which sliced the triangle, leaving 1 vertex above it.</param>
+        /// <param name="previousPlane">The plane placed right above the one who sliced the triangle.</param>
         /// <param name="terraceIx">The index of the terrace to add the triangle to.</param>
-        internal void AddSlicedTriangle1Above(Triangle t, float plane, int terraceIx)
+        internal void AddSlicedTriangle1Above(Triangle t, float plane, float previousPlane, int terraceIx)
         {
             ThrowIfAlreadyBaked();
-            var terraceHeight = _terraceHeights[terraceIx];
             
             // Add floor
             var floor1 = GetPlanePoint(t.V1, t.V3, plane);
             var floor2 = GetPlanePoint(t.V2, t.V3, plane);
-            // Move the points to its terrace's height.
-            floor1.y = terraceHeight;
-            floor2.y = terraceHeight;
-            var floor3 = new Vector3(t.V3.x, terraceHeight, t.V3.z);
+            var floor3 = new Vector3(t.V3.x, plane, t.V3.z);
             _horizontalMeshData.AddTriangle(floor1, floor2, floor3, terraceIx, ref _nextVertexIndex);
 
             // Add wall
             var wall1 = floor2;
             var wall2 = floor1;
-            var previousPlane = _terraceHeights[terraceIx - 1];
             var wall3 = new Vector3(floor1.x, previousPlane, floor1.z);
             var wall4 = new Vector3(floor2.x, previousPlane, floor2.z);
             _verticalMeshData.AddQuadrilateral(wall1, wall2, wall3, wall4, terraceIx, ref _nextVertexIndex);
@@ -147,27 +137,23 @@ namespace SneakySquirrelLabs.TerracedTerrainGenerator.TerraceGeneration
         /// Adds a triangle which has 2 vertices above the given <paramref name="plane"/>.
         /// </summary>
         /// <param name="t">The original <see cref="Triangle"/>.</param>
-        /// <param name="plane">The plane to slice the triangle with, leaving 2 vertices above it.</param>
+        /// <param name="plane">The plane which sliced the triangle, leaving 2 vertices above it.</param>
+        /// <param name="previousPlane">The plane placed right above the one who sliced the triangle.</param>
         /// <param name="terraceIx">The index of the terrace to add the triangle to.</param>
-        internal void AddSlicedTriangle2Above(Triangle t, float plane, int terraceIx)
+        internal void AddSlicedTriangle2Above(Triangle t, float plane, float previousPlane, int terraceIx)
         {
             ThrowIfAlreadyBaked();
-            var terraceHeight = _terraceHeights[terraceIx];
             
             // Add floor
             var floor1 = GetPlanePoint(t.V1, t.V3, plane);
             var floor2 = GetPlanePoint(t.V2, t.V3, plane);
-            // Move the points to its terrace's height.
-            floor1.y = terraceHeight;
-            floor2.y = terraceHeight;
-            var floor3 = new Vector3(t.V1.x, terraceHeight, t.V1.z);
-            var floor4 = new Vector3(t.V2.x, terraceHeight, t.V2.z);
+            var floor3 = new Vector3(t.V1.x, plane, t.V1.z);
+            var floor4 = new Vector3(t.V2.x, plane, t.V2.z);
             _horizontalMeshData.AddQuadrilateral(floor1, floor3, floor4, floor2, terraceIx, ref _nextVertexIndex);
 
             // Add wall
             var wall1 = floor1;
             var wall2 = floor2;
-            var previousPlane = _terraceHeights[terraceIx - 1];
             var wall3 = new Vector3(floor2.x, previousPlane, floor2.z);
             var wall4 = new Vector3(floor1.x, previousPlane, floor1.z);
             _verticalMeshData.AddQuadrilateral(wall1, wall2, wall3, wall4, terraceIx, ref _nextVertexIndex);

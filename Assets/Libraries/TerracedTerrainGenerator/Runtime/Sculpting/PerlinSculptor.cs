@@ -59,7 +59,14 @@ namespace SneakySquirrelLabs.TerracedTerrainGenerator.Sculpting
             var xOffset = _random.Next(-1_000, 1_000);
             var yOffset = _random.Next(-1_000, 1_000);
             // Actually apply the Perlin noise modifier.
+            var highestPoint = float.MinValue;
             meshData.Map(SculptVertex);
+            // At this point the vertices have been sculpted, but the Perlin distribution rarely places vertices
+            // high up, which is undesired. Instead, we'd like to always have some points placed on the highest terrace.
+            // To enforce that, "lift" all vertices so at least one of them matches the maximum height. The strength of
+            // the expansion depends on the the factor between the maximum height and the highest vertex.
+            var liftFactor = _maximumHeight / highestPoint;
+            meshData.Map(Lift);
 
             Vector3 SculptVertex(Vector3 vertex)
             {
@@ -67,6 +74,8 @@ namespace SneakySquirrelLabs.TerracedTerrainGenerator.Sculpting
                 var filterX = (vertex.x + xOffset) * _frequency;
                 var filterY = (vertex.z + yOffset) * _frequency;
                 var height = GetHeight(filterX, filterY, _maximumHeight, _heightDistribution);
+                if (height > highestPoint)
+	                highestPoint = height;
                 vertex.y += height;
                 return vertex;
 
@@ -80,6 +89,12 @@ namespace SneakySquirrelLabs.TerracedTerrainGenerator.Sculpting
                     // Step 3, apply the modifier to the maximum height
                     return maximum * modifier;
                 }
+            }
+            
+            Vector3 Lift(Vector3 vertex)
+            {
+	            vertex.y *= liftFactor;
+	            return vertex;
             }
         }
 
