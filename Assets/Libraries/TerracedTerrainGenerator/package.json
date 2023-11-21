@@ -8,7 +8,7 @@
   "changelogUrl": "https://github.com/matheusamazonas/TTG",
   "licensesUrl": "https://github.com/matheusamazonas/TTG/blob/master/LICENSE",
   "dependencies": {
-    "com.unity.collections": "1.2.4"
+    "com.unity.collections": "1.5.1"
   },
   "keywords": [
     "tools",
