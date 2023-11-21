@@ -64,7 +64,6 @@ namespace SneakySquirrelLabs.TerracedTerrainGenerator.TerraceGeneration
 	        {
 		        var heights = new NativeArray<float>(count, allocator);
 		        NativeArray<float>.Copy(terraceHeights, 0, heights, 0, terraceHeights.Length);
-		        heights[^1] = terraceHeights[^1] + float.Epsilon;
 		        return heights;
 	        }
         }
