@@ -1,7 +1,7 @@
 using System;
 using System.Threading;
 using System.Threading.Tasks;
-using SneakySquirrelLabs.TerracedTerrainGenerator.Settings;
+using SneakySquirrelLabs.TerracedTerrainGenerator.Sculpting;
 using UnityEngine;
 
 namespace SneakySquirrelLabs.TerracedTerrainGenerator
@@ -10,32 +10,19 @@ namespace SneakySquirrelLabs.TerracedTerrainGenerator
 	{
 		#region Serialized fields
 
-		[Tooltip("Should a new, random terrain be generated on start?")]
 		[SerializeField] private bool _generateOnStart = true;
 		[SerializeField] private Renderer _renderer;
 		[SerializeField] private MeshFilter _meshFilter;
-		
-		[Header("Generation settings")]
-		[Tooltip("The number of sides of the terrain's basic shape.")]
-		[SerializeField, Range(3, 10)] private ushort _sides = 8;
-		[Tooltip("The greatest distance between the center of the mesh and all of its vertices " +
-		         "(ignoring their position's Y coordinate).")]
-		[SerializeField, Range(1, 100)] private float _radius = 20;
-		[Tooltip("How many terraces the terrain will contain.")]
-		[SerializeField, Range(1, 50)] private int _terraceCount = 15;
-		[Tooltip("How many times the basic shape will be fragmented to form the terrain. " +
-		         "The larger the value, the greater the level of detail will be (more triangles and vertices) and " +
-		         "the longer the generation process takes.")]
-		[SerializeField, Range(0, 10)] private ushort _depth = 5;
-		
-		[Header("Deformation settings")]
-		[Tooltip("The maximum height of the generated terrain, in units.")]
-		[SerializeField, Range(0.1f, 100)] private float _height = 10;
-		[Tooltip("The degree of detail in the generated terrain (hills and valleys) in a given area.")]
-		[SerializeField, Range(0.01f, 1f)] private float _frequency = 0.075f;
-		[Tooltip("Height distribution over the terrain: how low valleys and how high hills should be, " +
-		         "and everything in between. This curve must start in (0,0) and end in (1,1).")]
+		[SerializeField] private ushort _sides = 8;
+		[SerializeField] private float _radius = 20;
+		[SerializeField] private ushort _depth = 5;
+		[SerializeField] private float _maximumHeight = 10;
+		[SerializeField] private float _frequency = 0.075f;
 		[SerializeField] private AnimationCurve _heightCurve = AnimationCurve.Linear(0f, 0f, 1f, 1f);
+		[SerializeField] private float[] _relativeHeights;
+
+		// Used by its inspector to keep track of whether custom terrace heights are being used.
+		[SerializeField] private bool _useCustomHeights;
 
 		#endregion
 
@@ -101,17 +88,18 @@ namespace SneakySquirrelLabs.TerracedTerrainGenerator
 		private void OnValidate()
 		{
 			if (_renderer == null) return;
-
+			if (_relativeHeights == null) return;
 			// If there's more materials then terraces, don't do anything.
 			var materials = _renderer.sharedMaterials;
-			if (materials.Length >= _terraceCount) return;
+			var terraceCount = _relativeHeights.Length;
+			if (materials.Length >= terraceCount) return;
 			
 			// If the current number of materials is less than the terrace count, create more materials. This simply
 			// avoids forgetting to assign enough materials and can be easily discarded.
-			var newMaterials = new Material[_terraceCount];
+			var newMaterials = new Material[terraceCount];
 			Array.Copy(materials, newMaterials, materials.Length);
 			var lastMaterial = materials[^1];
-			for (var i = materials.Length; i < _terraceCount; i++)
+			for (var i = materials.Length; i < terraceCount; i++)
 				newMaterials[i] = lastMaterial;
 			_renderer.sharedMaterials = newMaterials;
 		}
@@ -125,8 +113,8 @@ namespace SneakySquirrelLabs.TerracedTerrainGenerator
 		/// </summary>
 		public void GenerateTerrain()
 		{
-			var deformationSettings = new DeformationSettings(_height, _frequency, _heightCurve);
-			Generate(deformationSettings);
+			var sculptingSettings = new SculptingSettings(_frequency, _heightCurve);
+			Generate(sculptingSettings);
 		}
 
 		/// <summary>
@@ -136,8 +124,8 @@ namespace SneakySquirrelLabs.TerracedTerrainGenerator
 		/// terrain.</param>
 		public void GenerateTerrain(int seed)
 		{
-			var deformationSettings = new DeformationSettings(seed, _height, _frequency, _heightCurve);
-			Generate(deformationSettings);
+			var sculptingSettings = new SculptingSettings(seed, _frequency, _heightCurve);
+			Generate(sculptingSettings);
 		}
 		
 		/// <summary>
@@ -147,8 +135,8 @@ namespace SneakySquirrelLabs.TerracedTerrainGenerator
 		/// <returns>An awaitable Task that represents the terrain generation process.</returns>
 		public async Task GenerateTerrainAsync(CancellationToken token)
 		{
-			var deformationSettings = new DeformationSettings(_height, _frequency, _heightCurve);
-			await GenerateAsync(deformationSettings, token);
+			var sculptingSettings = new SculptingSettings(_frequency, _heightCurve);
+			await GenerateAsync(sculptingSettings, token);
 		}
 
 		/// <summary>
@@ -160,8 +148,8 @@ namespace SneakySquirrelLabs.TerracedTerrainGenerator
 		/// <returns>An awaitable Task that represents the terrain generation process.</returns>
 		public async Task GenerateTerrainAsync(int seed, CancellationToken token)
 		{
-			var deformationSettings = new DeformationSettings(seed, _height, _frequency, _heightCurve);
-			await GenerateAsync(deformationSettings, token);
+			var sculptingSettings = new SculptingSettings(seed, _frequency, _heightCurve);
+			await GenerateAsync(sculptingSettings, token);
 		}
 
 		#endregion
@@ -171,11 +159,12 @@ namespace SneakySquirrelLabs.TerracedTerrainGenerator
 		/// <summary>
 		/// Generates a terrain synchronously.
 		/// </summary>
-		/// <param name="deformationSettings">The deformation settings </param>
-		private void Generate(DeformationSettings deformationSettings)
+		/// <param name="sculptingSettings">The sculpting settings </param>
+		private void Generate(SculptingSettings sculptingSettings)
 		{
 			// Generate
-			var generator = new TerrainGenerator(_sides, _radius, deformationSettings, _depth, _terraceCount);
+			var generator = new TerrainGenerator(_sides, _radius, _maximumHeight, _relativeHeights, sculptingSettings, 
+				_depth);
 			var previousMesh = _meshFilter.mesh;
 			_meshFilter.mesh = generator.GenerateTerrain();
 			// Cleanup
@@ -184,10 +173,11 @@ namespace SneakySquirrelLabs.TerracedTerrainGenerator
 			Destroy(previousMesh);
 		}
 		
-		private async Task GenerateAsync(DeformationSettings deformationSettings, CancellationToken token)
+		private async Task GenerateAsync(SculptingSettings sculptingSettings, CancellationToken token)
 		{
 			// Generate
-			var generator = new TerrainGenerator(_sides, _radius, deformationSettings, _depth, _terraceCount);
+			var generator = new TerrainGenerator(_sides, _radius, _maximumHeight, _relativeHeights, sculptingSettings, 
+				_depth);
 			var internalToken = _cancellationTokenSource.Token;
 			var combinedSource = CancellationTokenSource.CreateLinkedTokenSource(internalToken, token);
 			var previousMesh = _meshFilter.mesh;

@@ -205,6 +205,8 @@ MeshRenderer:
   - {fileID: 2100000, guid: cb1ab2d30f6944ddeb903e5755d8d2a0, type: 2}
   - {fileID: 2100000, guid: cb1ab2d30f6944ddeb903e5755d8d2a0, type: 2}
   - {fileID: 2100000, guid: cb1ab2d30f6944ddeb903e5755d8d2a0, type: 2}
+  - {fileID: 2100000, guid: cb1ab2d30f6944ddeb903e5755d8d2a0, type: 2}
+  - {fileID: 2100000, guid: cb1ab2d30f6944ddeb903e5755d8d2a0, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -243,9 +245,8 @@ MonoBehaviour:
   _meshFilter: {fileID: 826162130}
   _sides: 8
   _radius: 20
-  _terraceCount: 20
   _depth: 7
-  _height: 10
+  _maximumHeight: 6
   _frequency: 0.1
   _heightCurve:
     serializedVersion: 2
@@ -280,6 +281,30 @@ MonoBehaviour:
     m_PreInfinity: 2
     m_PostInfinity: 2
     m_RotationOrder: 4
+  _relativeHeights:
+  - 0
+  - 0.04761905
+  - 0.0952381
+  - 0.14285715
+  - 0.1904762
+  - 0.23809524
+  - 0.2857143
+  - 0.33333334
+  - 0.3809524
+  - 0.42857143
+  - 0.47619048
+  - 0.52380955
+  - 0.5714286
+  - 0.61904764
+  - 0.6666667
+  - 0.71428573
+  - 0.7619048
+  - 0.8095238
+  - 0.85714287
+  - 0.9047619
+  - 0.95238096
+  - 1
+  _useCustomHeights: 0
 --- !u!1 &1012788108
 GameObject:
   m_ObjectHideFlags: 0
@@ -293,7 +318,7 @@ GameObject:
   - component: {fileID: 1012788111}
   - component: {fileID: 1012788110}
   m_Layer: 0
-  m_Name: Generator 3
+  m_Name: Generator 4
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -312,7 +337,7 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 1956311790}
-  m_RootOrder: 2
+  m_RootOrder: 3
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!33 &1012788110
 MeshFilter:
@@ -357,6 +382,8 @@ MeshRenderer:
   - {fileID: 2100000, guid: cb1ab2d30f6944ddeb903e5755d8d2a0, type: 2}
   - {fileID: 2100000, guid: cb1ab2d30f6944ddeb903e5755d8d2a0, type: 2}
   - {fileID: 2100000, guid: cb1ab2d30f6944ddeb903e5755d8d2a0, type: 2}
+  - {fileID: 2100000, guid: cb1ab2d30f6944ddeb903e5755d8d2a0, type: 2}
+  - {fileID: 2100000, guid: cb1ab2d30f6944ddeb903e5755d8d2a0, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -395,9 +422,8 @@ MonoBehaviour:
   _meshFilter: {fileID: 1012788110}
   _sides: 10
   _radius: 20
-  _terraceCount: 15
   _depth: 7
-  _height: 19.9
+  _maximumHeight: 12
   _frequency: 0.11
   _heightCurve:
     serializedVersion: 2
@@ -441,6 +467,25 @@ MonoBehaviour:
     m_PreInfinity: 2
     m_PostInfinity: 2
     m_RotationOrder: 4
+  _relativeHeights:
+  - 0
+  - 0.0625
+  - 0.125
+  - 0.1875
+  - 0.25
+  - 0.3125
+  - 0.375
+  - 0.4375
+  - 0.5
+  - 0.5625
+  - 0.625
+  - 0.6875
+  - 0.75
+  - 0.8125
+  - 0.875
+  - 0.9375
+  - 1
+  _useCustomHeights: 0
 --- !u!1 &1171427300
 GameObject:
   m_ObjectHideFlags: 0
@@ -519,7 +564,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1171427300}
   m_LocalRotation: {x: 0.40114862, y: 0, z: 0, w: 0.91601306}
-  m_LocalPosition: {x: 0, y: 22.3, z: -26.3}
+  m_LocalPosition: {x: 0, y: 22.3, z: -25}
   m_LocalScale: {x: 1.0000001, y: 1, z: 1.0000001}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -687,7 +732,7 @@ GameObject:
   - component: {fileID: 1383736271}
   - component: {fileID: 1383736270}
   m_Layer: 0
-  m_Name: Generator 4
+  m_Name: Generator 5
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -706,7 +751,7 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 1956311790}
-  m_RootOrder: 3
+  m_RootOrder: 4
   m_LocalEulerAnglesHint: {x: 0, y: 180, z: 0}
 --- !u!33 &1383736270
 MeshFilter:
@@ -751,6 +796,8 @@ MeshRenderer:
   - {fileID: 2100000, guid: 24b80ba966b6a499d8c7506e1978b140, type: 2}
   - {fileID: 2100000, guid: 24b80ba966b6a499d8c7506e1978b140, type: 2}
   - {fileID: 2100000, guid: 24b80ba966b6a499d8c7506e1978b140, type: 2}
+  - {fileID: 2100000, guid: 24b80ba966b6a499d8c7506e1978b140, type: 2}
+  - {fileID: 2100000, guid: 24b80ba966b6a499d8c7506e1978b140, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -789,9 +836,8 @@ MonoBehaviour:
   _meshFilter: {fileID: 1383736270}
   _sides: 4
   _radius: 18
-  _terraceCount: 15
   _depth: 7
-  _height: 15
+  _maximumHeight: 5
   _frequency: 0.115
   _heightCurve:
     serializedVersion: 2
@@ -826,6 +872,25 @@ MonoBehaviour:
     m_PreInfinity: 2
     m_PostInfinity: 2
     m_RotationOrder: 4
+  _relativeHeights:
+  - 0
+  - 0.0625
+  - 0.125
+  - 0.1875
+  - 0.25
+  - 0.3125
+  - 0.375
+  - 0.4375
+  - 0.5
+  - 0.5625
+  - 0.625
+  - 0.6875
+  - 0.75
+  - 0.8125
+  - 0.875
+  - 0.9375
+  - 1
+  _useCustomHeights: 0
 --- !u!1 &1642614723
 GameObject:
   m_ObjectHideFlags: 0
@@ -839,7 +904,7 @@ GameObject:
   - component: {fileID: 1642614726}
   - component: {fileID: 1642614725}
   m_Layer: 0
-  m_Name: Generator 2
+  m_Name: Generator 3
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -862,9 +927,8 @@ MonoBehaviour:
   _meshFilter: {fileID: 1642614725}
   _sides: 6
   _radius: 20
-  _terraceCount: 15
   _depth: 7
-  _height: 3
+  _maximumHeight: 2
   _frequency: 0.09
   _heightCurve:
     serializedVersion: 2
@@ -872,24 +936,43 @@ MonoBehaviour:
     - serializedVersion: 3
       time: 0
       value: 0
-      inSlope: 1
-      outSlope: 1
-      tangentMode: 34
+      inSlope: 0.021289134
+      outSlope: 0.021289134
+      tangentMode: 0
       weightedMode: 0
       inWeight: 0
-      outWeight: 0
+      outWeight: 0.08650519
     - serializedVersion: 3
       time: 1
       value: 1
-      inSlope: 1
-      outSlope: 1
-      tangentMode: 34
+      inSlope: 1.0378454
+      outSlope: 1.0378454
+      tangentMode: 0
       weightedMode: 0
-      inWeight: 0
+      inWeight: 0.06920487
       outWeight: 0
     m_PreInfinity: 2
     m_PostInfinity: 2
     m_RotationOrder: 4
+  _relativeHeights:
+  - 0
+  - 0.0625
+  - 0.125
+  - 0.1875
+  - 0.25
+  - 0.3125
+  - 0.375
+  - 0.4375
+  - 0.5
+  - 0.5625
+  - 0.625
+  - 0.6875
+  - 0.75
+  - 0.8125
+  - 0.875
+  - 0.9375
+  - 1
+  _useCustomHeights: 0
 --- !u!33 &1642614725
 MeshFilter:
   m_ObjectHideFlags: 0
@@ -933,6 +1016,8 @@ MeshRenderer:
   - {fileID: 2100000, guid: f2db21e575fa04a5aab8f3d7626bde83, type: 2}
   - {fileID: 2100000, guid: f2db21e575fa04a5aab8f3d7626bde83, type: 2}
   - {fileID: 2100000, guid: f2db21e575fa04a5aab8f3d7626bde83, type: 2}
+  - {fileID: 2100000, guid: f2db21e575fa04a5aab8f3d7626bde83, type: 2}
+  - {fileID: 2100000, guid: f2db21e575fa04a5aab8f3d7626bde83, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -967,7 +1052,7 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 1956311790}
-  m_RootOrder: 1
+  m_RootOrder: 2
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1901063281
 GameObject:
@@ -982,7 +1067,7 @@ GameObject:
   - component: {fileID: 1901063284}
   - component: {fileID: 1901063283}
   m_Layer: 0
-  m_Name: Generator 5
+  m_Name: Generator 2
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -1001,7 +1086,7 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 1956311790}
-  m_RootOrder: 4
+  m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 0, y: 12.5, z: 0}
 --- !u!33 &1901063283
 MeshFilter:
@@ -1056,6 +1141,8 @@ MeshRenderer:
   - {fileID: 2100000, guid: cb1ab2d30f6944ddeb903e5755d8d2a0, type: 2}
   - {fileID: 2100000, guid: cb1ab2d30f6944ddeb903e5755d8d2a0, type: 2}
   - {fileID: 2100000, guid: cb1ab2d30f6944ddeb903e5755d8d2a0, type: 2}
+  - {fileID: 2100000, guid: cb1ab2d30f6944ddeb903e5755d8d2a0, type: 2}
+  - {fileID: 2100000, guid: cb1ab2d30f6944ddeb903e5755d8d2a0, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -1094,9 +1181,8 @@ MonoBehaviour:
   _meshFilter: {fileID: 1901063283}
   _sides: 7
   _radius: 20
-  _terraceCount: 25
   _depth: 7
-  _height: 10
+  _maximumHeight: 7
   _frequency: 0.095
   _heightCurve:
     serializedVersion: 2
@@ -1131,6 +1217,35 @@ MonoBehaviour:
     m_PreInfinity: 2
     m_PostInfinity: 2
     m_RotationOrder: 4
+  _relativeHeights:
+  - 0
+  - 0.03846154
+  - 0.07692308
+  - 0.115384616
+  - 0.15384616
+  - 0.1923077
+  - 0.23076923
+  - 0.26923078
+  - 0.30769232
+  - 0.34615386
+  - 0.3846154
+  - 0.42307693
+  - 0.46153846
+  - 0.5
+  - 0.53846157
+  - 0.5769231
+  - 0.61538464
+  - 0.65384614
+  - 0.6923077
+  - 0.7307692
+  - 0.7692308
+  - 0.8076923
+  - 0.84615386
+  - 0.88461536
+  - 0.9230769
+  - 0.96153843
+  - 1
+  _useCustomHeights: 0
 --- !u!1 &1956311788
 GameObject:
   m_ObjectHideFlags: 0
@@ -1185,10 +1300,10 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 826162129}
+  - {fileID: 1901063282}
   - {fileID: 1642614727}
   - {fileID: 1012788109}
   - {fileID: 1383736269}
-  - {fileID: 1901063282}
   m_Father: {fileID: 0}
   m_RootOrder: 2
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}

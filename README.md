@@ -3,7 +3,7 @@
 
 Terraced Terrain Generator (TTG) is a free Unity tool for procedural generation of terraced terrain meshes.
 
-![Five images of generated terraced terrains looping.](https://matheusamazonas.net/ttg_site/assets/images/loop.gif)
+![Five images of generated terraced terrains looping.](https://ttg.matheusamazonas.net/assets/images/loop.gif)
 
 ## Contents
 - [Features](#features)
@@ -29,10 +29,11 @@ Terraced Terrain Generator (TTG) is a free Unity tool for procedural generation 
 - Reduced GC allocations using native constructs delivered by Unity's [Collections package](https://docs.unity3d.com/Packages/com.unity.collections@1.2/manual/index.html) (e.g. `NativeArray<T>` and `NativeList<T>`).
 - Customizable:
 	- Basic terrain shapes from 3 to 10 sizes.
-	- Number of terraces (1 to 50).
+	- Number of terraces.
 	- Terrain size (radius and height).
 	- Detail level (a.k.a. fragmentation depth).
-	- Feature (hills and valleys) frequency.
+	- Sculpting features (hills and valleys) frequency.
+	- Terrace heights.
 	- Height distribution.
 
 ## Importing
@@ -41,11 +42,11 @@ The first step to get started with TTG is to import the library into your Unity 
 ### Import using a git URL
 This approach uses Unity's Package Manager to add TTG to your project using the repo's git URL. To do so, navigate to `Window > Package Manager` in Unity. Then click on the `+` and select "Add package from git URL":
 
-![](https://matheusamazonas.net/ttg_site/assets/images/upm_adding.png)
+![](https://ttg.matheusamazonas.net/assets/images/upm_adding.png)
 
 Next, enter the following in the "URL" input field to install the latest version of TTG:
 ```
-https://github.com/matheusamazonas/ttg.git?path=Assets/Libraries/TerracedTerrainGenerator#1.0.1
+https://github.com/matheusamazonas/ttg.git?path=Assets/Libraries/TerracedTerrainGenerator#latest
 ```
 Finally, click on the "Add" button. The importing process should start automatically. Once it's done, TTG is ready to be used in the project. 
 
@@ -59,29 +60,30 @@ Once the importing process is complete, TTG is ready to be used in the project.
 ### After importing
 After importing TTG, check the [Usage](#usage) section on how to use it and the [Samples](#samples) section on how to import and use the package samples.
 
-
 ## Usage
-
 There are two different ways to use TTG: via the `TerrainGeneratorController` component and via the API. Both methods share the same parameter list, explained below:
 - Side count: number of sides of the terrain's basic shape (3 to 10).
 - Radius: the greatest distance between the center of the mesh and all of its vertices (ignoring their position's Y coordinate). This number must be greater than zero.
-- Terrace count: how many terraces the terrain will contain. This number must be greater than zero.
-- Fragmentation depth: how many times the basic shape will be fragmented to form the terrain. The larger the value, the greater the level of detail will be (more triangles and vertices) and the longer the generation process takes.
-- Deformation settings: a group of settings used to deform the terrain—the process of creating hills and valleys using Perlin noise. These settings include:
-	- Maximum height: the maximum distance between the lowest and highest vertices of the terrain.
+- Maximum height: the maximum distance between the lowest and highest vertices of the terrain. This number must be greater than zero.
+- Relative terrace heights: an array of terrace heights, relative to the terrain's maximum height. Values must be in the  \[0, 1] range, in ascending order. Each terrace's final height will be calculated by multiplying the relative height by the terrain's height. The length of this array dictates how many terraces will be generated.
+- Sculpting settings: a group of settings used to sculpt the terrain—the process of creating hills and valleys using Perlin noise. These settings include:
 	- Feature frequency: the number of terrain features (hills and valleys) in a given area. 
 	- Height distribution:  the height distribution over the terrain. In short, how low valleys and how high hills should be, and everything in between. It's represented as a curve that must start in (0,0) and end in (1,1). A linear curve is considered a canonical value.
+- Fragmentation depth: how many times the basic shape will be fragmented to form the terrain. The larger the value, the greater the level of detail will be (more triangles and vertices) and the longer the generation process takes.
 
 The two usage methods will differ only on how they provide these parameters and how they use the terrain generation output.
 
 ### Component-based usage
 The easier way to jump into TTG is to use its controller component. To start using it, add the `TerrainGeneratorController` component to a game object. A Mesh Renderer and a Mesh Filter will be added automatically if the game object doesn't contain them yet. The picture below displays an example of the controller on Unity's inspector:
 
-![A view of Unity's inspector showing a component called "Terrain Generator Controller" with several fields](https://matheusamazonas.net/ttg_site/assets/images/controller.png)
+![A view of Unity's inspector showing a component called "Terrain Generator Controller" with several fields](https://ttg.matheusamazonas.net/assets/images/controller.png)
 This component contains all parameters explained in the previous section, in addition to the following fields:
 - Generate on start: whether a new terrain should be generated on start. This feature is great to quickly test generation parameters.
 - Renderer: the `MeshRenderer` that will be used to render the terrain.
 - Mesh filter: the `MeshFilter` that will contain the terrain's mesh. 
+- Use Custom Heights: whether a custom relative terrace heights array will be provided. 
+	- If true, the relative heights array will be available for customization. The length of this array will dictate how many terraces will be generated.
+	- If false, a "Terrace Count" field will be available and can be used to customize how many terraces will be created. In this case, the relative terrace heights array will be automatically generated and its values will be equally distributed between 0 and 1.
 
 `TerrainGeneratorController` exposes four generation methods:
 ```csharp
@@ -95,10 +97,9 @@ public void GenerateTerrain(int seed);
 public async Task GenerateTerrainAsync(int seed, CancellationToken token);
 ```
 
-The first two methods are meant for pseudorandom procedural generation—when the generated terrain doesn't need to be reproduced in the future. The other methods are meant for reproducible procedural generation—when we would like to generate the exact same terrain in the future. The `seed` parameter will be used to feed the randomizer and it's enough to reproduce an entire terrain. If you're aiming for reproducible terrains, use the second methods. The task of generating random seed values is up to the user. The asynchronous methods support task cancellation via a cancellation token. If the token's source is cancelled, a `TaskCanceledException` might be thrown.
+The first two methods are meant for pseudorandom procedural generation—when the generated terrain doesn't need to be reproduced in the future. The other methods are meant for reproducible procedural generation—when we would like to generate the exact same terrain in the future. The `seed` parameter will be used to feed the randomizer and it's enough to reproduce an entire terrain. If you're aiming for reproducible terrains, use the last two methods. The task of generating random seed values is up to the user. The asynchronous methods support task cancellation via a cancellation token. If the token's source is cancelled, a `TaskCanceledException` might be thrown.
 
 The controller manages the lifetime of the meshes it generates, and it destroys them once they're not being used anymore (including when the component itself is destroyed). If you would like to manage mesh lifetime yourself, use the API (described below) instead.
-
 
 ### API usage
 The more advanced (and more flexible) way of using TTG is via its API, using the `TerrainGenerator` class. This method is better suited for editor usage and dynamic terrain generation at runtime. Its usage isn't too different from the component-based approach seen above: the generation parameters are the same and there's a 1:1 mapping between generation methods. In fact, the `TerrainGeneratorController` is just a convenient (`MonoBehaviour`) wrapper around `TerrainGenerator`. 
@@ -107,17 +108,16 @@ Generating a terraced terrain via the API requires two steps:
 - Creating a `TerrainGenerator` instance.
 - Calling one of its generation methods.
 
-The generation data is stored on the `TerrainGenerator` instance and it's immutable. That means that once a generator is created, it will always create terrains using the given generation data. This class represents one instance of the terraced terrain generator (there can be multiple) and it has only one constructor:
+The generation data is stored on the `TerrainGenerator` instance and is immutable. That means that once a generator is created, it will always create terrains using the given generation data. This class represents one instance of the terraced terrain generator (there can be multiple) and it has only one constructor:
 ```csharp
-public TerrainGenerator(ushort sides, float radius, DeformationSettings deformationSettings, ushort depth,   
-int terraces)
+public TerrainGenerator(ushort sides, float radius, float maximumHeight, float[] relativeTerraceHeights, SculptingSettings sculptingSettings, ushort depth)
 ```
-The parameters (including the deformation settings) are the same ones explained at the beginning of the [Usage](#usage) section. The deformation settings are grouped in the `DeformationSettings` struct, which exposes two constructors:
+The parameters (including the sculpting settings) are the same ones explained at the beginning of the [Usage](#usage) section. The sculpting settings are grouped in the `SculptingSettings` struct, which exposes two constructors:
 ```csharp
 // For pseudorandom procedural generation
-public DeformationSettings(float maximumHeight, float frequency, AnimationCurve heightDistribution)
+public SculptingSettings(float frequency, AnimationCurve heightDistribution)
 // For reproducible procedural generation
-public DeformationSettings(int seed, float maximumHeight, float frequency, AnimationCurve heightDistribution)
+public SculptingSettings(int seed, float frequency, AnimationCurve heightDistribution)
 ```
 Once the `TerrainGenerator` instance is created, we can actually generate terrains using its two generation methods:
 ```csharp
@@ -137,13 +137,17 @@ Let's say we would like to generate random octagonal terrains with 5 terraces, 2
 ```csharp
 var heightDistribution = AnimationCurve.Linear(0f, 0f, 1f, 1f);
 ```
-To create the deformation settings, we first pass the maximum height (9.5), followed by the feature frequency (0.075) and finally the height distribution created on the step above:
+To create the sculpting settings, we first pass the feature frequency (0.075) followed by the height distribution created on the step above:
 ```csharp
-var deformationSettings = new DeformationSettings(9.5f, 0.075f, heightDistribution);
+var sculptingSettings = new SculptingSettings(0.075f, heightDistribution);
 ```
-Finally, let's call the `TerrainGenerator` constructor to create the generator, passing the number of sides of the terrain's basic shape (8 for octagon), the radius (20), the previously created deformation settings, the fragmentation depth (4) and the number of terraces (5):
+Next, let's choose the relative terrain heights for the 5 terraces:
 ```csharp
-var generator = new TerrainGenerator(8, 20, deformationSettings, 4, 5);
+var relativeHeights = new[] { 0f, 0.2f, 0.6f, 0.87f, 1f };
+```
+Finally, let's call the `TerrainGenerator` constructor to create the generator, passing the number of sides of the terrain's basic shape (8 for octagon), the radius (20), the maximum height (9.5),  the previously created relative terrace heights and sculpting settings and the fragmentation depth (4).
+```csharp
+var generator = new TerrainGenerator(8, 20, 9.5f, relativeHeights, sculptingSettings, 4);
 ```
 Once we've constructed a `TerrainGenerator`, we can simply ask it to generate a new terrain. For example, if we would like to generate the terrain synchronously:
 ```csharp
@@ -177,7 +181,7 @@ TTG requires Unity 2021.3.X or above, its target API compatibility level is .NET
 
 ## Roadmap
 Although the first version of TTG is out, it's still under (casual) development. The following features are planned in the next versions:
-- Custom terrain heights: instead of evenly spacing the terraces between the terrain's lowest and highest points, allow custom heights to be chosen.
+- ~~Custom terrain heights: instead of evenly spacing the terraces between the terrain's lowest and highest points, allow custom heights to be chosen.~~ Implemented on version 1.1.0.
 - Sphere as a basic shape: let's create completely terraced planets!
 - Improve terrain detailing: use Perlin noise octaves to create more natural terrains.
 - Real-time sculpting: instead of letting an algorithm generate the hills, let the user interactively sculpt them.

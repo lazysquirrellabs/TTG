@@ -66,8 +66,8 @@ namespace SneakySquirrelLabs.TerracedTerrainGenerator.TerraceGeneration
             // Both horizontal and vertical mesh data are initialized with the given vertex and indices count because
             // the number of generated data (both vertices and indices) is usually much larger than the provided, 
             // initial values. These initial values are used just to avoid late buffer resizing.
-            _horizontalMeshData = new ComplexMeshData(vertexCount, indicesCount, terraceCount, allocator);
-            _verticalMeshData = new ComplexMeshData(vertexCount, indicesCount, terraceCount, allocator);
+            _horizontalMeshData = new ComplexMeshData(vertexCount, indicesCount, _terraceCount, allocator);
+            _verticalMeshData = new ComplexMeshData(vertexCount, indicesCount, _terraceCount, allocator);
         }
 
         #endregion
@@ -183,7 +183,7 @@ namespace SneakySquirrelLabs.TerracedTerrainGenerator.TerraceGeneration
 
             _baked = true;
             
-            static NativeArray<Vector3> MergeVertices(NativeHashMap<Vector3,int> v1, NativeHashMap<Vector3,int> v2, 
+            static NativeArray<Vector3> MergeVertices(NativeParallelHashMap<Vector3,int> v1, NativeParallelHashMap<Vector3,int> v2, 
                 Allocator allocator)
             {
                 var vertices = new NativeArray<Vector3>(v1.Count() + v2.Count(), allocator);
@@ -191,7 +191,7 @@ namespace SneakySquirrelLabs.TerracedTerrainGenerator.TerraceGeneration
                 AddVertices(v2);
                 return vertices;
 
-                void AddVertices(NativeHashMap<Vector3, int> v)
+                void AddVertices(NativeParallelHashMap<Vector3, int> v)
                 {
                     foreach (var kvp in v)
                         vertices[kvp.Value] = kvp.Key;

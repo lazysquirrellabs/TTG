@@ -12,7 +12,7 @@ namespace SneakySquirrelLabs.TerracedTerrainGenerator.Data
     {
         #region Fields
 
-        private NativeHashMap<Vector3, int> _vertices;
+        private NativeParallelHashMap<Vector3, int> _vertices;
 
         #endregion
 
@@ -21,7 +21,7 @@ namespace SneakySquirrelLabs.TerracedTerrainGenerator.Data
         /// <summary>
         /// All the vertices in the mesh data. 
         /// </summary>
-        internal NativeHashMap<Vector3, int> Vertices => _vertices;
+        internal NativeParallelHashMap<Vector3, int> Vertices => _vertices;
 
         #endregion
         
@@ -40,7 +40,7 @@ namespace SneakySquirrelLabs.TerracedTerrainGenerator.Data
             if (subMeshes < 1)
                 throw new ArgumentException("Mesh data must contain at least 1 sub mesh");
 
-            _vertices = new NativeHashMap<Vector3, int>(vertexCount, allocator);
+            _vertices = new NativeParallelHashMap<Vector3, int>(vertexCount, allocator);
             IndicesPerSubMesh = new NativeList<int>[subMeshes];
             // Estimate the number of indices per sub mesh
             var indicesPerSubMesh = indicesCount / subMeshes;
