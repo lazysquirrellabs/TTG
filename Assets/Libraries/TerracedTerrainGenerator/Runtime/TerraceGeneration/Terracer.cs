@@ -58,9 +58,7 @@ namespace SneakySquirrelLabs.TerracedTerrainGenerator.TerraceGeneration
 	        var indexCount = _meshData.Indices.Length;
 	        _terraceCount = terraceHeights.Length;
 	        _meshBuilder = new TerracedMeshBuilder(vertexCount, indexCount, _terraceCount, allocator);
-	        // Two extra planes are placed: one below and one above all points. This helps the algorithm.
-	        var planeCount = _terraceCount + 1;
-	        _planeHeights = GetHeights(planeCount, terraceHeights, allocator);
+	        _planeHeights = GetHeights(_terraceCount, terraceHeights, allocator);
             
 	        static NativeArray<float> GetHeights(int count, float[] terraceHeights, Allocator allocator)
 	        {
