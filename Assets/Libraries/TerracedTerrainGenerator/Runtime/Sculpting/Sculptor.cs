@@ -7,7 +7,7 @@ namespace SneakySquirrelLabs.TerracedTerrainGenerator.Sculpting
     /// <summary>
     /// Sculpts a terrain mesh using a planar Perlin filter. The sculpting is applied on the Y axis, upwards.
     /// </summary>
-    internal class PerlinSculptor
+    internal class Sculptor
     {
         #region Fields
 
@@ -33,11 +33,11 @@ namespace SneakySquirrelLabs.TerracedTerrainGenerator.Sculpting
         #region Setup
 
         /// <summary>
-        /// Creates a <see cref="PerlinSculptor"/> with the given settings.
+        /// Creates a <see cref="Sculptor"/> with the given settings.
         /// </summary>
         /// <param name="sculptingSettings">The settings used for sculpting.</param>
         /// <param name="maximumHeight"> The Y coordinate of the highest possible vertex after sculpting.</param>
-        internal PerlinSculptor(SculptingSettings sculptingSettings, float maximumHeight)
+        internal Sculptor(SculptingSettings sculptingSettings, float maximumHeight)
         {
             _random = new Random(sculptingSettings.Seed);
             _frequency = sculptingSettings.Frequency;

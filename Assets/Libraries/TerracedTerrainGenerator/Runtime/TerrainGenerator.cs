@@ -38,7 +38,7 @@ namespace SneakySquirrelLabs.TerracedTerrainGenerator
         /// <summary>
         /// The sculptor used to create hills/valleys on the mesh.
         /// </summary>
-        private readonly PerlinSculptor _sculptor;
+        private readonly Sculptor _sculptor;
         /// <summary>
         /// The height of the terraces (in units), in ascending order.
         /// </summary>
@@ -110,7 +110,7 @@ namespace SneakySquirrelLabs.TerracedTerrainGenerator
             };
 
             _fragmenter = new MeshFragmenter(depth);
-            _sculptor = new PerlinSculptor(sculptingSettings, maximumHeight);
+            _sculptor = new Sculptor(sculptingSettings, maximumHeight);
             _terraceHeights = relativeTerraceHeights.Select(h => h * maximumHeight).ToArray();
         }
 
