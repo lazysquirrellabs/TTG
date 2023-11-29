@@ -255,7 +255,10 @@ MonoBehaviour:
   _radius: 20
   _depth: 5
   _maximumHeight: 8
-  _frequency: 0.075
+  _baseFrequency: 0.075
+  _octaves: 3
+  _persistence: 0.5
+  _lacunarity: 2
   _heightCurve:
     serializedVersion: 2
     m_Curve:

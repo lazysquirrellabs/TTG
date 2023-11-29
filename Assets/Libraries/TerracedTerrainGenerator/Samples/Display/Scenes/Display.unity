@@ -247,7 +247,10 @@ MonoBehaviour:
   _radius: 20
   _depth: 7
   _maximumHeight: 6
-  _frequency: 0.1
+  _baseFrequency: 0.1
+  _octaves: 1
+  _persistence: 0.5
+  _lacunarity: 2
   _heightCurve:
     serializedVersion: 2
     m_Curve:
@@ -424,7 +427,10 @@ MonoBehaviour:
   _radius: 20
   _depth: 7
   _maximumHeight: 12
-  _frequency: 0.11
+  _baseFrequency: 0.11
+  _octaves: 1
+  _persistence: 0.5
+  _lacunarity: 2
   _heightCurve:
     serializedVersion: 2
     m_Curve:
@@ -838,7 +844,10 @@ MonoBehaviour:
   _radius: 18
   _depth: 7
   _maximumHeight: 5
-  _frequency: 0.115
+  _baseFrequency: 0.115
+  _octaves: 1
+  _persistence: 0.5
+  _lacunarity: 2
   _heightCurve:
     serializedVersion: 2
     m_Curve:
@@ -929,7 +938,10 @@ MonoBehaviour:
   _radius: 20
   _depth: 7
   _maximumHeight: 2
-  _frequency: 0.09
+  _baseFrequency: 0.09
+  _octaves: 1
+  _persistence: 0.5
+  _lacunarity: 2
   _heightCurve:
     serializedVersion: 2
     m_Curve:
@@ -1183,7 +1195,10 @@ MonoBehaviour:
   _radius: 20
   _depth: 7
   _maximumHeight: 7
-  _frequency: 0.095
+  _baseFrequency: 0.095
+  _octaves: 1
+  _persistence: 0.5
+  _lacunarity: 2
   _heightCurve:
     serializedVersion: 2
     m_Curve:

@@ -17,7 +17,10 @@ namespace SneakySquirrelLabs.TerracedTerrainGenerator
 		[SerializeField] private float _radius = 20;
 		[SerializeField] private ushort _depth = 5;
 		[SerializeField] private float _maximumHeight = 10;
-		[SerializeField] private float _frequency = 0.075f;
+		[SerializeField] private float _baseFrequency = 0.075f;
+		[SerializeField] private uint _octaves = 3;
+		[SerializeField] private float _persistence = 0.5f;
+		[SerializeField] private float _lacunarity = 2f;
 		[SerializeField] private AnimationCurve _heightCurve = AnimationCurve.Linear(0f, 0f, 1f, 1f);
 		[SerializeField] private float[] _relativeHeights;
 
@@ -113,7 +116,7 @@ namespace SneakySquirrelLabs.TerracedTerrainGenerator
 		/// </summary>
 		public void GenerateTerrain()
 		{
-			var sculptingSettings = new SculptingSettings(_frequency, _heightCurve);
+			var sculptingSettings = new SculptSettings(_baseFrequency, _octaves, _persistence, _lacunarity, _heightCurve);
 			Generate(sculptingSettings);
 		}
 
@@ -124,8 +127,8 @@ namespace SneakySquirrelLabs.TerracedTerrainGenerator
 		/// terrain.</param>
 		public void GenerateTerrain(int seed)
 		{
-			var sculptingSettings = new SculptingSettings(seed, _frequency, _heightCurve);
-			Generate(sculptingSettings);
+			var settings = new SculptSettings(seed, _baseFrequency, _octaves, _persistence, _lacunarity, _heightCurve);
+			Generate(settings);
 		}
 		
 		/// <summary>
@@ -135,8 +138,8 @@ namespace SneakySquirrelLabs.TerracedTerrainGenerator
 		/// <returns>An awaitable Task that represents the terrain generation process.</returns>
 		public async Task GenerateTerrainAsync(CancellationToken token)
 		{
-			var sculptingSettings = new SculptingSettings(_frequency, _heightCurve);
-			await GenerateAsync(sculptingSettings, token);
+			var settings = new SculptSettings(_baseFrequency, _octaves, _persistence, _lacunarity, _heightCurve);
+			await GenerateAsync(settings, token);
 		}
 
 		/// <summary>
@@ -148,8 +151,8 @@ namespace SneakySquirrelLabs.TerracedTerrainGenerator
 		/// <returns>An awaitable Task that represents the terrain generation process.</returns>
 		public async Task GenerateTerrainAsync(int seed, CancellationToken token)
 		{
-			var sculptingSettings = new SculptingSettings(seed, _frequency, _heightCurve);
-			await GenerateAsync(sculptingSettings, token);
+			var settings = new SculptSettings(seed, _baseFrequency, _octaves, _persistence, _lacunarity, _heightCurve);
+			await GenerateAsync(settings, token);
 		}
 
 		#endregion
@@ -159,11 +162,11 @@ namespace SneakySquirrelLabs.TerracedTerrainGenerator
 		/// <summary>
 		/// Generates a terrain synchronously.
 		/// </summary>
-		/// <param name="sculptingSettings">The sculpting settings </param>
-		private void Generate(SculptingSettings sculptingSettings)
+		/// <param name="sculptSettings">The sculpting settings </param>
+		private void Generate(SculptSettings sculptSettings)
 		{
 			// Generate
-			var generator = new TerrainGenerator(_sides, _radius, _maximumHeight, _relativeHeights, sculptingSettings, 
+			var generator = new TerrainGenerator(_sides, _radius, _maximumHeight, _relativeHeights, sculptSettings, 
 				_depth);
 			var previousMesh = _meshFilter.mesh;
 			_meshFilter.mesh = generator.GenerateTerrain();
@@ -173,10 +176,10 @@ namespace SneakySquirrelLabs.TerracedTerrainGenerator
 			Destroy(previousMesh);
 		}
 		
-		private async Task GenerateAsync(SculptingSettings sculptingSettings, CancellationToken token)
+		private async Task GenerateAsync(SculptSettings sculptSettings, CancellationToken token)
 		{
 			// Generate
-			var generator = new TerrainGenerator(_sides, _radius, _maximumHeight, _relativeHeights, sculptingSettings, 
+			var generator = new TerrainGenerator(_sides, _radius, _maximumHeight, _relativeHeights, sculptSettings, 
 				_depth);
 			var internalToken = _cancellationTokenSource.Token;
 			var combinedSource = CancellationTokenSource.CreateLinkedTokenSource(internalToken, token);
