@@ -245,12 +245,12 @@ MonoBehaviour:
   _meshFilter: {fileID: 826162130}
   _sides: 8
   _radius: 20
-  _depth: 7
+  _depth: 6
   _maximumHeight: 6
-  _baseFrequency: 0.1
-  _octaves: 1
-  _persistence: 0.5
-  _lacunarity: 2
+  _baseFrequency: 0.055
+  _octaves: 5
+  _persistence: 0.375
+  _lacunarity: 2.52
   _heightCurve:
     serializedVersion: 2
     m_Curve:
@@ -427,8 +427,8 @@ MonoBehaviour:
   _radius: 20
   _depth: 7
   _maximumHeight: 12
-  _baseFrequency: 0.11
-  _octaves: 1
+  _baseFrequency: 0.078
+  _octaves: 5
   _persistence: 0.5
   _lacunarity: 2
   _heightCurve:
@@ -832,20 +832,20 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1383736268}
-  m_Enabled: 0
+  m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 3559f8bf650d43038bb417ef5300517a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _generateOnStart: 1
+  _generateOnStart: 0
   _renderer: {fileID: 1383736271}
   _meshFilter: {fileID: 1383736270}
   _sides: 4
   _radius: 18
   _depth: 7
   _maximumHeight: 5
-  _baseFrequency: 0.115
-  _octaves: 1
+  _baseFrequency: 0.091
+  _octaves: 5
   _persistence: 0.5
   _lacunarity: 2
   _heightCurve:
@@ -854,21 +854,21 @@ MonoBehaviour:
     - serializedVersion: 3
       time: 0
       value: 0
-      inSlope: 0
-      outSlope: 0
+      inSlope: 0.5649098
+      outSlope: 0.5649098
       tangentMode: 0
       weightedMode: 0
       inWeight: 0
-      outWeight: 0
+      outWeight: 0.10796958
     - serializedVersion: 3
-      time: 0.78976035
-      value: 0.20732749
-      inSlope: 0.2896607
-      outSlope: 0.2896607
+      time: 0.75484824
+      value: 0.43016684
+      inSlope: 0.6388358
+      outSlope: 0.6388358
       tangentMode: 0
       weightedMode: 0
       inWeight: 0.33333334
-      outWeight: 1
+      outWeight: 0.24011491
     - serializedVersion: 3
       time: 1
       value: 1
@@ -938,8 +938,8 @@ MonoBehaviour:
   _radius: 20
   _depth: 7
   _maximumHeight: 2
-  _baseFrequency: 0.09
-  _octaves: 1
+  _baseFrequency: 0.076
+  _octaves: 5
   _persistence: 0.5
   _lacunarity: 2
   _heightCurve:
@@ -1193,10 +1193,10 @@ MonoBehaviour:
   _meshFilter: {fileID: 1901063283}
   _sides: 7
   _radius: 20
-  _depth: 7
+  _depth: 5
   _maximumHeight: 7
-  _baseFrequency: 0.095
-  _octaves: 1
+  _baseFrequency: 0.071
+  _octaves: 5
   _persistence: 0.5
   _lacunarity: 2
   _heightCurve:
