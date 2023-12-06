@@ -52,17 +52,20 @@ namespace SneakySquirrelLabs.TerracedTerrainGenerator.Sculpting
 		/// <see cref="SculptSettings"/>'s constructor. Initializes the sculptor with a random seed.
 		/// </summary>
 		/// <param name="baseFrequency">The base (first octave's) degree of detail (hills and valleys) in a given
-		/// area.</param>
+		/// area. Value must be greater than zero.</param>
 		/// <param name="octaves">How many octaves (iterations) the sculpting will run. Each octave will run on a
 		/// higher frequency and lower relevance than the previous one. The higher the value, the more variation
 		/// the terrain will contain, but there is a point of diminishing returns due to
-		/// <paramref name="persistence"/>.</param>
+		/// <paramref name="persistence"/>. Value must be greater than zero.</param>
 		/// <param name="persistence">How much of an octave's amplitude will be carried to the next octave. The lower
-		/// the value, the quicker octave details disappear with each iteration.</param>
+		/// the value, the quicker octave details disappear with each iteration. Value must be greater than zero.</param>
 		/// <param name="lacunarity">How the frequency will be affected (multiplication factor) between octaves.
-		/// In other words, how much" detail each octave will contain, when compared to the previous one.</param>
+		/// In other words, how much" detail each octave will contain, when compared to the previous one. Value must be
+		/// greater than zero.</param>
 		/// <param name="heightDistribution">The curve used to change the height distribution. If it's null, the
 		/// distribution won't be affected, thus it will be linear.</param>
+		/// <exception cref="ArgumentOutOfRangeException">Thrown if any of the arguments is out of range. Checks 
+		/// individual arguments for valid ranges.</exception>
 		public SculptSettings(float baseFrequency, uint octaves, float persistence, float lacunarity, 
 			AnimationCurve heightDistribution) 
 			: this(GetRandomSeed(), baseFrequency, octaves, persistence, lacunarity, heightDistribution) { }
@@ -71,19 +74,21 @@ namespace SneakySquirrelLabs.TerracedTerrainGenerator.Sculpting
 		/// <see cref="SculptSettings"/>'s constructor.
 		/// </summary>
 		/// <param name="seed">Seed used by the randomizer.</param>
-		/// <see cref="SculptSettings"/>'s constructor. Initializes the sculptor with a random seed.
 		/// <param name="baseFrequency">The base (first octave's) degree of detail (hills and valleys) in a given
-		/// area.</param>
+		/// area. Value must be greater than zero.</param>
 		/// <param name="octaves">How many octaves (iterations) the sculpting will run. Each octave will run on a
 		/// higher frequency and lower relevance than the previous one. The higher the value, the more variation
 		/// the terrain will contain, but there is a point of diminishing returns due to
-		/// <paramref name="persistence"/>.</param>
+		/// <paramref name="persistence"/>. Value must be greater than zero.</param>
 		/// <param name="persistence">How much of an octave's amplitude will be carried to the next octave. The lower
-		/// the value, the quicker octave details disappear with each iteration.</param>
+		/// the value, the quicker octave details disappear with each iteration. Value must be greater than zero.</param>
 		/// <param name="lacunarity">How the frequency will be affected (multiplication factor) between octaves.
-		/// In other words, how much" detail each octave will contain, when compared to the previous one.</param>
+		/// In other words, how much" detail each octave will contain, when compared to the previous one. Value must be
+		/// greater than zero.</param>
 		/// <param name="heightDistribution">The curve used to change the height distribution. If it's null, the
 		/// distribution won't be affected, thus it will be linear.</param>
+		/// <exception cref="ArgumentOutOfRangeException">Thrown if any of the arguments is out of range. Checks 
+		/// individual arguments for valid ranges.</exception>
 		public SculptSettings(int seed, float baseFrequency, uint octaves, float persistence, float lacunarity, 
 			AnimationCurve heightDistribution)
 		{
