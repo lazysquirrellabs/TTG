@@ -116,8 +116,8 @@ namespace SneakySquirrelLabs.TerracedTerrainGenerator
 		/// </summary>
 		public void GenerateTerrain()
 		{
-			var sculptingSettings = new SculptSettings(_baseFrequency, _octaves, _persistence, _lacunarity, _heightCurve);
-			Generate(sculptingSettings);
+			var settings = new SculptSettings(_baseFrequency, _octaves, _persistence, _lacunarity, _heightCurve);
+			Generate(settings);
 		}
 
 		/// <summary>

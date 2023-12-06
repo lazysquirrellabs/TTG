@@ -90,6 +90,15 @@ namespace SneakySquirrelLabs.TerracedTerrainGenerator.Sculpting
 			if (baseFrequency <= 0)
 				throw new ArgumentOutOfRangeException(nameof(baseFrequency));
 
+			if (octaves == 0)
+				throw new ArgumentOutOfRangeException(nameof(octaves), "Generation must contain at least one octave.");
+			
+			if (persistence <= 0)
+				throw new ArgumentOutOfRangeException(nameof(persistence), "Persistence must be grater than zero.");
+
+			if (lacunarity <= 0)
+				throw new ArgumentOutOfRangeException(nameof(lacunarity), "Lacunarity must be greater than zero.");
+
 			Seed = seed;
 			BaseFrequency = baseFrequency;
 			Octaves = octaves;
