@@ -52,20 +52,18 @@ namespace SneakySquirrelLabs.TerracedTerrainGenerator
         /// <see cref="TerrainGenerator"/>'s constructor.
         /// </summary>
         /// <param name="sides">Number of sides of the terrain's basic shape. Value must be between 3 and 10. </param>
-        /// <param name="radius">The terrain's radius?</param>
+        /// <param name="radius">The terrain's radius. Value must be greater than zero.</param>
         /// <param name="maximumHeight">The maximum height of the terrain, in units. In order words, distance
-        /// between its lowest and highest point.</param>
+        /// between its lowest and highest point. Value must be greater than zero.</param>
         /// <param name="relativeTerraceHeights">Terrace heights, relative to the terrain's maximum height. Values
         /// must be in the  [0, 1] range, in ascending order. Each terrace's final height will be calculated by
         /// multiplying the relative height by the terrain's height.</param>
         /// <param name="sculptSettings">The settings used during the sculpting phase.</param>
         /// <param name="depth">Depth to fragment the basic mesh. Value must be greater than zero.</param>
-        /// <exception cref="NotImplementedException">Thrown if the provided number of sides is not supported.
-        /// </exception>
-        /// <exception cref="ArgumentOutOfRangeException">Thrown whenever <paramref name="radius"/> is less or equal
-        /// than zero or whenever <paramref name="relativeTerraceHeights"/> is either empty or if its values are
-        /// invalid (not between [0,1] and in ascending order).
-        /// </exception>
+        /// <exception cref="ArgumentOutOfRangeException">Thrown if any of the arguments is out of range. Checks 
+        /// individual arguments for valid ranges.</exception>
+        /// <exception cref="NotImplementedException">Thrown whenever the provided number of <paramref name="sides"/>
+        /// is not supported (greater than 10).</exception>
         public TerrainGenerator(ushort sides, float radius, float maximumHeight, float[] relativeTerraceHeights, 
 	        SculptSettings sculptSettings, ushort depth)
         {
