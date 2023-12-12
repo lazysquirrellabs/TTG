@@ -123,11 +123,10 @@ namespace SneakySquirrelLabs.TerracedTerrainGenerator
         public Mesh GenerateTerrain()
         {
             var meshData = GenerateTerrainData(SyncAllocator);
-            var terracer = new Terracer(meshData, _terraceHeights, SyncAllocator);
+            using var terracer = new Terracer(meshData, _terraceHeights, SyncAllocator);
             terracer.CreateTerraces();
             terracer.BakeMeshData(SyncAllocator);
             var mesh = terracer.CreateMesh();
-            terracer.Dispose();
             return mesh;
         }
 
