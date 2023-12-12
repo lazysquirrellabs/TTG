@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using SneakySquirrelLabs.TerracedTerrainGenerator.Data;
 using UnityEngine;
 using Random = System.Random;
@@ -68,7 +69,7 @@ namespace SneakySquirrelLabs.TerracedTerrainGenerator.Sculpting
 				vertex.y = height;
 				return vertex;
 
-				static float GetNoise(float x, float y, SculptSettings settings, Vector2[] offsets)
+				static float GetNoise(float x, float y, SculptSettings settings, IReadOnlyList<Vector2> offsets)
 				{
 					var amplitude = 1f;
 					var frequency = settings.BaseFrequency;
