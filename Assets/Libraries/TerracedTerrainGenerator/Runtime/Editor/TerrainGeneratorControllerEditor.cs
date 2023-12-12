@@ -119,8 +119,12 @@ namespace SneakySquirrelLabs.TerracedTerrainGenerator.Editor
 			DrawSpacedHeader("Sculpt settings");
 			DrawFloatSlider(_frequency, BaseFrequencyTooltip, 0.01f, 1f);
 			DrawIntSlider(_octaves, OctavesTooltip, 1, 10);
-			DrawFloatSlider(_persistence, PersistenceTooltip, 0.01f, 1f);
-			DrawFloatSlider(_lacunarity, LacunarityTooltip, 1.1f, 20f);
+			if (_octaves.intValue > 1)
+			{
+				DrawFloatSlider(_persistence, PersistenceTooltip, 0.01f, 1f);
+				DrawFloatSlider(_lacunarity, LacunarityTooltip, 1.1f, 20f);
+			}
+
 			DrawProperty(_heightCurve, HeightCurveTooltip);
 			
 			serializedObject.ApplyModifiedProperties();
