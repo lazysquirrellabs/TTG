@@ -47,11 +47,9 @@ namespace SneakySquirrelLabs.TerracedTerrainGenerator.Utils
             // Allocate the list.
             var newList = new NativeList<T>(capacity, allocator);
             // Copy data into the list.
-            foreach (var t in list)
-                newList.Add(t);
-            // Add remaining empty items
-            for (var i = list.Length; i < capacity; i++)
-                newList.Add(default);
+            newList.AddRange(list);
+            // Clear (set value to default) trailing items by setting the list's length.
+            newList.Length = capacity;
             return newList;
         }
     }

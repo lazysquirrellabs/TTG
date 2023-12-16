@@ -183,8 +183,8 @@ namespace SneakySquirrelLabs.TerracedTerrainGenerator.TerraceGeneration
 
             _baked = true;
             
-            static NativeArray<Vector3> MergeVertices(NativeParallelHashMap<Vector3,int> v1, NativeParallelHashMap<Vector3,int> v2, 
-                Allocator allocator)
+            static NativeArray<Vector3> MergeVertices(NativeParallelHashMap<Vector3,int> v1, 
+	            NativeParallelHashMap<Vector3,int> v2, Allocator allocator)
             {
                 var vertices = new NativeArray<Vector3>(v1.Count() + v2.Count(), allocator);
                 AddVertices(v1);
@@ -209,7 +209,7 @@ namespace SneakySquirrelLabs.TerracedTerrainGenerator.TerraceGeneration
         internal Mesh Build()
         {
             if (!_baked)
-                throw new InvalidOperationException("Mesh must be baked before being built");
+                throw new InvalidOperationException("Mesh must be baked before being built.");
             
             var mesh = new Mesh();
             mesh.name = "Terraced Terrain";
