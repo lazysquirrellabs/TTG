@@ -89,12 +89,14 @@ namespace SneakySquirrelLabs.TerracedTerrainGenerator.Data
 
         protected override int AddVertex(Vector3 vertex, ref int index)
         {
-            if (_vertices.TryGetValue(vertex, out var existingIndex))
-                return existingIndex;
-            _vertices[vertex] = index;
-            var newIndex = index;
-            index++;
-            return newIndex;
+	        if (_vertices.TryAdd(vertex, index))
+	        {
+		        _vertices[vertex] = index;
+		        var newIndex = index;
+		        index++;
+		        return newIndex;
+	        }
+	        return _vertices[vertex];
         }
 
         #endregion
