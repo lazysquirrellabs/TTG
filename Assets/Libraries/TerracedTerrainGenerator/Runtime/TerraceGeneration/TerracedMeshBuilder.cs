@@ -43,7 +43,7 @@ namespace SneakySquirrelLabs.TerracedTerrainGenerator.TerraceGeneration
         /// <summary>
         /// The indices that were an outcome of the terrain baking and that will be used to construct the final mesh.
         /// </summary>
-        private NativeArray<int>[] _bakedIndices;
+        private NativeList<int>[] _bakedIndices;
         /// <summary>
         /// Whether this builder has baked its mesh data yet.
         /// </summary>
@@ -170,8 +170,8 @@ namespace SneakySquirrelLabs.TerracedTerrainGenerator.TerraceGeneration
             
             // Bake vertices
             _bakedVertices = MergeVertices(_horizontalMeshData.Vertices, _verticalMeshData.Vertices, allocator);
-            // Initialize indices array (per terrace).
-            _bakedIndices = new NativeArray<int>[_terraceCount];
+            // Initialize indices list (per terrace).
+            _bakedIndices = new NativeList<int>[_terraceCount];
             
             // Bake mesh indices data, per terrace/sub mesh
             for (var i = 0; i < _terraceCount; i++)
@@ -227,7 +227,11 @@ namespace SneakySquirrelLabs.TerracedTerrainGenerator.TerraceGeneration
             for (var i = 0; i < _terraceCount; i++)
             {
                 var indices = _bakedIndices[i];
-                mesh.SetIndices(indices, MeshTopology.Triangles, i);
+                // SetIndices doesn't have an overload for NativeList, so we need to transform the indices list into
+                // an array. Luckily, NativeList implements a method (AsArray) that returns a native array that aliases
+                // the content of this list (without copying or allocating for the entire list).
+                var indicesArray = indices.AsArray();
+                mesh.SetIndices(indicesArray, MeshTopology.Triangles, i);
             }
             
             mesh.RecalculateNormals();
