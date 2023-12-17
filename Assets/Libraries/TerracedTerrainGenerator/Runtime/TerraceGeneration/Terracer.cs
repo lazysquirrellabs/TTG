@@ -180,22 +180,25 @@ namespace SneakySquirrelLabs.TerracedTerrainGenerator.TerraceGeneration
                     
                     static (Triangle, int) RearrangeAccordingToPlane(Triangle triangle, float planeHeight)
                     {
-                        var v1Below = triangle.V1.y < planeHeight;
-                        var v2Below = triangle.V2.y < planeHeight;
-                        var v3Below = triangle.V3.y < planeHeight;
+	                    var v1 = triangle.V1;
+	                    var v2 = triangle.V2;
+	                    var v3 = triangle.V3;
+                        var v1Below = v1.y < planeHeight;
+                        var v2Below = v2.y < planeHeight;
+                        var v3Below = v3.y < planeHeight;
 
                         if (v1Below)
                         {
                             if (v2Below)
-                                return triangle.V3.y < planeHeight ? (triangle, 0) : (triangle, 1);
+                                return v3.y < planeHeight ? (triangle, 0) : (triangle, 1);
 
                             if (v3Below)
                             {
-                                triangle = new Triangle(triangle.V3, triangle.V1, triangle.V2);
+                                triangle = new Triangle(v3, v1, v2);
                                 return (triangle, 1);
                             }
 
-                            triangle = new Triangle(triangle.V2, triangle.V3, triangle.V1);
+                            triangle = new Triangle(v2, v3, v1);
                             return (triangle, 2);
                         }
 
@@ -204,13 +207,12 @@ namespace SneakySquirrelLabs.TerracedTerrainGenerator.TerraceGeneration
                 
                         if (v3Below)
                         {
-                            triangle = new Triangle(triangle.V2, triangle.V3, triangle.V1);
+                            triangle = new Triangle(v2, v3, v1);
                             return (triangle, 1);
                         }
 
-                        triangle = new Triangle(triangle.V3, triangle.V1, triangle.V2);
+                        triangle = new Triangle(v3, v1, v2);
                         return (triangle, 2);
-
                     }
                 }
             }
