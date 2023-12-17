@@ -93,11 +93,13 @@ namespace SneakySquirrelLabs.TerracedTerrainGenerator.Sculpting
 					var frequency = settings.BaseFrequency;
 					var persistence = settings.Persistence;
 					var lacunarity = settings.Lacunarity;
+					var xFrequency = frequency * x;
+					var yFrequency = frequency * y;
 					for (var i = 0; i < settings.Octaves; i++)
 					{
 						var offset = offsets[i];
-						var filterX = x * frequency + offset.x;
-						var filterY = y * frequency + offset.y;
+						var filterX = xFrequency + offset.x;
+						var filterY = yFrequency + offset.y;
 						var noise = Mathf.PerlinNoise(filterX, filterY);
 						relativeHeight += amplitude * noise;
 						amplitude *= persistence;
