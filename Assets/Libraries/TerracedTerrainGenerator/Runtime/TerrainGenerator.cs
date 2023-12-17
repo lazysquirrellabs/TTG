@@ -15,7 +15,7 @@ namespace SneakySquirrelLabs.TerracedTerrainGenerator
     /// <summary>
     /// Top-most entity responsible for the terraced terrain generation.
     /// </summary>
-    public class TerrainGenerator : IDisposable
+    public class TerrainGenerator 
     {
         #region Fields
 
@@ -162,11 +162,6 @@ namespace SneakySquirrelLabs.TerracedTerrainGenerator
 
                 return t;
             }
-        }
-        
-        public void Dispose()
-        {
-	        _sculptor?.Dispose();
         }
 
         #endregion

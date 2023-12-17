@@ -1,6 +1,4 @@
-using System;
 using SneakySquirrelLabs.TerracedTerrainGenerator.Data;
-using Unity.Collections;
 using UnityEngine;
 using Random = System.Random;
 
@@ -9,7 +7,7 @@ namespace SneakySquirrelLabs.TerracedTerrainGenerator.Sculpting
 	/// <summary>
 	/// Sculpts a terrain mesh using a planar Perlin filter. The sculpting is applied on the Y axis, upwards.
 	/// </summary>
-	internal class Sculptor : IDisposable
+	internal class Sculptor 
 	{
 		#region Fields
 
@@ -31,17 +29,7 @@ namespace SneakySquirrelLabs.TerracedTerrainGenerator.Sculpting
 		/// <summary>
 		/// The octave offsets.
 		/// </summary>
-		private readonly NativeArray<Vector2> _offsets;
-		
-		/// <summary>
-		/// The octave amplitudes.
-		/// </summary>
-		private readonly NativeArray<float> _amplitudes;
-		
-		/// <summary>
-		/// The octave frequencies.
-		/// </summary>
-		private readonly NativeArray<float> _frequencies;
+		private readonly Vector2[] _offsets;
 
 		#endregion
 
@@ -56,46 +44,8 @@ namespace SneakySquirrelLabs.TerracedTerrainGenerator.Sculpting
 		{
 			_settings = sculptSettings;
 			_maximumHeight = maximumHeight;
-			
-			var octaves = (int)_settings.Octaves;
-			// Cache the octaves data instead of calculating them on every Sculpt call to reduce memory allocations.
-			_offsets = CreateArray<Vector2>(octaves);
-			_amplitudes = CreateArray<float>(octaves);
-			_frequencies = CreateArray<float>(octaves);
 			_random = new Random(_settings.Seed);
-
-			// Calculate the octaves data.
-			var amplitude = 1f;
-			var frequency = _settings.BaseFrequency;
-			
-			for (var i = 0; i < _settings.Octaves; i++)
-			{
-				amplitude *= _settings.Persistence;
-				frequency *= _settings.Lacunarity;
-				_amplitudes[i] = amplitude;
-				_frequencies[i] = frequency;
-			}
-			
-			static NativeArray<T> CreateArray<T>(int count) where T : struct
-			{
-				return new NativeArray<T>(count, Allocator.Persistent, NativeArrayOptions.UninitializedMemory);
-			}
-		}
-
-		#endregion
-
-		#region Public
-
-		public void Dispose()
-		{
-			DisposeArray(_offsets);
-			DisposeArray(_amplitudes);
-			DisposeArray(_frequencies);
-
-			static void DisposeArray<T>(NativeArray<T> array) where T : struct
-			{
-				array.Dispose();
-			}
+			_offsets = new Vector2[(int)_settings.Octaves];
 		}
 
 		#endregion
@@ -108,7 +58,6 @@ namespace SneakySquirrelLabs.TerracedTerrainGenerator.Sculpting
 		/// <param name="meshData">The mesh data to be sculpted.</param>
 		internal void Sculpt(SimpleMeshData meshData)
 		{
-			
 			var offsets = _offsets;
 			for (var i = 0; i < _settings.Octaves; i++)
 			{
@@ -131,25 +80,28 @@ namespace SneakySquirrelLabs.TerracedTerrainGenerator.Sculpting
 
 			Vector3 CalculateVertexNoise(Vector3 vertex)
 			{
-				var height = GetNoise(vertex.x, vertex.z, _settings, _offsets, _amplitudes, _frequencies);
+				var height = GetNoise(vertex.x, vertex.z, _settings, _offsets);
 				if (height > highestPointRelative)
 					highestPointRelative = height;
 				vertex.y = height;
 				return vertex;
 
-				static float GetNoise(float x, float y, SculptSettings settings, NativeArray<Vector2> offsets, 
-					NativeArray<float> amplitudes, NativeArray<float> frequencies)
+				static float GetNoise(float x, float y, SculptSettings settings, Vector2[] offsets)
 				{
 					float relativeHeight = 0;
+					var amplitude = 1f;
+					var frequency = settings.BaseFrequency;
+					var persistence = settings.Persistence;
+					var lacunarity = settings.Lacunarity;
 					for (var i = 0; i < settings.Octaves; i++)
 					{
-						var frequency = frequencies[i];
-						var amplitude = amplitudes[i];
 						var offset = offsets[i];
 						var filterX = x * frequency + offset.x;
 						var filterY = y * frequency + offset.y;
 						var noise = Mathf.PerlinNoise(filterX, filterY);
 						relativeHeight += amplitude * noise;
+						amplitude *= persistence;
+						frequency *= lacunarity;
 					}
 
 					return relativeHeight;
