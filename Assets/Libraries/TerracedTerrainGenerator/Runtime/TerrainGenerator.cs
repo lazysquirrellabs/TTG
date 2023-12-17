@@ -15,7 +15,7 @@ namespace SneakySquirrelLabs.TerracedTerrainGenerator
     /// <summary>
     /// Top-most entity responsible for the terraced terrain generation.
     /// </summary>
-    public class TerrainGenerator
+    public class TerrainGenerator : IDisposable
     {
         #region Fields
 
@@ -27,6 +27,8 @@ namespace SneakySquirrelLabs.TerracedTerrainGenerator
         /// Allocation strategy used whenever the asynchronous terrain generation is performed.
         /// </summary>
         private const Allocator AsyncAllocator = Allocator.Persistent;
+
+        private readonly Allocator _allocator;
         /// <summary>
         /// The polygon generator used to create the terrain's basic shape.
         /// </summary>
@@ -160,6 +162,11 @@ namespace SneakySquirrelLabs.TerracedTerrainGenerator
 
                 return t;
             }
+        }
+        
+        public void Dispose()
+        {
+	        _sculptor?.Dispose();
         }
 
         #endregion
