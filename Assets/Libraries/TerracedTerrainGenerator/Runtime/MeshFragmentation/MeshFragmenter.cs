@@ -98,8 +98,8 @@ namespace SneakySquirrelLabs.TerracedTerrainGenerator.MeshFragmentation
             static NativeList<T> CreateNativeList<T>(int length, Allocator allocator) where T : unmanaged
             {
                 var list = new NativeList<T>(length, allocator);
-                for (var i = 0; i < length; i++)
-                    list.Add(default);
+                // Setting the length manually will clear (set the default value) the remaining items.
+                list.Length = length;
                 return list;
             }
 
