@@ -18,7 +18,7 @@ namespace SneakySquirrelLabs.TerracedTerrainGenerator.Utils
             var length1 = l1.Length;
             var length2 = l2.Length;
             var combined = l1.Copy(length1 + length2, allocator);
-            combined.AddRange(l2);
+            combined.AddRange(l2.AsArray());
             return combined;
         }
         
@@ -39,7 +39,7 @@ namespace SneakySquirrelLabs.TerracedTerrainGenerator.Utils
             // Allocate the list.
             var newList = new NativeList<T>(capacity, allocator);
             // Copy data into the list.
-            newList.AddRange(list);
+            newList.AddRange(list.AsArray());
             // Clear (set value to default) trailing items by setting the list's length.
             newList.Length = capacity;
             return newList;
