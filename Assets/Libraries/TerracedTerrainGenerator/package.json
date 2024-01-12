@@ -5,7 +5,7 @@
   "description": "Generate terraced terrains procedurally.",
   "unity": "2021.3",
   "documentationUrl": "http://ttg.matheusamazonas.net",
-  "changelogUrl": "https://github.com/matheusamazonas/TTG",
+  "changelogUrl": "https://github.com/matheusamazonas/TTG/releases",
   "licensesUrl": "https://github.com/matheusamazonas/TTG/blob/master/LICENSE",
   "dependencies": {
     "com.unity.collections": "1.5.1"
