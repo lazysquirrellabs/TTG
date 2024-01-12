@@ -37,12 +37,17 @@ namespace SneakySquirrelLabs.TerracedTerrainGenerator.Samples.Display
 
 			try
 			{
-				foreach (var setup in _setups)
+				var index = 0;
+				while (true)
 				{
+					if (index >= _setups.Length)
+						index = 0;
+					var setup = _setups[index];
 					setup.Show();
 					await Task.Delay(periodMilli, token);
 					token.ThrowIfCancellationRequested();
 					setup.Hide();
+					index++;
 				}
 			}
 			catch (OperationCanceledException)
