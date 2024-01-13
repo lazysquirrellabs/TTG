@@ -37,6 +37,7 @@ namespace SneakySquirrelLabs.TerracedTerrainGenerator.Samples.ParametersTest
 		private void OnDestroy()
 		{
 			_cancellationTokenSource?.Cancel();
+			_cancellationTokenSource?.Dispose();
 		}
 
 		#endregion
