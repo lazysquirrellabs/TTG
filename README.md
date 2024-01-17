@@ -118,27 +118,27 @@ Generating a terraced terrain via the API requires two steps:
 The generation data is stored on the `TerrainGenerator` instance and is immutable. That means that once a generator is created, it will always create terrains using the given generation data. This class represents one instance of the terraced terrain generator (there can be multiple) and it has only one constructor:
 ```csharp
 public TerrainGenerator(ushort sides, 
-						float radius, 
-						float maximumHeight, 
-						float[] relativeTerraceHeights, 
-						SculptSettings sculptSettings, 
-						ushort depth)
+                        float radius, 
+                        float maximumHeight, 
+                        float[] relativeTerraceHeights, 
+                        SculptSettings sculptSettings, 
+                        ushort depth)
 ```
 The parameters (including the sculpt settings) are the same ones explained at the beginning of the [Usage](#usage) section. The sculpt settings are grouped in the `SculptSettings` struct, which exposes two constructors:
 ```csharp
 // For pseudorandom procedural generation
 public SculptSettings(float baseFrequency, 
-					  uint octaves, 
-					  float persistence, 
-					  float lacunarity, 
-					  AnimationCurve heightDistribution)
+                      uint octaves, 
+                      float persistence, 
+                      float lacunarity, 
+                      AnimationCurve heightDistribution)
 // For reproducible procedural generation
 public SculptSettings(int seed, 
-					  float baseFrequency, 
-					  uint octaves, 
-					  float persistence, 
-					  float lacunarity, 
-					  AnimationCurve heightDistribution)
+                      float baseFrequency, 
+                      uint octaves, 
+                      float persistence, 
+                      float lacunarity, 
+                      AnimationCurve heightDistribution)
 ```
 Once the `TerrainGenerator` instance is created, we can actually generate terrains using its two generation methods:
 ```csharp
