@@ -68,6 +68,7 @@ namespace SneakySquirrelLabs.TerracedTerrainGenerator.Samples.Randomizer
 		private void OnDestroy()
 		{
 			_cancellationTokenSource?.Cancel();
+			_cancellationTokenSource?.Dispose();
 		}
 
 		#endregion
@@ -98,7 +99,7 @@ namespace SneakySquirrelLabs.TerracedTerrainGenerator.Samples.Randomizer
 			var height = Random.Range(HeightMin, HeightMax);
 			// Sculpting settings
 			var frequency = Random.Range(FrequencyMin, FrequencyMax);
-			var sculptingSettings = new SculptingSettings(frequency, HeightCurve);
+			var sculptingSettings = new SculptSettings(frequency, 3, 0.5f, 2f, HeightCurve);
 			// Generation settings
 			var sides = (ushort) Random.Range(SidesMin, SidesMax);
 			var depth = (ushort) Random.Range(DepthMin, DepthMax);

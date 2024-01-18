@@ -26,13 +26,17 @@ Terraced Terrain Generator (TTG) is a free Unity tool for procedural generation 
 - Pseudorandom procedural terrain generation.
 - Deterministic procedural terrain generation with parameterized seed.
 - Both synchronous and asynchronous (with `async`/`await`) support.
-- Reduced GC allocations using native constructs delivered by Unity's [Collections package](https://docs.unity3d.com/Packages/com.unity.collections@1.2/manual/index.html) (e.g. `NativeArray<T>` and `NativeList<T>`).
+- Reduced GC allocations using native constructs (e.g. `NativeArray` and `NativeList`).
 - Customizable:
-	- Basic terrain shapes from 3 to 10 sizes.
+	- Basic terrain shape from 3 to 10 sizes.
 	- Number of terraces.
 	- Terrain size (radius and height).
 	- Detail level (a.k.a. fragmentation depth).
-	- Sculpting features (hills and valleys) frequency.
+	- Sculpting features (hills and valleys):
+		- Base frequency.
+		- Octaves.
+		- Persistence (more than 1 octave).
+		- Lacunarity (more than 1 octave).
 	- Terrace heights.
 	- Height distribution.
 
@@ -46,7 +50,7 @@ This approach uses Unity's Package Manager to add TTG to your project using the 
 
 Next, enter the following in the "URL" input field to install the latest version of TTG:
 ```
-https://github.com/matheusamazonas/ttg.git?path=Assets/Libraries/TerracedTerrainGenerator#latest
+https://github.com/matheusamazonas/ttg.git?path=Assets/Libraries/TerracedTerrainGenerator
 ```
 Finally, click on the "Add" button. The importing process should start automatically. Once it's done, TTG is ready to be used in the project. 
 
@@ -62,14 +66,17 @@ After importing TTG, check the [Usage](#usage) section on how to use it and the 
 
 ## Usage
 There are two different ways to use TTG: via the `TerrainGeneratorController` component and via the API. Both methods share the same parameter list, explained below:
-- Side count: number of sides of the terrain's basic shape (3 to 10).
-- Radius: the greatest distance between the center of the mesh and all of its vertices (ignoring their position's Y coordinate). This number must be greater than zero.
-- Maximum height: the maximum distance between the lowest and highest vertices of the terrain. This number must be greater than zero.
-- Relative terrace heights: an array of terrace heights, relative to the terrain's maximum height. Values must be in the  \[0, 1] range, in ascending order. Each terrace's final height will be calculated by multiplying the relative height by the terrain's height. The length of this array dictates how many terraces will be generated.
-- Sculpting settings: a group of settings used to sculpt the terrain—the process of creating hills and valleys using Perlin noise. These settings include:
-	- Feature frequency: the number of terrain features (hills and valleys) in a given area. 
-	- Height distribution:  the height distribution over the terrain. In short, how low valleys and how high hills should be, and everything in between. It's represented as a curve that must start in (0,0) and end in (1,1). A linear curve is considered a canonical value.
-- Fragmentation depth: how many times the basic shape will be fragmented to form the terrain. The larger the value, the greater the level of detail will be (more triangles and vertices) and the longer the generation process takes.
+- **Side count**: number of sides of the terrain's basic shape (3 to 10).
+- **Radius**: the greatest distance between the center of the mesh and all of its vertices (ignoring their position's Y coordinate). This number must be greater than zero.
+- **Fragmentation depth**: how many times the basic shape will be fragmented to form the terrain. The larger the value, the greater the level of detail will be (more triangles and vertices) and the longer the generation process takes.
+- **Maximum height**: the maximum distance between the lowest and highest vertices of the terrain. This number must be greater than zero.
+- **Relative terrace heights**: an array of terrace heights, relative to the terrain's maximum height. Values must be in the \[0, 1] range, in ascending order. Each terrace's final height will be calculated by multiplying the relative height by the terrain's height. The length of this array dictates how many terraces will be generated.
+- **Sculpt settings**: a group of settings used to sculpt the terrain—the process of creating hills and valleys using Perlin noise. These settings include:
+	- **Base feature frequency**: the number of terrain features (hills and valleys) in a given area on the first iteration (a.k.a. octave) of the sculpting process. This value must be greater than zero.
+	- **Octave count**: how many iterations of the sculpting process will be performed. Each iteration will be performed with a lower intensity and higher frequency as the previous one. This value must be greater than zero. When this value is 1, persistence and lacunarity are ignored.
+	- **Persistence**: how much of an octave's amplitude (a.k.a. "strength") will be carried to the next octave. The lower the value, the quicker octave details disappear with each iteration. This value must be in the (0, 1) range.
+	- **Lacunarity**: how much the frequency increases (multiplication factor) between octaves. In other words, how much more detail each octave will contain, when compared to the previous one. This value must be greater than one.
+	- **Height distribution**:  the height distribution over the terrain. In short, how low valleys and how high hills should be, and everything in between. It's represented as a curve that must start in (0,0) and end in (1,1). If this value is null, a canonical value (a linear curve that won't affect the distribution) will be used.
 
 The two usage methods will differ only on how they provide these parameters and how they use the terrain generation output.
 
@@ -91,13 +98,13 @@ This component contains all parameters explained in the previous section, in add
 public void GenerateTerrain();
 // For pseudorandom asynchronous generation:
 public async Task GenerateTerrainAsync(CancellationToken token);
-// For predictable, synchronous generation:
+// For reproducible synchronous generation:
 public void GenerateTerrain(int seed);
-// For predictable asynchronous generation:
+// For reproducible asynchronous generation:
 public async Task GenerateTerrainAsync(int seed, CancellationToken token);
 ```
 
-The first two methods are meant for pseudorandom procedural generation—when the generated terrain doesn't need to be reproduced in the future. The other methods are meant for reproducible procedural generation—when we would like to generate the exact same terrain in the future. The `seed` parameter will be used to feed the randomizer and it's enough to reproduce an entire terrain. If you're aiming for reproducible terrains, use the last two methods. The task of generating random seed values is up to the user. The asynchronous methods support task cancellation via a cancellation token. If the token's source is cancelled, a `TaskCanceledException` might be thrown.
+The first two methods are meant for pseudorandom procedural generation—when the generated terrain doesn't need to be reproduced in the future. The other methods are meant for reproducible procedural generation—when we would like to generate the exact same terrain in the future. The `seed` parameter will be used to feed the randomizer and it's enough to reproduce an entire terrain. If you're aiming for reproducible terrains, use the last two methods. The task of generating random seed values is up to the user. The asynchronous methods support task cancellation via a cancellation token. If the token's source is cancelled, an `OperationCanceledException` might be thrown.
 
 The controller manages the lifetime of the meshes it generates, and it destroys them once they're not being used anymore (including when the component itself is destroyed). If you would like to manage mesh lifetime yourself, use the API (described below) instead.
 
@@ -110,14 +117,28 @@ Generating a terraced terrain via the API requires two steps:
 
 The generation data is stored on the `TerrainGenerator` instance and is immutable. That means that once a generator is created, it will always create terrains using the given generation data. This class represents one instance of the terraced terrain generator (there can be multiple) and it has only one constructor:
 ```csharp
-public TerrainGenerator(ushort sides, float radius, float maximumHeight, float[] relativeTerraceHeights, SculptingSettings sculptingSettings, ushort depth)
+public TerrainGenerator(ushort sides, 
+                        float radius, 
+                        float maximumHeight, 
+                        float[] relativeTerraceHeights, 
+                        SculptSettings sculptSettings, 
+                        ushort depth)
 ```
-The parameters (including the sculpting settings) are the same ones explained at the beginning of the [Usage](#usage) section. The sculpting settings are grouped in the `SculptingSettings` struct, which exposes two constructors:
+The parameters (including the sculpt settings) are the same ones explained at the beginning of the [Usage](#usage) section. The sculpt settings are grouped in the `SculptSettings` struct, which exposes two constructors:
 ```csharp
 // For pseudorandom procedural generation
-public SculptingSettings(float frequency, AnimationCurve heightDistribution)
+public SculptSettings(float baseFrequency, 
+                      uint octaves, 
+                      float persistence, 
+                      float lacunarity, 
+                      AnimationCurve heightDistribution)
 // For reproducible procedural generation
-public SculptingSettings(int seed, float frequency, AnimationCurve heightDistribution)
+public SculptSettings(int seed, 
+                      float baseFrequency, 
+                      uint octaves, 
+                      float persistence, 
+                      float lacunarity, 
+                      AnimationCurve heightDistribution)
 ```
 Once the `TerrainGenerator` instance is created, we can actually generate terrains using its two generation methods:
 ```csharp
@@ -126,28 +147,29 @@ public Mesh GenerateTerrain();
 // For asynchronous generation
 public async Task<Mesh> GenerateTerrainAsync(CancellationToken token);
 ```
-The asynchronous method supports task cancellation via a cancellation token. If the token's source is cancelled, a `TaskCanceledException` might be thrown.
+The asynchronous method supports task cancellation via a cancellation token. If the token's source is cancelled, an `OperationCanceledException` might be thrown.
 
 It's important to point out that the user is responsible for resource management (in this case, meshes). The API doesn't automatically clean terrain meshes up. 
 
 And that's it. No other types or methods are exposed. The ones above are sufficient to use all TTG features via the API.
 
 #### Example 
-Let's say we would like to generate random octagonal terrains with 5 terraces, 20 units radius, maximum height of 9.5 units, a feature frequency of 0.075 and a fragmentation depth of 4. First, let's create the height distribution curve. For real-world usage, it would be handy to serialize this curve so it's easily editable in the inspector. Here, for the sake of simplicity, let's use a linear curve declared in code:
+Let's say we would like to generate random octagonal terrain with 5 terraces, 20 units radius, maximum height of 9.5 units and a fragmentation depth of 4. For sculpting, we would like 5 octaves, a base frequency of 0.075, a persistence of 0.375 and a lacunarity of 2.52. 
+First, let's create the height distribution curve. For real-world usage, it would be handy to serialize this curve so it's easily editable in the inspector. Here, for the sake of simplicity, let's use a linear curve declared in code:
 ```csharp
 var heightDistribution = AnimationCurve.Linear(0f, 0f, 1f, 1f);
 ```
-To create the sculpting settings, we first pass the feature frequency (0.075) followed by the height distribution created on the step above:
+To create the sculpt settings, we first pass the feature frequency (0.075), followed by the number of octaves (5), the persistence (0.375), the lacunarity (2.52) and finally, the height distribution created on the step above:
 ```csharp
-var sculptingSettings = new SculptingSettings(0.075f, heightDistribution);
+var sculptSettings = new SculptSettings(0.075f, 5, 0.375f, 2.52f, heightDistribution);
 ```
 Next, let's choose the relative terrain heights for the 5 terraces:
 ```csharp
 var relativeHeights = new[] { 0f, 0.2f, 0.6f, 0.87f, 1f };
 ```
-Finally, let's call the `TerrainGenerator` constructor to create the generator, passing the number of sides of the terrain's basic shape (8 for octagon), the radius (20), the maximum height (9.5),  the previously created relative terrace heights and sculpting settings and the fragmentation depth (4).
+Finally, let's call the `TerrainGenerator` constructor to create the generator, passing the number of sides of the terrain's basic shape (8 for octagon), the radius (20), the maximum height (9.5),  the previously created relative terrace heights and sculpt settings, and the fragmentation depth (4).
 ```csharp
-var generator = new TerrainGenerator(8, 20, 9.5f, relativeHeights, sculptingSettings, 4);
+var generator = new TerrainGenerator(8, 20, 9.5f, relativeHeights, sculptSettings, 4);
 ```
 Once we've constructed a `TerrainGenerator`, we can simply ask it to generate a new terrain. For example, if we would like to generate the terrain synchronously:
 ```csharp
@@ -176,14 +198,14 @@ The package contains three samples:
 To import the samples, open the Package Manager and select TTG in the packages list. Then find the Samples section on the right panel, and click on the "Import" button right next to the sample you would like to import. Once importing is finished, navigate to the `Assets/Samples/Terraced Terrain Generator` folder. Finally, open and play the scene from the sample you would like to test.
 
 ## Compatibility and dependencies
-TTG requires Unity 2021.3.X or above, its target API compatibility level is .NET Standard 2.1, and depends on the following packages:
+TTG requires Unity 2022.3.X or above, its target API compatibility level is .NET Standard 2.1, and depends on the following packages:
 - `com.unity.collections`
 
 ## Roadmap
-Although the first version of TTG is out, it's still under (casual) development. The following features are planned in the next versions:
+Although the first versions are out, it's still under (casual) development. The following features are planned in the next versions:
 - ~~Custom terrain heights: instead of evenly spacing the terraces between the terrain's lowest and highest points, allow custom heights to be chosen.~~ Implemented on version 1.1.0.
+- ~~Improve terrain detailing: use Perlin noise octaves to create more natural terrains.~~ Implemented on version 1.2.0.
 - Sphere as a basic shape: let's create completely terraced planets!
-- Improve terrain detailing: use Perlin noise octaves to create more natural terrains.
 - Real-time sculpting: instead of letting an algorithm generate the hills, let the user interactively sculpt them.
 - Outer walls: “close” the generated mesh so it looks like a model carved in wood, sitting on a desk. 
 
@@ -192,11 +214,11 @@ You can follow TTG's development progress on its [Trello board](https://trello.c
 ## Technical aspects
 Technical aspects of TTG were described in the following blogs posts:
 
-- [Developing a Terraced Terrain Generator](https://www.matheusamazonas.net/blog/2023/04/08/ttg)
-- [Terraced Terrain Generator performance improvements](https://www.matheusamazonas.net/blog/2023/04/09/ttg-performance).
+- [Developing a Terraced Terrain Generator](https://blog.matheusamazonas.net/posts/ttg).
+- [Terraced Terrain Generator performance improvements](https://blog.matheusamazonas.net/posts/ttg_performance).
 
 ## Contributing
-If you would like to report e bug, please create an [issue](https://github.com/matheusamazonas/ttg/issues). If you would like to contribute with bug fixing or small improvements, please open a Pull Request. If you would like to contribute with a new feature (regardless if it's in the roadmap or not),  [contact the developer](https://matheusamazonas.net/contact.html).  
+If you would like to report e bug, please create an [issue](https://github.com/matheusamazonas/ttg/issues). If you would like to contribute with bug fixing or small improvements, please open a Pull Request. If you would like to contribute with a new feature (regardless if it's in the roadmap or not), [contact the developer](https://matheusamazonas.net/contact.html).  
 
 ## Getting help
 Use the [issues page](https://github.com/matheusamazonas/ttg/issues) if there's a problem with your TTG setup, if something isn't working as expected, or if you would like to ask questions about the tool and its usage.

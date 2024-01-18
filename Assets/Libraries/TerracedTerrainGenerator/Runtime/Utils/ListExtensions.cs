@@ -5,29 +5,21 @@ namespace SneakySquirrelLabs.TerracedTerrainGenerator.Utils
     internal static class ListExtensions
     {
         /// <summary>
-        /// Combines two native lists into a <see cref="NativeArray{T}"/>, copying data from the provided lists into
-        /// the array.
+        /// Combines two native lists, copying data from the provided lists into a new one.
         /// </summary>
         /// <param name="l1">The first list to be combined.</param>
         /// <param name="l2">The second list to be combined.</param>
-        /// <param name="allocator">The allocation strategy to allocate the new native array.</param>
+        /// <param name="allocator">The allocation strategy to allocate the new native list.</param>
         /// <typeparam name="T">The type of the list' elements.</typeparam>
-        /// <returns>A new native array, containing the elements of both lists.</returns>
-        internal static NativeArray<T> Combine<T>(this NativeList<T> l1, NativeList<T> l2, Allocator allocator) 
+        /// <returns>A new native list, containing the elements of both lists.</returns>
+        internal static NativeList<T> Combine<T>(this NativeList<T> l1, NativeList<T> l2, Allocator allocator) 
             where T : unmanaged
         {
-            var lenght1 = l1.Length;
+            var length1 = l1.Length;
             var length2 = l2.Length;
-            var combined = new NativeArray<T>(lenght1 + length2, allocator);
-            CopyTo(l1, combined, 0);
-            CopyTo(l2, combined, l1.Length);
+            var combined = l1.Copy(length1 + length2, allocator);
+            combined.AddRange(l2.AsArray());
             return combined;
-
-            void CopyTo(NativeList<T> source, NativeArray<T> destination, int offset)
-            {
-                for (var i = offset; i < source.Length + offset; i++)
-                    destination[i] = source[i - offset];
-            }
         }
         
         /// <summary>
@@ -47,11 +39,9 @@ namespace SneakySquirrelLabs.TerracedTerrainGenerator.Utils
             // Allocate the list.
             var newList = new NativeList<T>(capacity, allocator);
             // Copy data into the list.
-            foreach (var t in list)
-                newList.Add(t);
-            // Add remaining empty items
-            for (var i = list.Length; i < capacity; i++)
-                newList.Add(default);
+            newList.AddRange(list.AsArray());
+            // Clear (set value to default) trailing items by setting the list's length.
+            newList.Length = capacity;
             return newList;
         }
     }

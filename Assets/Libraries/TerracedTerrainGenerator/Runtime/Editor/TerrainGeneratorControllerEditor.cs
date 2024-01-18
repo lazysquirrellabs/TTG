@@ -19,6 +19,9 @@ namespace SneakySquirrelLabs.TerracedTerrainGenerator.Editor
 		private SerializedProperty _relativeHeights;
 		private SerializedProperty _maximumHeight;
 		private SerializedProperty _frequency;
+		private SerializedProperty _octaves;
+		private SerializedProperty _persistence;
+		private SerializedProperty _lacunarity;
 		private SerializedProperty _heightCurve;
 		
 		// Tooltips
@@ -30,8 +33,18 @@ namespace SneakySquirrelLabs.TerracedTerrainGenerator.Editor
 			"How many times the basic shape will be fragmented to form the terrain. The larger the value, the greater" +
 			" the level of detail will be (more triangles and vertices) and the longer the generation process takes.";
 		private const string HeightTooltip = "The maximum height of the generated terrain, in units.";
-		private const string FrequencyTooltip = 
-			"The degree of detail in the generated terrain (hills and valleys) in a given area.";
+		private const string BaseFrequencyTooltip = 
+			"The base (first octave's) degree of detail (hills and valleys) in a given area.";
+		private const string OctavesTooltip = 
+			"How many octaves (iterations) the sculpting will run. Each octave will run on a higher frequency and " +
+			"lower relevance than the previous one. The higher the value, the more variation the terrain will " +
+			"contain, but there is a point of diminishing returns due to persistence.";
+		private const string PersistenceTooltip = 
+			"Also called gain, it determines how much of an octave's amplitude will be carried to the next octave. " +
+			"The lower the value, the quicker octave details \"disappear\" with each iteration.";
+		private const string LacunarityTooltip =
+			"How the frequency will be affected (multiplication factor) between octaves. In other words, how much" +
+			" detail each octave will contain, when compared to the previous one.";
 		private const string HeightCurveTooltip =
 			"Height distribution over the terrain: how low valleys and how high hills should be and everything in " +
 			"between. This curve must start in (0,0) and end in (1,1).";
@@ -59,7 +72,10 @@ namespace SneakySquirrelLabs.TerracedTerrainGenerator.Editor
 			_useCustomHeights = serializedObject.FindProperty("_useCustomHeights");
 			_relativeHeights = serializedObject.FindProperty("_relativeHeights");
 			_maximumHeight = serializedObject.FindProperty("_maximumHeight");
-			_frequency = serializedObject.FindProperty("_frequency");
+			_frequency = serializedObject.FindProperty("_baseFrequency");
+			_octaves = serializedObject.FindProperty("_octaves");
+			_persistence = serializedObject.FindProperty("_persistence");
+			_lacunarity = serializedObject.FindProperty("_lacunarity");
 			_heightCurve = serializedObject.FindProperty("_heightCurve");
 		}
 
@@ -100,11 +116,16 @@ namespace SneakySquirrelLabs.TerracedTerrainGenerator.Editor
 						_relativeHeights.GetArrayElementAtIndex(i).floatValue = (float)i / (newLength - 1);
 				}
 			}
-			DrawSpacedHeader("Sculpting settings");
-			DrawFloatSlider(_frequency, FrequencyTooltip, 0.01f, 1f);
+			DrawSpacedHeader("Sculpt settings");
+			DrawFloatSlider(_frequency, BaseFrequencyTooltip, 0.01f, 1f);
+			DrawIntSlider(_octaves, OctavesTooltip, 1, 10);
+			if (_octaves.intValue > 1)
+			{
+				DrawFloatSlider(_persistence, PersistenceTooltip, 0.01f, 1f);
+				DrawFloatSlider(_lacunarity, LacunarityTooltip, 1.1f, 20f);
+			}
+
 			DrawProperty(_heightCurve, HeightCurveTooltip);
-			
-			
 			
 			serializedObject.ApplyModifiedProperties();
 			
