@@ -1,10 +1,10 @@
 using System;
 using System.Threading;
 using System.Threading.Tasks;
-using SneakySquirrelLabs.TerracedTerrainGenerator.Sculpting;
+using LazySquirrelLabs.TerracedTerrainGenerator.Sculpting;
 using UnityEngine;
 
-namespace SneakySquirrelLabs.TerracedTerrainGenerator
+namespace LazySquirrelLabs.TerracedTerrainGenerator
 {
 	public class TerrainGeneratorController : MonoBehaviour
 	{

@@ -1,10 +1,10 @@
 using System;
-using SneakySquirrelLabs.TerracedTerrainGenerator.Data;
-using SneakySquirrelLabs.TerracedTerrainGenerator.Utils;
+using LazySquirrelLabs.TerracedTerrainGenerator.Data;
+using LazySquirrelLabs.TerracedTerrainGenerator.Utils;
 using Unity.Collections;
 using UnityEngine;
 
-namespace SneakySquirrelLabs.TerracedTerrainGenerator.MeshFragmentation
+namespace LazySquirrelLabs.TerracedTerrainGenerator.MeshFragmentation
 {
     /// <summary>
     /// Fragments a mesh into sub-triangles given an arbitrary depth. The original mesh is modified.

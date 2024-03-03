@@ -1,8 +1,8 @@
-using SneakySquirrelLabs.TerracedTerrainGenerator.Data;
+using LazySquirrelLabs.TerracedTerrainGenerator.Data;
 using UnityEngine;
 using Random = System.Random;
 
-namespace SneakySquirrelLabs.TerracedTerrainGenerator.Sculpting
+namespace LazySquirrelLabs.TerracedTerrainGenerator.Sculpting
 {
 	/// <summary>
 	/// Sculpts a terrain mesh using a planar Perlin filter. The sculpting is applied on the Y axis, upwards.

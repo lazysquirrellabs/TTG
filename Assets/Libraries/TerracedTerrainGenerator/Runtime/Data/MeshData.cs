@@ -2,7 +2,7 @@ using System;
 using Unity.Collections;
 using UnityEngine;
 
-namespace SneakySquirrelLabs.TerracedTerrainGenerator.Data
+namespace LazySquirrelLabs.TerracedTerrainGenerator.Data
 {
     /// <summary>
     /// Abstract class used to create data that can be used to create a <see cref="Mesh"/>.

@@ -2,15 +2,15 @@ using System;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
-using SneakySquirrelLabs.TerracedTerrainGenerator.Data;
-using SneakySquirrelLabs.TerracedTerrainGenerator.MeshFragmentation;
-using SneakySquirrelLabs.TerracedTerrainGenerator.PolygonGeneration;
-using SneakySquirrelLabs.TerracedTerrainGenerator.Sculpting;
-using SneakySquirrelLabs.TerracedTerrainGenerator.TerraceGeneration;
+using LazySquirrelLabs.TerracedTerrainGenerator.Data;
+using LazySquirrelLabs.TerracedTerrainGenerator.MeshFragmentation;
+using LazySquirrelLabs.TerracedTerrainGenerator.PolygonGeneration;
+using LazySquirrelLabs.TerracedTerrainGenerator.Sculpting;
+using LazySquirrelLabs.TerracedTerrainGenerator.TerraceGeneration;
 using Unity.Collections;
 using UnityEngine;
 
-namespace SneakySquirrelLabs.TerracedTerrainGenerator
+namespace LazySquirrelLabs.TerracedTerrainGenerator
 {
     /// <summary>
     /// Top-most entity responsible for the terraced terrain generation.

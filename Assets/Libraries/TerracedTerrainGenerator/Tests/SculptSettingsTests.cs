@@ -1,9 +1,9 @@
 using System;
 using NUnit.Framework;
-using SneakySquirrelLabs.TerracedTerrainGenerator.Sculpting;
+using LazySquirrelLabs.TerracedTerrainGenerator.Sculpting;
 using UnityEngine;
 
-namespace SneakySquirrelLabs.TerracedTerrainGenerator.Tests
+namespace LazySquirrelLabs.TerracedTerrainGenerator.Tests
 {
 	internal class SculptSettingsTests
 	{

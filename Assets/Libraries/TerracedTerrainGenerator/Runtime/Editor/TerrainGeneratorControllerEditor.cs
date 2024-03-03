@@ -1,7 +1,7 @@
 using UnityEditor;
 using UnityEngine;
 
-namespace SneakySquirrelLabs.TerracedTerrainGenerator.Editor
+namespace LazySquirrelLabs.TerracedTerrainGenerator.Editor
 {
 	[CustomEditor(typeof(TerrainGeneratorController))]
 	internal class TerrainGeneratorControllerEditor : UnityEditor.Editor

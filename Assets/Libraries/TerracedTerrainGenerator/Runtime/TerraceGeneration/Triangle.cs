@@ -1,7 +1,7 @@
 using Unity.Collections;
 using UnityEngine;
 
-namespace SneakySquirrelLabs.TerracedTerrainGenerator.TerraceGeneration
+namespace LazySquirrelLabs.TerracedTerrainGenerator.TerraceGeneration
 {
     /// <summary>
     /// A triangle representation used for internal calculations.

@@ -1,6 +1,6 @@
 using Unity.Collections;
 
-namespace SneakySquirrelLabs.TerracedTerrainGenerator.Utils
+namespace LazySquirrelLabs.TerracedTerrainGenerator.Utils
 {
     internal static class ListExtensions
     {

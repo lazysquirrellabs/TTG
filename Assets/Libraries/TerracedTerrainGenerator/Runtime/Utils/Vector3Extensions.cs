@@ -1,6 +1,6 @@
 using UnityEngine;
 
-namespace SneakySquirrelLabs.TerracedTerrainGenerator.Utils
+namespace LazySquirrelLabs.TerracedTerrainGenerator.Utils
 {
     internal static class Vector3Extensions
     {

@@ -1,7 +1,7 @@
 using System;
 using UnityEngine;
 
-namespace SneakySquirrelLabs.TerracedTerrainGenerator.Sculpting
+namespace LazySquirrelLabs.TerracedTerrainGenerator.Sculpting
 {
 	/// <summary>
 	/// Settings used during terrain sculpting, the step that creates hills and valleys on the terrain.

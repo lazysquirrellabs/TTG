@@ -1,9 +1,9 @@
 using System;
-using SneakySquirrelLabs.TerracedTerrainGenerator.Data;
+using LazySquirrelLabs.TerracedTerrainGenerator.Data;
 using Unity.Collections;
 using UnityEngine;
 
-namespace SneakySquirrelLabs.TerracedTerrainGenerator.TerraceGeneration
+namespace LazySquirrelLabs.TerracedTerrainGenerator.TerraceGeneration
 {
     /// <summary>
     /// Modified an existing terrain mesh by creating terraces on it. The strategy used is similar to the one described

@@ -3,7 +3,7 @@ using System.Linq;
 using Unity.Collections;
 using UnityEngine;
 
-namespace SneakySquirrelLabs.TerracedTerrainGenerator.Data
+namespace LazySquirrelLabs.TerracedTerrainGenerator.Data
 {
     /// <summary>
     /// Represents all the data necessary to build a simple mesh - a mesh with just 1 sub mesh.

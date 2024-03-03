@@ -1,12 +1,12 @@
 using System;
-using SneakySquirrelLabs.TerracedTerrainGenerator.Data;
-using SneakySquirrelLabs.TerracedTerrainGenerator.Utils;
+using LazySquirrelLabs.TerracedTerrainGenerator.Data;
+using LazySquirrelLabs.TerracedTerrainGenerator.Utils;
 using Unity.Collections;
 using UnityEngine;
 using UnityEngine.Rendering;
 using Vector3 = UnityEngine.Vector3;
 
-namespace SneakySquirrelLabs.TerracedTerrainGenerator.TerraceGeneration
+namespace LazySquirrelLabs.TerracedTerrainGenerator.TerraceGeneration
 {
     /// <summary>
     /// Helper entity responsible for easing the construction of a terraced terrain mesh.

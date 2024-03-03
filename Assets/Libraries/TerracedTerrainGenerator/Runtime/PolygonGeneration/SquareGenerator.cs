@@ -1,8 +1,8 @@
-using SneakySquirrelLabs.TerracedTerrainGenerator.Data;
+using LazySquirrelLabs.TerracedTerrainGenerator.Data;
 using Unity.Collections;
 using UnityEngine;
 
-namespace SneakySquirrelLabs.TerracedTerrainGenerator.PolygonGeneration
+namespace LazySquirrelLabs.TerracedTerrainGenerator.PolygonGeneration
 {
     /// <summary>
     /// Generates a square mesh.
