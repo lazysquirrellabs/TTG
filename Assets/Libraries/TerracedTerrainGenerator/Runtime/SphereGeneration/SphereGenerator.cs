@@ -1,59 +1,39 @@
-using System.Collections.Generic;
-using System.Linq;
 using UnityEngine;
 
 namespace LazySquirrelLabs.TerracedTerrainGenerator.SphereGeneration
 {
 	internal class SphereGenerator : MonoBehaviour
 	{
-		[SerializeField] private MeshFilter _meshFilter;
-		[SerializeField] private Vector3 _v1;
-		[SerializeField] private Vector3 _v2;
+		[SerializeField] private MeshFilter _otherMeshFilter;
+		[SerializeField] private int[] _otherIndices;
+		[SerializeField] private Vector3[] _vertices;
+		[SerializeField] private bool _useNewVertices;
 
-		private const float Width = 0.85065080835157f;
-		private const float Height = 0.525731112119134f;
-
-		private static readonly Vector3[] Points = 
+		private readonly Vector3[] _newVertices =
 		{
-			new(-Width,  Height), // Top left
-			new(-Width, -Height), // Bottom left
-			new( Width,  Height), // Top Right
-			new( Width, -Height)  // Bottom right
+			new(-0.8506508f, 0.5257311f, 0f),
+			new(-0.8506508f, -0.5257311f, 0f),
+			new(0.8506508f, 0.5257311f, 0f),
+			new(0.8506508f, -0.5257311f, 0f),
+			new(-0.52573115f, 0.00000006267203f, -0.85065067f),
+			new(0.5257309f, -0.00000006267203f, -0.85065067f),
+			new(-0.5257309f, 0.00000006267203f, 0.85065067f),
+			new(0.52573115f, -0.00000006267203f, 0.85065067f),
+			new(-0.000000101405476f, -0.8506506f, -0.525731f),
+			new(-0.000000101405476f, -0.8506507f, 0.525731f),
+			new(0.000000101405476f, 0.8506507f, -0.525731f),
+			new(0.000000101405476f, 0.8506506f, 0.525731f)
 		};
+		
 		private void Update()
 		{
-			var vertices = new List<Vector3>();
-			var indices = new List<int>();
-			var uvs = new List<Vector2>();
 			var mesh = new Mesh();
-			AddPlane(Quaternion.identity, 0);
-			var planeRotation = Quaternion.Euler(90, -90, 0);
-			AddPlane(planeRotation, 1);
-			planeRotation = Quaternion.Euler(0, -90, 90);
-			AddPlane(planeRotation, 2);
+			var vertices = _useNewVertices ? _newVertices : _vertices;
 			mesh.SetVertices(vertices);
-			mesh.SetIndices(indices, MeshTopology.Triangles, 0);
-			mesh.SetUVs(0, uvs);
+			mesh.SetIndices(_otherIndices, MeshTopology.Triangles, 0);
 			mesh.RecalculateNormals();
 			mesh.RecalculateBounds();
-			_meshFilter.mesh = mesh;
-
-			void AddPlane(Quaternion rotation, int count)
-			{
-				var rotatedPoints = Points.Select(p => rotation * p);
-				vertices.AddRange(rotatedPoints);
-				var indexOffset = count * 4;
-				indices.Add(indexOffset);
-				indices.Add(indexOffset + 2);
-				indices.Add(indexOffset + 3);
-				indices.Add(indexOffset);
-				indices.Add(indexOffset + 3);
-				indices.Add(indexOffset + 1);
-				uvs.Add(new Vector2(0, 1));
-				uvs.Add(new Vector2(0,0));
-				uvs.Add(new Vector2(1,1));
-				uvs.Add(new Vector2(1,0));
-			}
+			_otherMeshFilter.mesh = mesh;
 		}
 	}
 }
