@@ -17,14 +17,19 @@ namespace LazySquirrelLabs.TerracedTerrainGenerator.Data
         /// </summary>
         private int _nextVertexIndex;
 
-        #endregion
-        
-        #region Properties
-        
         /// <summary>
         /// All the vertices in the mesh data. 
         /// </summary>
-        internal NativeList<Vector3> Vertices { get; private set; }
+        private NativeArray<Vector3> _vertices;
+
+        #endregion
+        
+        #region Properties
+
+        /// <summary>
+        /// All the vertices in the mesh data. 
+        /// </summary>
+        internal NativeArray<Vector3> Vertices => _vertices;
         /// <summary>
         /// All the (triangle) indices in the mesh data.
         /// </summary>
@@ -36,8 +41,8 @@ namespace LazySquirrelLabs.TerracedTerrainGenerator.Data
 
         public override void Dispose()
         {
-            if (Vertices.IsCreated)
-                Vertices.Dispose();
+            if (_vertices.IsCreated)
+	            _vertices.Dispose();
             
             foreach (var indices in IndicesPerSubMesh.Where(i => i.IsCreated))
                 indices.Dispose();
@@ -52,9 +57,9 @@ namespace LazySquirrelLabs.TerracedTerrainGenerator.Data
         /// </summary>
         /// <param name="vertices">The initial mesh vertices.</param>
         /// <param name="indices">The initial mesh (triangle) indices.</param>
-        internal SimpleMeshData(NativeList<Vector3> vertices, NativeList<int> indices)
+        internal SimpleMeshData(NativeArray<Vector3> vertices, NativeList<int> indices)
         {
-            Vertices = vertices;
+	        _vertices = vertices;
             // A simple mesh on has 1 sub mesh
             IndicesPerSubMesh = new NativeList<int>[1];
             IndicesPerSubMesh[0] = indices;
@@ -68,7 +73,7 @@ namespace LazySquirrelLabs.TerracedTerrainGenerator.Data
         /// <param name="allocator">The allocation strategy used when creating vertex and index buffers.</param>
         internal SimpleMeshData(int vertexCount, int indicesCount, Allocator allocator)
         {
-            Vertices = new NativeList<Vector3>(vertexCount, allocator);
+	        _vertices = new NativeArray<Vector3>(vertexCount, allocator, NativeArrayOptions.UninitializedMemory);
             // A simple mesh on has 1 sub mesh
             IndicesPerSubMesh = new NativeList<int>[1];
             IndicesPerSubMesh[0] = new NativeList<int>(indicesCount, allocator);
@@ -84,15 +89,12 @@ namespace LazySquirrelLabs.TerracedTerrainGenerator.Data
         /// <param name="f">The function to be applied on all vertices.</param>
         internal void Map(Func<Vector3, Vector3> f)
         {
-            var vertices = Vertices;
-            for (var i = 0; i < Vertices.Length; i++)
+            for (var i = 0; i < _vertices.Length; i++)
             {
                 var vertex = Vertices[i];
                 vertex = f(vertex);
-                vertices[i] = vertex;
+                _vertices[i] = vertex;
             }
-
-            Vertices = vertices;
         }
         
         /// <summary>
@@ -124,7 +126,7 @@ namespace LazySquirrelLabs.TerracedTerrainGenerator.Data
 
         protected override int AddVertex(Vector3 vertex, ref int index)
         {
-            Vertices.Add(vertex);
+	        _vertices[index] = vertex;
             var newIndex = index;
             index++;
             return newIndex;

@@ -56,9 +56,10 @@ namespace LazySquirrelLabs.TerracedTerrainGenerator.MeshFragmentation
             // Create temporary index and vertex buffers
             var indicesBuffer1 = meshData.Indices.Copy(finalIndicesCount, allocator);
             var indicesBuffer2 = CreateNativeList<int>(finalIndicesCount, allocator);
-            var verticesBuffer1 = meshData.Vertices.Copy(finalVertexCount, allocator);
-            var verticesBuffer2 = CreateNativeList<Vector3>(finalVertexCount, allocator);
-
+            var verticesBuffer1 = CreateNativeArray<Vector3>(finalVertexCount, allocator);
+            NativeArray<Vector3>.Copy(meshData.Vertices, verticesBuffer1, meshData.Vertices.Length);
+            var verticesBuffer2 = CreateNativeArray<Vector3>(finalVertexCount, allocator);
+            
             // Instead of creating a new array for each depth, we use the same 2 arrays everywhere: 1 for reading and
             // one for writing. Both have exactly the number of elements necessary for the final depth, but they will
             // never (except for the last depth) be fully utilized. Every time we step into a new depth, we swap them
@@ -95,6 +96,11 @@ namespace LazySquirrelLabs.TerracedTerrainGenerator.MeshFragmentation
                 return (int) (Math.Pow(4, depth) * initialTriangleCount);
             }
 
+            static NativeArray<T> CreateNativeArray<T>(int length, Allocator allocator) where T : unmanaged
+            {
+	            return new NativeArray<T>(length, allocator, NativeArrayOptions.UninitializedMemory);
+            }
+            
             static NativeList<T> CreateNativeList<T>(int length, Allocator allocator) where T : unmanaged
             {
                 var list = new NativeList<T>(length, allocator);
@@ -104,7 +110,7 @@ namespace LazySquirrelLabs.TerracedTerrainGenerator.MeshFragmentation
             }
 
             static void FragmentTriangle(int triangleIx, NativeList<int> readTriangles, NativeList<int> writeTriangles, 
-                NativeList<Vector3> readVertices, NativeList<Vector3> writeVertices)
+	            NativeArray<Vector3> readVertices, NativeArray<Vector3> writeVertices)
             {
                 // Each original triangle has 3 vertices, so we need to offset that from reading
                 var readTriangleIx = triangleIx * 3;
@@ -139,7 +145,8 @@ namespace LazySquirrelLabs.TerracedTerrainGenerator.MeshFragmentation
                 AddTriangle(ix4, ix5, ix6);
                 AddTriangle(ix5, ix3, ix6);
                 AddTriangle(ix4, ix2, ix5);
-
+                return;
+            
                 int AddVertex(Vector3 v)
                 {
                     writeVertices[writeVertexIx] = v;
