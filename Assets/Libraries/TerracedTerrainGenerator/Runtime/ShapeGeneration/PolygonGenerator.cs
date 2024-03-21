@@ -2,7 +2,7 @@ using LazySquirrelLabs.TerracedTerrainGenerator.Data;
 using Unity.Collections;
 using UnityEngine;
 
-namespace LazySquirrelLabs.TerracedTerrainGenerator.PolygonGeneration
+namespace LazySquirrelLabs.TerracedTerrainGenerator.ShapeGeneration
 {
     /// <summary>
     /// Base class for all polygon generators.

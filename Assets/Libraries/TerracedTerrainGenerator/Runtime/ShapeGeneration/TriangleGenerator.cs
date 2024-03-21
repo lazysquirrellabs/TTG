@@ -3,7 +3,7 @@ using LazySquirrelLabs.TerracedTerrainGenerator.Utils;
 using Unity.Collections;
 using UnityEngine;
 
-namespace LazySquirrelLabs.TerracedTerrainGenerator.PolygonGeneration
+namespace LazySquirrelLabs.TerracedTerrainGenerator.ShapeGeneration
 {
     /// <summary>
     /// Generates an equilateral triangle mesh.
