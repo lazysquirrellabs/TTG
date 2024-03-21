@@ -1,11 +1,11 @@
-using SneakySquirrelLabs.TerracedTerrainGenerator.Sculpting;
+using LazySquirrelLabs.TerracedTerrainGenerator.Sculpting;
 using System;
 using System.Threading;
 using System.Threading.Tasks;
 using UnityEngine;
 using Random = UnityEngine.Random;
 
-namespace SneakySquirrelLabs.TerracedTerrainGenerator.Samples.Randomizer
+namespace LazySquirrelLabs.TerracedTerrainGenerator.Samples.Randomizer
 {
 	internal class Randomizer : MonoBehaviour
 	{

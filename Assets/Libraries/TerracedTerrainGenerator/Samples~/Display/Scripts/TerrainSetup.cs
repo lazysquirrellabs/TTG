@@ -1,7 +1,7 @@
 using System;
 using UnityEngine;
 
-namespace SneakySquirrelLabs.TerracedTerrainGenerator.Samples.Display
+namespace LazySquirrelLabs.TerracedTerrainGenerator.Samples.Display
 {
 	[Serializable]
 	internal struct TerrainSetup

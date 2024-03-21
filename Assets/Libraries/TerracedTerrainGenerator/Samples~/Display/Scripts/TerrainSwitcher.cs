@@ -3,7 +3,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using UnityEngine;
 
-namespace SneakySquirrelLabs.TerracedTerrainGenerator.Samples.Display
+namespace LazySquirrelLabs.TerracedTerrainGenerator.Samples.Display
 {
 	internal class TerrainSwitcher : MonoBehaviour
 	{

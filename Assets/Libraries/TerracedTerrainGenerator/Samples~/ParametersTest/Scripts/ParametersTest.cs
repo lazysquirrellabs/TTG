@@ -2,7 +2,7 @@ using System;
 using System.Threading;
 using UnityEngine;
 
-namespace SneakySquirrelLabs.TerracedTerrainGenerator.Samples.ParametersTest
+namespace LazySquirrelLabs.TerracedTerrainGenerator.Samples.ParametersTest
 {
 	internal class ParametersTest : MonoBehaviour
 	{
