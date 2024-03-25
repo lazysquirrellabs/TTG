@@ -110,7 +110,7 @@ namespace LazySquirrelLabs.TerracedTerrainGenerator
             };
 
             _fragmenter = new MeshFragmenter(depth);
-            _sculptor = new Sculptor(sculptSettings, maximumHeight);
+            _sculptor = new PlaneSculptor(sculptSettings, maximumHeight);
             _terraceHeights = relativeTerraceHeights.Select(h => h * maximumHeight).ToArray();
         }
 
