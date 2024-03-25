@@ -99,11 +99,16 @@ namespace LazySquirrelLabs.TerracedTerrainGenerator.TerraceGeneration
             Slicer addSlicedTriangle2Above = _meshBuilder.AddSlicedTriangle2Above;
             var triangleCount = _meshData.Indices.Length / 3;
             var triangleIndex = 0;
-
+	            
+            // Cache values to avoid repeated indexing when accessing Indices and
+            // property access when accessing Vertices.
+            var indices = _meshData.Indices;
+            var vertices = _meshData.Vertices;
+            
             // Loop through all triangles, slicing each one
             for (var t = 0; t < triangleCount; t++)
             {
-                var triangle = new Triangle(_meshData.Indices, _meshData.Vertices, ref triangleIndex);
+                var triangle = new Triangle(indices, vertices, ref triangleIndex);
                 SliceAndAddTriangle(triangle);
             }
 
