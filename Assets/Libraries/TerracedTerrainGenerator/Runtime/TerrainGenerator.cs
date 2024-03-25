@@ -32,7 +32,7 @@ namespace LazySquirrelLabs.TerracedTerrainGenerator
         /// <summary>
         /// The polygon generator used to create the terrain's basic shape.
         /// </summary>
-        private readonly PolygonGenerator _polygonGenerator;
+        private readonly ShapeGenerator _shapeGenerator;
         /// <summary>
         /// The mesh fragmenter used to fragment a basic shape, creating a more detailed mesh.
         /// </summary>
@@ -101,7 +101,7 @@ namespace LazySquirrelLabs.TerracedTerrainGenerator
 	            }
             }
             
-            _polygonGenerator = sides switch
+            _shapeGenerator = sides switch
             {
                 3 => new TriangleGenerator(radius),
                 4 => new SquareGenerator(radius),
@@ -170,7 +170,7 @@ namespace LazySquirrelLabs.TerracedTerrainGenerator
 
         private SimpleMeshData GenerateTerrainData(Allocator allocator)
         {
-            var meshData = _polygonGenerator.Generate(allocator);
+            var meshData = _shapeGenerator.Generate(allocator);
             var fragmentedMeshData = _fragmenter.Fragment(meshData, allocator);
             meshData.Dispose();
             _sculptor.Sculpt(fragmentedMeshData);

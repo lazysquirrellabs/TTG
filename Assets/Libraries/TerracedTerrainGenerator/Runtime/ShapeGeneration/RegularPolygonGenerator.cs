@@ -45,8 +45,8 @@ namespace LazySquirrelLabs.TerracedTerrainGenerator.ShapeGeneration
         {
             var angleDelta = 360f / _sides;
 
-            var vertexCount = _sides + 1;
-            var indicesCount = _sides * 3;
+            var vertexCount = 3 * _sides;
+            var indicesCount = vertexCount;
             var meshData = new SimpleMeshData(vertexCount, indicesCount, allocator);
 
             using var vertices = CreateEdges(Radius, angleDelta, _sides, allocator);

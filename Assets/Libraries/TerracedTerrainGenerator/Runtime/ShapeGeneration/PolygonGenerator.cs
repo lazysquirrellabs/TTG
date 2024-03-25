@@ -1,13 +1,9 @@
-using LazySquirrelLabs.TerracedTerrainGenerator.Data;
-using Unity.Collections;
-using UnityEngine;
-
 namespace LazySquirrelLabs.TerracedTerrainGenerator.ShapeGeneration
 {
     /// <summary>
     /// Base class for all polygon generators.
     /// </summary>
-    internal abstract class PolygonGenerator
+    internal abstract class PolygonGenerator : ShapeGenerator
     {
         #region Properties
 
@@ -29,17 +25,6 @@ namespace LazySquirrelLabs.TerracedTerrainGenerator.ShapeGeneration
         {
             Radius = radius;
         }
-
-        #endregion
-        
-        #region Internal
-        
-        /// <summary>
-        /// Generates the polygon <see cref="Mesh"/>.
-        /// </summary>
-        /// <param name="allocator">The allocation strategy used when creating vertex and index buffers.</param>
-        /// <returns>The generated mesh.</returns>
-        internal abstract SimpleMeshData Generate(Allocator allocator);
 
         #endregion
     }
