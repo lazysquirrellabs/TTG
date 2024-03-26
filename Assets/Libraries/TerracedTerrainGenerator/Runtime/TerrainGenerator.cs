@@ -6,6 +6,7 @@ using LazySquirrelLabs.TerracedTerrainGenerator.Data;
 using LazySquirrelLabs.TerracedTerrainGenerator.MeshFragmentation;
 using LazySquirrelLabs.TerracedTerrainGenerator.Sculpting;
 using LazySquirrelLabs.TerracedTerrainGenerator.ShapeGeneration;
+using LazySquirrelLabs.TerracedTerrainGenerator.ShapeGeneration.Polygons;
 using LazySquirrelLabs.TerracedTerrainGenerator.TerraceGeneration;
 using Unity.Collections;
 using UnityEngine;
