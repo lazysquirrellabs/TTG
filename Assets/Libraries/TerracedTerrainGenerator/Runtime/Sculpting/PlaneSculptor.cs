@@ -1,4 +1,4 @@
-using LazySquirrelLabs.TerracedTerrainGenerator.Data;
+using System;
 using UnityEngine;
 
 namespace LazySquirrelLabs.TerracedTerrainGenerator.Sculpting
@@ -31,61 +31,36 @@ namespace LazySquirrelLabs.TerracedTerrainGenerator.Sculpting
 
 		#endregion
 
-		#region Internal
+		#region Protected
 
-		internal override void Sculpt(SimpleMeshData meshData)
+		protected override void InitializeOffsets()
 		{
-			var offsets = _offsets;
 			for (var i = 0; i < Settings.Octaves; i++)
 			{
 				var xOffset = Random.Next(-10_000, 10_000);
 				var yOffset = Random.Next(-10_000, 10_000);
-				offsets[i] = new Vector2(xOffset, yOffset);
+				_offsets[i] = new Vector2(xOffset, yOffset);
 			}
+		}
 
-			var highestPointRelative = float.MinValue;
-			// Actually apply the Perlin noise modifier.
-			meshData.Map(CalculateVertexNoise);
-			// At this point, the vertices' Y coordinate store noise data, which will be used to calculate the final 
-			// heights. But first, we need to normalize the noise data, bringing all values to the [0,1] range. To do
-			// so, we find by how much we need to multiply the largest noise value among the vertices in order to bring
-			// it down to 1. This value will be used on the next step to normalize all vertices.
-			var dropFactor = 1f / highestPointRelative;
-			// Now that we've got noise data and a way to normalize it, we can actually apply the final height modifier,
-			// bringing all vertices' Y coordinate to the [0, maximumHeight] range.
-			meshData.Map(ApplyHeight);
+		protected override Vector3 PlaceVertexAtHeight(Vector3 vertex, float height)
+		{
+			vertex.y = height;
+			return vertex;
+		}
 
-			Vector3 CalculateVertexNoise(Vector3 vertex)
-			{
-				var height = GetNoise(vertex.x, vertex.z, Settings, _offsets);
-				if (height > highestPointRelative)
-					highestPointRelative = height;
-				vertex.y = height;
-				return vertex;
+		protected override float GetNoise(Vector3 vertex, float frequency, int index)
+		{
+			var offset = _offsets[index];
+			var filterX = vertex.x * frequency + offset.x;
+			var filterY = vertex.y * frequency + offset.y;
+			return Mathf.PerlinNoise(filterX, filterY);
+		}
 
-				static float GetNoise(float x, float y, SculptSettings settings, Vector2[] offsets)
-				{
-					float relativeHeight = 0;
-					var amplitude = 1f;
-					var frequency = settings.BaseFrequency;
-					var persistence = settings.Persistence;
-					var lacunarity = settings.Lacunarity;
-					for (var i = 0; i < settings.Octaves; i++)
-					{
-						var offset = offsets[i];
-						var filterX = x * frequency + offset.x;
-						var filterY = y * frequency + offset.y;
-						var noise = Mathf.PerlinNoise(filterX, filterY);
-						relativeHeight += amplitude * noise;
-
-						amplitude *= persistence;
-						frequency *= lacunarity;
-					}
-
-					return relativeHeight;
-				}
-			}
-
+		protected override Func<Vector3, Vector3> GetApplyFinalHeight(float dropFactor)
+		{
+			return ApplyHeight;
+			
 			Vector3 ApplyHeight(Vector3 vertex)
 			{
 				// Normalize the height data, so it's in the [0, 1] range.
@@ -98,6 +73,5 @@ namespace LazySquirrelLabs.TerracedTerrainGenerator.Sculpting
 		}
 
 		#endregion
-
 	}
 }

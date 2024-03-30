@@ -1,4 +1,4 @@
-using LazySquirrelLabs.TerracedTerrainGenerator.Data;
+using System;
 using UnityEngine;
 
 namespace LazySquirrelLabs.TerracedTerrainGenerator.Sculpting
@@ -45,78 +45,29 @@ namespace LazySquirrelLabs.TerracedTerrainGenerator.Sculpting
 
 		#endregion
 
-		#region Internal
+		#region Protected
 
-		internal override void Sculpt(SimpleMeshData meshData)
+		protected override void InitializeOffsets()
 		{
-			var offsets = _offsets;
 			for (var i = 0; i < Settings.Octaves; i++)
 			{
 				var xOffset = Random.Next(-10_000, 10_000);
 				var yOffset = Random.Next(-10_000, 10_000);
 				var zOffset = Random.Next(-10_000, 10_000);
-				offsets[i] = new Vector3(xOffset, yOffset, zOffset);
+				_offsets[i] = new Vector3(xOffset, yOffset, zOffset);
 			}
-			
-			var highestPointRelative = float.MinValue;
-			// Actually apply the Perlin noise modifier.
-			meshData.Map(CalculateVertexNoise);
-			// At this point, the vertices' magnitude store noise data, which will be used to calculate the final
-			// heights. But first, we need to normalize the noise data, bringing all values to the [0,1] range. To do
-			// so, we find by how much we need to multiply the largest magnitude value among the vertices in order to
-			// bring it down to 1. This value will be used on the next step to normalize all vertices.
-			var dropFactor = 1f / highestPointRelative;
-			// Now that we've got noise data and a way to normalize it, we can actually apply the final height modifier,
-			// bringing all vertices' magnitude to the [minimumHeight, maximumHeight] range.
-			meshData.Map(ApplyHeight);
-			
-			Vector3 CalculateVertexNoise(Vector3 vertex)
-			{
-				var height = GetNoise(vertex, Settings, _offsets);
-				if (height > highestPointRelative)
-					highestPointRelative = height;
-				vertex = vertex.normalized * height;
-				return vertex;
+		}
 
-				static float GetNoise(Vector3 vertex, SculptSettings settings, Vector3[] offsets)
-				{
-					float relativeHeight = 0;
-					var amplitude = 1f;
-					var frequency = settings.BaseFrequency;
-					var persistence = settings.Persistence;
-					var lacunarity = settings.Lacunarity;
-					for (var i = 0; i < settings.Octaves; i++)
-					{
-						var offset = offsets[i];
-						var filterX = vertex.x * frequency + offset.x;
-						var filterY = vertex.y * frequency + offset.y;
-						var filterZ = vertex.z * frequency + offset.z;
-						var noise = PerlinNoise3D(filterX, filterY, filterZ);
-						relativeHeight += amplitude * noise;
+		protected override Vector3 PlaceVertexAtHeight(Vector3 vertex, float height)
+		{
+			return vertex.normalized * height;
+		}
 
-						amplitude *= persistence;
-						frequency *= lacunarity;
-					}
+		protected override Func<Vector3,Vector3> GetApplyFinalHeight(float dropFactor)
+		{
+			return ApplyFinalHeight;
 
-					return relativeHeight;
-					
-					static float PerlinNoise3D(float x, float y, float z)
-					{
-						var xy = Mathf.PerlinNoise(x, y);
-						var xz = Mathf.PerlinNoise(x, z);
-						var yz = Mathf.PerlinNoise(y, z);
-			
-						var yx = Mathf.PerlinNoise(y, x);
-						var zx = Mathf.PerlinNoise(z, x);
-						var zy = Mathf.PerlinNoise(z, y);
-
-						var xyz = xy + xz + yz + yx + zx + zy;
-						return xyz / 6f;
-					}
-				}
-			}
-			
-			Vector3 ApplyHeight(Vector3 vertex)
+			Vector3 ApplyFinalHeight(Vector3 vertex)
 			{
 				// Normalize the height data, so it's in the [0, 1] range.
 				var relativeHeight = vertex.magnitude * dropFactor;
@@ -125,6 +76,29 @@ namespace LazySquirrelLabs.TerracedTerrainGenerator.Sculpting
 				// Find the final height so it's in [minimumHeight, maximumHeight]. 
 				var height = _minimumHeight + _heightDelta * relativeHeight * modifier;
 				return vertex.normalized * height;
+			}
+		}
+
+		protected override float GetNoise(Vector3 vertex, float frequency, int index)
+		{
+			var offset = _offsets[index];
+			var filterX = vertex.x * frequency + offset.x;
+			var filterY = vertex.y * frequency + offset.y;
+			var filterZ = vertex.z * frequency + offset.z;
+			return PerlinNoise3D(filterX, filterY, filterZ);
+			
+			static float PerlinNoise3D(float x, float y, float z)
+			{
+				var xy = Mathf.PerlinNoise(x, y);
+				var xz = Mathf.PerlinNoise(x, z);
+				var yz = Mathf.PerlinNoise(y, z);
+			
+				var yx = Mathf.PerlinNoise(y, x);
+				var zx = Mathf.PerlinNoise(z, x);
+				var zy = Mathf.PerlinNoise(z, y);
+
+				var xyz = xy + xz + yz + yx + zx + zy;
+				return xyz / 6f;
 			}
 		}
 
