@@ -53,7 +53,7 @@ namespace LazySquirrelLabs.TerracedTerrainGenerator.Sculpting
 		{
 			var offset = _offsets[octaveIndex];
 			var filterX = vertex.x * frequency + offset.x;
-			var filterY = vertex.y * frequency + offset.y;
+			var filterY = vertex.z * frequency + offset.y;
 			return Mathf.PerlinNoise(filterX, filterY);
 		}
 
