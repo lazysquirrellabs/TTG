@@ -49,9 +49,9 @@ namespace LazySquirrelLabs.TerracedTerrainGenerator.Sculpting
 			return vertex;
 		}
 
-		protected override float GetNoise(Vector3 vertex, float frequency, int index)
+		protected override float GetNoise(Vector3 vertex, float frequency, int octaveIndex)
 		{
-			var offset = _offsets[index];
+			var offset = _offsets[octaveIndex];
 			var filterX = vertex.x * frequency + offset.x;
 			var filterY = vertex.y * frequency + offset.y;
 			return Mathf.PerlinNoise(filterX, filterY);
