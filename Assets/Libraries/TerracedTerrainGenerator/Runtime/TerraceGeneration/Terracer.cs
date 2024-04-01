@@ -9,7 +9,7 @@ namespace LazySquirrelLabs.TerracedTerrainGenerator.TerraceGeneration
     /// Modified an existing terrain mesh by creating terraces on it. The strategy used is similar to the one described
     /// in https://icospheric.com/blog/2016/07/17/making-terraced-terrain/.
     /// </summary>
-    internal sealed class Terracer : IDisposable
+    internal abstract class Terracer : IDisposable
     {
         #region Delegates
 
@@ -183,19 +183,22 @@ namespace LazySquirrelLabs.TerracedTerrainGenerator.TerraceGeneration
                         added = true;
                     }
                     
-                    static (Triangle, int) RearrangeAccordingToPlane(Triangle triangle, float planeHeight)
+                    (Triangle, int) RearrangeAccordingToPlane(Triangle triangle, float planeHeight)
                     {
 	                    var v1 = triangle.V1;
 	                    var v2 = triangle.V2;
 	                    var v3 = triangle.V3;
-                        var v1Below = v1.y < planeHeight;
-                        var v2Below = v2.y < planeHeight;
-                        var v3Below = v3.y < planeHeight;
+	                    var height1 = GetVertexHeight(v1);
+	                    var height2 = GetVertexHeight(v2);
+	                    var height3 = GetVertexHeight(v3);
+                        var v1Below = height1 < planeHeight;
+                        var v2Below = height2 < planeHeight;
+                        var v3Below = height3 < planeHeight;
 
                         if (v1Below)
                         {
                             if (v2Below)
-                                return v3.y < planeHeight ? (triangle, 0) : (triangle, 1);
+                                return height3 < planeHeight ? (triangle, 0) : (triangle, 1);
 
                             if (v3Below)
                             {
@@ -244,6 +247,14 @@ namespace LazySquirrelLabs.TerracedTerrainGenerator.TerraceGeneration
             return _meshBuilder.Build();
         }
         
+        #endregion
+
+        #region Protected
+
+        protected abstract float GetVertexHeight(Vector3 vertex);
+        
+        protected abstract Vector3 SetVertexHeight(Vector3 vertex, float height);
+
         #endregion
     }
 }

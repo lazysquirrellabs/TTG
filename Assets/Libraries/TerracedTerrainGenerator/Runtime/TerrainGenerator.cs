@@ -126,7 +126,7 @@ namespace LazySquirrelLabs.TerracedTerrainGenerator
         public Mesh GenerateTerrain()
         {
             var meshData = GenerateTerrainData(SyncAllocator);
-            using var terracer = new Terracer(meshData, _terraceHeights, SyncAllocator);
+            using var terracer = new PlaneTerracer(meshData, _terraceHeights, SyncAllocator);
             terracer.CreateTerraces();
             terracer.BakeMeshData(SyncAllocator);
             var mesh = terracer.CreateMesh();
@@ -149,7 +149,7 @@ namespace LazySquirrelLabs.TerracedTerrainGenerator
             Terracer GenerateTerracedTerrainData()
             {
                 var meshData = GenerateTerrainData(AsyncAllocator);
-                var t = new Terracer(meshData, _terraceHeights, AsyncAllocator);
+                var t = new PlaneTerracer(meshData, _terraceHeights, AsyncAllocator);
                 try
                 {
                     t.CreateTerraces();
