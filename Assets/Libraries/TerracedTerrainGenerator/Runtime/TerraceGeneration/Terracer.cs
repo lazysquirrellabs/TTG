@@ -57,7 +57,7 @@ namespace LazySquirrelLabs.TerracedTerrainGenerator.TerraceGeneration
 	        var vertexCount = _meshData.Vertices.Length;
 	        var indexCount = _meshData.Indices.Length;
 	        _terraceCount = terraceHeights.Length;
-	        _meshBuilder = new TerracedMeshBuilder(vertexCount, indexCount, _terraceCount, allocator);
+	        _meshBuilder = new TerracedMeshBuilder(vertexCount, indexCount, _terraceCount, allocator, GetVertexHeight, SetVertexHeight);
 	        _planeHeights = GetHeights(_terraceCount, terraceHeights, allocator);
             
 	        static NativeArray<float> GetHeights(int count, float[] terraceHeights, Allocator allocator)
