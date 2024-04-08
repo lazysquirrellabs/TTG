@@ -4,7 +4,7 @@ using UnityEngine;
 namespace LazySquirrelLabs.TerracedTerrainGenerator.Editor
 {
 	[CustomEditor(typeof(PlaneTerrainGeneratorController))]
-	internal class TerrainGeneratorControllerEditor : UnityEditor.Editor
+	internal class PlaneTerrainGeneratorControllerEditor : UnityEditor.Editor
 	{
 		#region Fields
 

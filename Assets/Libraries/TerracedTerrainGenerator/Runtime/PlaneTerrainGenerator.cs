@@ -28,7 +28,7 @@ namespace LazySquirrelLabs.TerracedTerrainGenerator
         /// <exception cref="NotImplementedException">Thrown whenever the provided number of <paramref name="sides"/>
         /// is not supported (greater than 10).</exception>
         public PlaneTerrainGenerator(ushort sides, float radius, float maximumHeight, float[] relativeTerraceHeights, 
-	        SculptSettings sculptSettings, ushort depth) : base(maximumHeight, relativeTerraceHeights, depth)
+	        SculptSettings sculptSettings, ushort depth) : base(0, maximumHeight, relativeTerraceHeights, depth)
         {
 	        if (sides < 3)
 		        throw new ArgumentOutOfRangeException(nameof(sides), "Sides must be greater than 2.");

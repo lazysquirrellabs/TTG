@@ -69,7 +69,7 @@ namespace LazySquirrelLabs.TerracedTerrainGenerator
         /// <param name="depth">Depth to fragment the basic mesh. Value must be greater than zero.</param>
         /// <exception cref="ArgumentOutOfRangeException">Thrown if any of the arguments is out of range. Checks 
         /// individual arguments for valid ranges.</exception>
-        private protected TerrainGenerator(float maximumHeight, float[] relativeTerraceHeights, ushort depth)
+        private protected TerrainGenerator(float minimumHeight, float maximumHeight, float[] relativeTerraceHeights, ushort depth)
         {
             if (maximumHeight <= 0)
 	            throw new ArgumentOutOfRangeException(nameof(maximumHeight), "Height must be greater than zero.");
@@ -98,7 +98,8 @@ namespace LazySquirrelLabs.TerracedTerrainGenerator
             }
 
             _fragmenter = new MeshFragmenter(depth);
-            TerraceHeights = relativeTerraceHeights.Select(h => h * maximumHeight).ToArray();
+            var heightDelta = maximumHeight - minimumHeight;
+            TerraceHeights = relativeTerraceHeights.Select(h => minimumHeight + h * heightDelta).ToArray();
         }
 
         #endregion

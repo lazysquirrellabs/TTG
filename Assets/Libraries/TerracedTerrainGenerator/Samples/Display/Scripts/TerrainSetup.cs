@@ -8,7 +8,7 @@ namespace LazySquirrelLabs.TerracedTerrainGenerator.Samples.Display
 	{
 		#region Serialized fields
 
-		[SerializeField] private PlaneTerrainGeneratorController _controller;
+		[SerializeField] private TerrainGeneratorController _controller;
 		[SerializeField] private int _seed;
 
 		#endregion
