@@ -106,7 +106,7 @@ namespace LazySquirrelLabs.TerracedTerrainGenerator.Samples.Randomizer
 			var terraceCount = Random.Range(TerraceCountMin, TerraceCountMax);
 			var terraceHeights = GetTerraceHeights(terraceCount);
 			
-			var generator = new TerrainGenerator(sides, Radius, height, terraceHeights, sculptingSettings, depth);
+			var generator = new PlaneTerrainGenerator(sides, Radius, height, terraceHeights, sculptingSettings, depth);
 			_lastGeneration = Time.realtimeSinceStartup;
 			_meshFilter.mesh = await generator.GenerateTerrainAsync(_cancellationTokenSource.Token);
 			Debug.Log($"Generated a terrain with {sides} sides, height {height}, depth {depth}, " +

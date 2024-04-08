@@ -3,7 +3,7 @@ using UnityEngine;
 
 namespace LazySquirrelLabs.TerracedTerrainGenerator.Editor
 {
-	[CustomEditor(typeof(TerrainGeneratorController))]
+	[CustomEditor(typeof(PlaneTerrainGeneratorController))]
 	internal class TerrainGeneratorControllerEditor : UnityEditor.Editor
 	{
 		#region Fields

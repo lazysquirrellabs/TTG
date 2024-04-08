@@ -50,7 +50,7 @@ namespace LazySquirrelLabs.TerracedTerrainGenerator.TerraceGeneration
         /// unmodified.</param>
         /// <param name="terraceHeights">The heights of all terraces (in units), in ascending order.</param>
         /// <param name="allocator">The allocation strategy used when creating vertex and index buffers.</param>
-        internal Terracer(SimpleMeshData meshData, float[] terraceHeights, Allocator allocator)
+        protected Terracer(SimpleMeshData meshData, float[] terraceHeights, Allocator allocator)
         {
 	        _meshData = meshData;
 	        // In the base case, there will be at least the same amount of vertices

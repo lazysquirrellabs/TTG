@@ -6,13 +6,14 @@ using UnityEngine;
 
 namespace LazySquirrelLabs.TerracedTerrainGenerator
 {
-	public class TerrainGeneratorController : MonoBehaviour
+	public class PlaneTerrainGeneratorController : MonoBehaviour
 	{
 		#region Serialized fields
 
 		[SerializeField] private bool _generateOnStart = true;
 		[SerializeField] private Renderer _renderer;
 		[SerializeField] private MeshFilter _meshFilter;
+		
 		[SerializeField] private ushort _sides = 8;
 		[SerializeField] private float _radius = 20;
 		[SerializeField] private ushort _depth = 5;
@@ -168,7 +169,7 @@ namespace LazySquirrelLabs.TerracedTerrainGenerator
 		private void Generate(SculptSettings sculptSettings)
 		{
 			// Generate
-			var generator = new TerrainGenerator(_sides, _radius, _maximumHeight, _relativeHeights, sculptSettings, 
+			var generator = new PlaneTerrainGenerator(_sides, _radius, _maximumHeight, _relativeHeights, sculptSettings, 
 				_depth);
 			var previousMesh = _meshFilter.mesh;
 			_meshFilter.mesh = generator.GenerateTerrain();
@@ -181,7 +182,7 @@ namespace LazySquirrelLabs.TerracedTerrainGenerator
 		private async Task GenerateAsync(SculptSettings sculptSettings, CancellationToken token)
 		{
 			// Generate
-			var generator = new TerrainGenerator(_sides, _radius, _maximumHeight, _relativeHeights, sculptSettings, 
+			var generator = new PlaneTerrainGenerator(_sides, _radius, _maximumHeight, _relativeHeights, sculptSettings, 
 				_depth);
 			var internalToken = _cancellationTokenSource.Token;
 			var combinedSource = CancellationTokenSource.CreateLinkedTokenSource(internalToken, token);
