@@ -7,14 +7,14 @@ namespace LazySquirrelLabs.TerracedTerrainGenerator.ShapeGeneration.Plane.Polygo
     /// <summary>
     /// Generates a square mesh.
     /// </summary>
-    internal class SquareGenerator : PolygonGenerator
+    internal sealed class SquareGenerator : PolygonGenerator
     {
         #region Setup
         
         /// <summary>
         /// Creates a square generator.
         /// </summary>
-        /// <param name="size">The size of the generated square (length of one side).</param>
+        /// <param name="size">The size of the generated square (length of one side), in units.</param>
         internal SquareGenerator(float size) : base(size) { }
         
         #endregion

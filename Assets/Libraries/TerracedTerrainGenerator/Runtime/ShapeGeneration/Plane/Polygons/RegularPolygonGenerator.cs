@@ -33,7 +33,7 @@ namespace LazySquirrelLabs.TerracedTerrainGenerator.ShapeGeneration.Plane.Polygo
         internal RegularPolygonGenerator(ushort sides, float radius) : base(radius)
         {
             if (sides < 5)
-                throw new ArgumentException("Regular polygons should have at least 5 sides");
+                throw new ArgumentException("Regular polygons should have at least 5 sides.");
             _sides = sides;
         }
         
@@ -52,7 +52,7 @@ namespace LazySquirrelLabs.TerracedTerrainGenerator.ShapeGeneration.Plane.Polygo
             using var vertices = CreateEdges(Radius, angleDelta, _sides, allocator);
             var center = Vector3.zero;
 
-            // Add all triangles, except the "knot" one
+            // Add all triangles, except the "knot" one.
             for (var i = 0; i < _sides - 1; i++)
             {
                 var p1 = vertices[i];
@@ -60,7 +60,7 @@ namespace LazySquirrelLabs.TerracedTerrainGenerator.ShapeGeneration.Plane.Polygo
                 meshData.AddTriangle(p1, p2, center);
             }
             
-            // Add the "knot" triangle
+            // Add the "knot" triangle.
             meshData.AddTriangle(vertices[_sides-1], vertices[0], center);
             
             return meshData;
@@ -68,10 +68,10 @@ namespace LazySquirrelLabs.TerracedTerrainGenerator.ShapeGeneration.Plane.Polygo
             static NativeArray<Vector3> CreateEdges(float radius, float delta, uint sides, Allocator allocator)
             {
                 var vertices = new NativeArray<Vector3>((int) sides, allocator);
-                // Place the first vertex Radius units away
+                // Place the first vertex `radius` units away.
                 vertices[0] = new Vector3(radius, 0f, 0f);
                 
-                // Place other outer vertices
+                // Place other outer vertices.
                 for (var i = 1; i < sides; i++)
                     vertices[i] = vertices[i - 1].Rotate(-delta);
 

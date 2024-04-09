@@ -8,7 +8,7 @@ namespace LazySquirrelLabs.TerracedTerrainGenerator.ShapeGeneration.Plane.Polygo
     /// <summary>
     /// Generates an equilateral triangle mesh.
     /// </summary>
-    internal class TriangleGenerator : PolygonGenerator
+    internal sealed class TriangleGenerator : PolygonGenerator
     {
         #region Setup
 
