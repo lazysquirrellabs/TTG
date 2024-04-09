@@ -36,22 +36,6 @@ namespace LazySquirrelLabs.TerracedTerrainGenerator.Data
         
         #endregion
 
-        #region Public
-
-        public override void Dispose()
-        {
-            if (_vertices.IsCreated)
-	            _vertices.Dispose();
-            
-            foreach (var indices in IndicesPerSubMesh)
-            {
-	            if (indices.IsCreated)
-		            indices.Dispose();
-            }
-        }
-
-        #endregion
-        
         #region Setup
 
         /// <summary>
@@ -63,7 +47,7 @@ namespace LazySquirrelLabs.TerracedTerrainGenerator.Data
         {
 	        _vertices = vertices;
             // A simple mesh on has 1 sub mesh
-            IndicesPerSubMesh = new NativeList<int>[1];
+            IndicesPerSubMesh = new NativeArray<NativeList<int>>(1, Allocator.Temp);
             IndicesPerSubMesh[0] = indices;
         }
 
@@ -77,8 +61,18 @@ namespace LazySquirrelLabs.TerracedTerrainGenerator.Data
         {
 	        _vertices = new NativeArray<Vector3>(vertexCount, allocator, NativeArrayOptions.UninitializedMemory);
             // A simple mesh on has 1 sub mesh
-            IndicesPerSubMesh = new NativeList<int>[1];
+            IndicesPerSubMesh = new NativeArray<NativeList<int>>(1, allocator);
             IndicesPerSubMesh[0] = new NativeList<int>(indicesCount, allocator);
+        }
+
+        #endregion
+        
+        #region Public
+
+        public override void Dispose()
+        {
+	        base.Dispose();
+		    _vertices.Dispose();
         }
 
         #endregion

@@ -9,18 +9,27 @@ namespace LazySquirrelLabs.TerracedTerrainGenerator.Data
     /// </summary>
     internal abstract class MeshData : IDisposable
     {
-        #region Properties
+        #region Fields
 
         /// <summary>
         /// The mesh's (triangle) indices per sub mesh.
         /// </summary>
-        protected NativeList<int>[] IndicesPerSubMesh { get; set; }
+        protected NativeArray<NativeList<int>> IndicesPerSubMesh; // Keep it a field to allow for direct access.
 
         #endregion
 
         #region Public
 
-        public abstract void Dispose();
+        public virtual void Dispose()
+        {
+	        foreach (var indices in IndicesPerSubMesh)
+	        {
+		        if (indices.IsCreated)
+			        indices.Dispose();
+	        }
+
+	        IndicesPerSubMesh.Dispose();
+        }
 
         #endregion
 

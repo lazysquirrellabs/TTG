@@ -40,7 +40,7 @@ namespace LazySquirrelLabs.TerracedTerrainGenerator.Data
                 throw new ArgumentException("Mesh data must contain at least 1 sub mesh");
 
             _vertices = new NativeParallelHashMap<Vector3, int>(vertexCount, allocator);
-            IndicesPerSubMesh = new NativeList<int>[subMeshes];
+            IndicesPerSubMesh = new NativeArray<NativeList<int>>(subMeshes, allocator);
             // Estimate the number of indices per sub mesh
             var indicesPerSubMesh = indicesCount / subMeshes;
             for (var i = 0; i < subMeshes; i++)
@@ -53,14 +53,8 @@ namespace LazySquirrelLabs.TerracedTerrainGenerator.Data
 
         public override void Dispose()
         {
-	        foreach (var indices in IndicesPerSubMesh)
-	        {
-		        if (indices.IsCreated)
-			        indices.Dispose();
-	        }
-
-	        if (_vertices.IsCreated)
-                _vertices.Dispose();
+	        base.Dispose();
+	        _vertices.Dispose();
         }
 
         #endregion
