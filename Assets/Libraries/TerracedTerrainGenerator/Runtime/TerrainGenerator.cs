@@ -1,5 +1,4 @@
 using System;
-using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using LazySquirrelLabs.TerracedTerrainGenerator.Data;
@@ -98,8 +97,13 @@ namespace LazySquirrelLabs.TerracedTerrainGenerator
             }
 
             _fragmenter = new MeshFragmenter(depth);
+            
             var heightDelta = maximumHeight - minimumHeight;
-            TerraceHeights = relativeTerraceHeights.Select(h => minimumHeight + h * heightDelta).ToArray();
+            TerraceHeights = new float[relativeTerraceHeights.Length];
+            for (var i = 0; i < TerraceHeights.Length; i++)
+            {
+	            TerraceHeights[i] = minimumHeight + relativeTerraceHeights[i] * heightDelta;
+            }
         }
 
         #endregion
