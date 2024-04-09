@@ -33,7 +33,7 @@ namespace LazySquirrelLabs.TerracedTerrainGenerator.TerraceGeneration
         /// <summary>
         /// The height of all the planes used to slice the triangles.
         /// </summary>
-        private readonly NativeArray<float> _planeHeights;
+        private readonly float[] _planeHeights;
         /// <summary>
         /// The number of terraces to be created.
         /// </summary>
@@ -58,14 +58,7 @@ namespace LazySquirrelLabs.TerracedTerrainGenerator.TerraceGeneration
 	        var indexCount = _meshData.Indices.Length;
 	        _terraceCount = terraceHeights.Length;
 	        _meshBuilder = new TerracedMeshBuilder(vertexCount, indexCount, _terraceCount, allocator, GetVertexHeight, SetVertexHeight);
-	        _planeHeights = GetHeights(_terraceCount, terraceHeights, allocator);
-            
-	        static NativeArray<float> GetHeights(int count, float[] terraceHeights, Allocator allocator)
-	        {
-		        var heights = new NativeArray<float>(count, allocator);
-		        NativeArray<float>.Copy(terraceHeights, 0, heights, 0, terraceHeights.Length);
-		        return heights;
-	        }
+	        _planeHeights = terraceHeights;
         }
 
         #endregion
@@ -76,9 +69,6 @@ namespace LazySquirrelLabs.TerracedTerrainGenerator.TerraceGeneration
         {
             _meshData?.Dispose();
             _meshBuilder?.Dispose();
-            var heights = _planeHeights;
-            if (heights.IsCreated)
-                heights.Dispose();
         }
 
         #endregion
