@@ -2,7 +2,7 @@ using LazySquirrelLabs.TerracedTerrainGenerator.Data;
 using Unity.Collections;
 using UnityEngine;
 
-namespace LazySquirrelLabs.TerracedTerrainGenerator.TerraceGeneration
+namespace LazySquirrelLabs.TerracedTerrainGenerator.TerraceGeneration.Plane
 {
 	internal class PlaneTerracer : Terracer
 	{

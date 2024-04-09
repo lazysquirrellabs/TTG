@@ -1,4 +1,5 @@
 using System;
+using LazySquirrelLabs.TerracedTerrainGenerator.Controllers;
 using UnityEngine;
 
 namespace LazySquirrelLabs.TerracedTerrainGenerator.Samples.Display

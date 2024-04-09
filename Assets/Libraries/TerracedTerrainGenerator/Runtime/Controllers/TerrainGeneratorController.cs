@@ -4,7 +4,7 @@ using System.Threading.Tasks;
 using LazySquirrelLabs.TerracedTerrainGenerator.Sculpting;
 using UnityEngine;
 
-namespace LazySquirrelLabs.TerracedTerrainGenerator
+namespace LazySquirrelLabs.TerracedTerrainGenerator.Controllers
 {
 	public abstract class TerrainGeneratorController : MonoBehaviour
 	{

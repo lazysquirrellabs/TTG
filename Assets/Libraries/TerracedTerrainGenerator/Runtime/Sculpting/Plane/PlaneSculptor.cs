@@ -1,7 +1,7 @@
 using System;
 using UnityEngine;
 
-namespace LazySquirrelLabs.TerracedTerrainGenerator.Sculpting
+namespace LazySquirrelLabs.TerracedTerrainGenerator.Sculpting.Plane
 {
 	/// <summary>
 	/// Sculpts a terrain mesh using a planar Perlin filter. The sculpting is applied on the Y axis, upwards.

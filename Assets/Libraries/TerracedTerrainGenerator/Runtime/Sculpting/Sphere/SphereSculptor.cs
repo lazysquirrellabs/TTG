@@ -1,7 +1,7 @@
 using System;
 using UnityEngine;
 
-namespace LazySquirrelLabs.TerracedTerrainGenerator.Sculpting
+namespace LazySquirrelLabs.TerracedTerrainGenerator.Sculpting.Sphere
 {
 	/// <summary>
 	/// Sculpts a terrain mesh using a 3D Perlin filter. The sculpting is applied on each vertex's direction, outwards.

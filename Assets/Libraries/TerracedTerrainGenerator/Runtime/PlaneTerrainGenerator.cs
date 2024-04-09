@@ -1,8 +1,10 @@
 using System;
 using LazySquirrelLabs.TerracedTerrainGenerator.Data;
 using LazySquirrelLabs.TerracedTerrainGenerator.Sculpting;
-using LazySquirrelLabs.TerracedTerrainGenerator.ShapeGeneration.Polygons;
+using LazySquirrelLabs.TerracedTerrainGenerator.Sculpting.Plane;
+using LazySquirrelLabs.TerracedTerrainGenerator.ShapeGeneration.Plane.Polygons;
 using LazySquirrelLabs.TerracedTerrainGenerator.TerraceGeneration;
+using LazySquirrelLabs.TerracedTerrainGenerator.TerraceGeneration.Plane;
 using Unity.Collections;
 
 namespace LazySquirrelLabs.TerracedTerrainGenerator

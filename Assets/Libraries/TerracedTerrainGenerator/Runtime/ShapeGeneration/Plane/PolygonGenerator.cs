@@ -1,4 +1,4 @@
-namespace LazySquirrelLabs.TerracedTerrainGenerator.ShapeGeneration
+namespace LazySquirrelLabs.TerracedTerrainGenerator.ShapeGeneration.Plane
 {
     /// <summary>
     /// Base class for all polygon generators.

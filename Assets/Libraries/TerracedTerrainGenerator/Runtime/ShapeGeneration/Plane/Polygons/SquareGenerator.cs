@@ -2,7 +2,7 @@ using LazySquirrelLabs.TerracedTerrainGenerator.Data;
 using Unity.Collections;
 using UnityEngine;
 
-namespace LazySquirrelLabs.TerracedTerrainGenerator.ShapeGeneration.Polygons
+namespace LazySquirrelLabs.TerracedTerrainGenerator.ShapeGeneration.Plane.Polygons
 {
     /// <summary>
     /// Generates a square mesh.

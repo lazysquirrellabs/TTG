@@ -4,7 +4,7 @@ using LazySquirrelLabs.TerracedTerrainGenerator.Utils;
 using Unity.Collections;
 using UnityEngine;
 
-namespace LazySquirrelLabs.TerracedTerrainGenerator.ShapeGeneration.Polygons
+namespace LazySquirrelLabs.TerracedTerrainGenerator.ShapeGeneration.Plane.Polygons
 {
     /// <summary>
     /// Generates a regular polygon mesh with 5 or more sides.

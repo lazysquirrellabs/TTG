@@ -1,5 +1,6 @@
 using System;
 using System.Threading;
+using LazySquirrelLabs.TerracedTerrainGenerator.Controllers;
 using UnityEngine;
 
 namespace LazySquirrelLabs.TerracedTerrainGenerator.Samples.ParametersTest

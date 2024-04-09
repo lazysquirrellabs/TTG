@@ -2,7 +2,7 @@ using LazySquirrelLabs.TerracedTerrainGenerator.Data;
 using Unity.Collections;
 using UnityEngine;
 
-namespace LazySquirrelLabs.TerracedTerrainGenerator.TerraceGeneration
+namespace LazySquirrelLabs.TerracedTerrainGenerator.TerraceGeneration.Sphere
 {
 	internal class SphereTerracer : Terracer
 	{
