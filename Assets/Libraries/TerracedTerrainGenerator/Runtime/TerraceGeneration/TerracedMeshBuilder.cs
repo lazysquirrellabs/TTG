@@ -48,7 +48,7 @@ namespace LazySquirrelLabs.TerracedTerrainGenerator.TerraceGeneration
         /// <summary>
         /// The indices that were an outcome of the terrain baking and that will be used to construct the final mesh.
         /// </summary>
-        private NativeList<int>[] _bakedIndices;
+        private NativeArray<NativeList<int>> _bakedIndices;
         /// <summary>
         /// Whether this builder has baked its mesh data yet.
         /// </summary>
@@ -86,11 +86,13 @@ namespace LazySquirrelLabs.TerracedTerrainGenerator.TerraceGeneration
         {
             _horizontalMeshData.Dispose();
             _verticalMeshData.Dispose();
+            
             foreach (var bakedIndices in _bakedIndices)
             {
                 if (bakedIndices.IsCreated)
                     bakedIndices.Dispose();
             }
+            _bakedIndices.Dispose();
             
             if (_bakedVertices.IsCreated)
                 _bakedVertices.Dispose();
@@ -179,7 +181,7 @@ namespace LazySquirrelLabs.TerracedTerrainGenerator.TerraceGeneration
             // Bake vertices
             _bakedVertices = MergeVertices(_horizontalMeshData.Vertices, _verticalMeshData.Vertices, allocator);
             // Initialize indices list (per terrace).
-            _bakedIndices = new NativeList<int>[_terraceCount];
+            _bakedIndices = new NativeArray<NativeList<int>>(_terraceCount, allocator);
             
             // Bake mesh indices data, per terrace/sub mesh
             for (var i = 0; i < _terraceCount; i++)
