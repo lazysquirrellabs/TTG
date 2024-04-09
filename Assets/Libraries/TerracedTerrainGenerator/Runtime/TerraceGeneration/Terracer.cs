@@ -9,7 +9,7 @@ namespace LazySquirrelLabs.TerracedTerrainGenerator.TerraceGeneration
     /// Modified an existing terrain mesh by creating terraces on it. The strategy used is similar to the one described
     /// in https://icospheric.com/blog/2016/07/17/making-terraced-terrain/.
     /// </summary>
-    internal sealed class Terracer : IDisposable
+    internal abstract class Terracer : IDisposable
     {
         #region Delegates
 
@@ -50,14 +50,14 @@ namespace LazySquirrelLabs.TerracedTerrainGenerator.TerraceGeneration
         /// unmodified.</param>
         /// <param name="terraceHeights">The heights of all terraces (in units), in ascending order.</param>
         /// <param name="allocator">The allocation strategy used when creating vertex and index buffers.</param>
-        internal Terracer(SimpleMeshData meshData, float[] terraceHeights, Allocator allocator)
+        protected Terracer(SimpleMeshData meshData, float[] terraceHeights, Allocator allocator)
         {
 	        _meshData = meshData;
 	        // In the base case, there will be at least the same amount of vertices
 	        var vertexCount = _meshData.Vertices.Length;
 	        var indexCount = _meshData.Indices.Length;
 	        _terraceCount = terraceHeights.Length;
-	        _meshBuilder = new TerracedMeshBuilder(vertexCount, indexCount, _terraceCount, allocator);
+	        _meshBuilder = new TerracedMeshBuilder(vertexCount, indexCount, _terraceCount, allocator, GetVertexHeight, SetVertexHeight);
 	        _planeHeights = GetHeights(_terraceCount, terraceHeights, allocator);
             
 	        static NativeArray<float> GetHeights(int count, float[] terraceHeights, Allocator allocator)
@@ -99,11 +99,16 @@ namespace LazySquirrelLabs.TerracedTerrainGenerator.TerraceGeneration
             Slicer addSlicedTriangle2Above = _meshBuilder.AddSlicedTriangle2Above;
             var triangleCount = _meshData.Indices.Length / 3;
             var triangleIndex = 0;
-
+	            
+            // Cache values to avoid repeated indexing when accessing Indices and
+            // property access when accessing Vertices.
+            var indices = _meshData.Indices;
+            var vertices = _meshData.Vertices;
+            
             // Loop through all triangles, slicing each one
             for (var t = 0; t < triangleCount; t++)
             {
-                var triangle = new Triangle(_meshData.Indices, _meshData.Vertices, ref triangleIndex);
+                var triangle = new Triangle(indices, vertices, ref triangleIndex);
                 SliceAndAddTriangle(triangle);
             }
 
@@ -178,19 +183,22 @@ namespace LazySquirrelLabs.TerracedTerrainGenerator.TerraceGeneration
                         added = true;
                     }
                     
-                    static (Triangle, int) RearrangeAccordingToPlane(Triangle triangle, float planeHeight)
+                    (Triangle, int) RearrangeAccordingToPlane(Triangle triangle, float planeHeight)
                     {
 	                    var v1 = triangle.V1;
 	                    var v2 = triangle.V2;
 	                    var v3 = triangle.V3;
-                        var v1Below = v1.y < planeHeight;
-                        var v2Below = v2.y < planeHeight;
-                        var v3Below = v3.y < planeHeight;
+	                    var height1 = GetVertexHeight(v1);
+	                    var height2 = GetVertexHeight(v2);
+	                    var height3 = GetVertexHeight(v3);
+                        var v1Below = height1 < planeHeight;
+                        var v2Below = height2 < planeHeight;
+                        var v3Below = height3 < planeHeight;
 
                         if (v1Below)
                         {
                             if (v2Below)
-                                return v3.y < planeHeight ? (triangle, 0) : (triangle, 1);
+                                return height3 < planeHeight ? (triangle, 0) : (triangle, 1);
 
                             if (v3Below)
                             {
@@ -239,6 +247,14 @@ namespace LazySquirrelLabs.TerracedTerrainGenerator.TerraceGeneration
             return _meshBuilder.Build();
         }
         
+        #endregion
+
+        #region Protected
+
+        protected abstract float GetVertexHeight(Vector3 vertex);
+        
+        protected abstract Vector3 SetVertexHeight(Vector3 vertex, float height);
+
         #endregion
     }
 }

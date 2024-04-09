@@ -24,7 +24,7 @@ namespace LazySquirrelLabs.TerracedTerrainGenerator.TerraceGeneration
         /// <param name="indices">The index data to fetch the triangle indices from.</param>
         /// <param name="vertices">The vertex data to fetch the triangle vertices from.</param>
         /// <param name="index">The index of the first triangle index. Will be modified.</param>
-        internal Triangle(NativeList<int> indices, NativeList<Vector3> vertices, ref int index)
+        internal Triangle(NativeList<int> indices, NativeArray<Vector3> vertices, ref int index)
         {
             var ix1 = indices[index];
             index++;

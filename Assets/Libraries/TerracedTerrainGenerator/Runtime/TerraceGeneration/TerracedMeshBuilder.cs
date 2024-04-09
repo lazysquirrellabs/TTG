@@ -31,6 +31,11 @@ namespace LazySquirrelLabs.TerracedTerrainGenerator.TerraceGeneration
         /// The number of terraces to be created.
         /// </summary>
         private readonly int _terraceCount;
+
+        private readonly Func<Vector3, float> _getVertexHeight;
+        private readonly Func<Vector3, float, Vector3> _setVertexHeight;
+        
+        
         /// <summary>
         /// The index of the next vertex to be added to the terrain mesh. It's shared between both vertical and
         /// horizontal mesh data.
@@ -60,9 +65,12 @@ namespace LazySquirrelLabs.TerracedTerrainGenerator.TerraceGeneration
         /// <param name="indicesCount">The initial number of indices.</param>
         /// <param name="terraceCount">The number of terraces to be created.</param>
         /// <param name="allocator">The allocation strategy used when creating vertex and index buffers.</param>
-        internal TerracedMeshBuilder(int vertexCount, int indicesCount, int terraceCount, Allocator allocator)
+        internal TerracedMeshBuilder(int vertexCount, int indicesCount, int terraceCount, Allocator allocator, 
+	        Func<Vector3, float> getVertexHeight, Func<Vector3, float, Vector3> setVertexHeight)
         {
             _terraceCount = terraceCount;
+            _getVertexHeight = getVertexHeight;
+            _setVertexHeight = setVertexHeight;
             // Both horizontal and vertical mesh data are initialized with the given vertex and indices count because
             // the number of generated data (both vertices and indices) is usually much larger than the provided, 
             // initial values. These initial values are used just to avoid late buffer resizing.
@@ -83,7 +91,7 @@ namespace LazySquirrelLabs.TerracedTerrainGenerator.TerraceGeneration
                 if (bakedIndices.IsCreated)
                     bakedIndices.Dispose();
             }
-
+            
             if (_bakedVertices.IsCreated)
                 _bakedVertices.Dispose();
         }
@@ -101,10 +109,10 @@ namespace LazySquirrelLabs.TerracedTerrainGenerator.TerraceGeneration
         internal void AddWholeTriangle(Triangle triangle, float height, int terraceIx)
         {
             ThrowIfAlreadyBaked();
-            
-            var v1 = new Vector3(triangle.V1.x, height, triangle.V1.z);
-            var v2 = new Vector3(triangle.V2.x, height, triangle.V2.z);
-            var v3 = new Vector3(triangle.V3.x, height, triangle.V3.z);
+
+            var v1 = _setVertexHeight(triangle.V1, height);
+            var v2 = _setVertexHeight(triangle.V2, height);
+            var v3 = _setVertexHeight(triangle.V3, height);
             _horizontalMeshData.AddTriangle(v1, v2, v3, terraceIx, ref _nextVertexIndex);
         }
         
@@ -122,14 +130,14 @@ namespace LazySquirrelLabs.TerracedTerrainGenerator.TerraceGeneration
             // Add floor
             var floor1 = GetPlanePoint(t.V1, t.V3, plane);
             var floor2 = GetPlanePoint(t.V2, t.V3, plane);
-            var floor3 = new Vector3(t.V3.x, plane, t.V3.z);
+            var floor3 = _setVertexHeight(t.V3, plane);
             _horizontalMeshData.AddTriangle(floor1, floor2, floor3, terraceIx, ref _nextVertexIndex);
 
             // Add wall
             var wall1 = floor2;
             var wall2 = floor1;
-            var wall3 = new Vector3(floor1.x, previousPlane, floor1.z);
-            var wall4 = new Vector3(floor2.x, previousPlane, floor2.z);
+            var wall3 = _setVertexHeight(floor1, previousPlane);
+            var wall4 = _setVertexHeight(floor2, previousPlane);
             _verticalMeshData.AddQuadrilateral(wall1, wall2, wall3, wall4, terraceIx, ref _nextVertexIndex);
         }
         
@@ -147,15 +155,15 @@ namespace LazySquirrelLabs.TerracedTerrainGenerator.TerraceGeneration
             // Add floor
             var floor1 = GetPlanePoint(t.V1, t.V3, plane);
             var floor2 = GetPlanePoint(t.V2, t.V3, plane);
-            var floor3 = new Vector3(t.V1.x, plane, t.V1.z);
-            var floor4 = new Vector3(t.V2.x, plane, t.V2.z);
+            var floor3 = _setVertexHeight(t.V1, plane);
+            var floor4 = _setVertexHeight(t.V2, plane);
             _horizontalMeshData.AddQuadrilateral(floor1, floor3, floor4, floor2, terraceIx, ref _nextVertexIndex);
 
             // Add wall
             var wall1 = floor1;
             var wall2 = floor2;
-            var wall3 = new Vector3(floor2.x, previousPlane, floor2.z);
-            var wall4 = new Vector3(floor1.x, previousPlane, floor1.z);
+            var wall3 = _setVertexHeight(floor2, previousPlane);
+            var wall4 = _setVertexHeight(floor1, previousPlane);
             _verticalMeshData.AddQuadrilateral(wall1, wall2, wall3, wall4, terraceIx, ref _nextVertexIndex);
         }
 
@@ -264,9 +272,11 @@ namespace LazySquirrelLabs.TerracedTerrainGenerator.TerraceGeneration
         /// <paramref name="higher"/>.</param>
         /// <returns>A point between <paramref name="lower"/> and <paramref name="higher"/>, placed exactly at the
         /// provided height.</returns>
-        private static Vector3 GetPlanePoint(Vector3 lower, Vector3 higher, float height)
+        private Vector3 GetPlanePoint(Vector3 lower, Vector3 higher, float height)
         {
-            var t = (height - lower.y) / (higher.y - lower.y);
+	        var lowerHeight = _getVertexHeight(lower);
+	        var higherHeight = _getVertexHeight(higher);
+            var t = (height - lowerHeight) / (higherHeight - lowerHeight);
             return Vector3.Lerp(lower, higher, t);
         }
 
