@@ -1,5 +1,4 @@
 using System;
-using System.Linq;
 using Unity.Collections;
 using UnityEngine;
 
@@ -54,9 +53,13 @@ namespace LazySquirrelLabs.TerracedTerrainGenerator.Data
 
         public override void Dispose()
         {
-            foreach (var indices in IndicesPerSubMesh.Where(i => i.IsCreated))
-                indices.Dispose();
-            if (_vertices.IsCreated)
+	        foreach (var indices in IndicesPerSubMesh)
+	        {
+		        if (indices.IsCreated)
+			        indices.Dispose();
+	        }
+
+	        if (_vertices.IsCreated)
                 _vertices.Dispose();
         }
 
