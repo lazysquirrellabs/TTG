@@ -6,7 +6,7 @@ using UnityEngine;
 namespace LazySquirrelLabs.TerracedTerrainGenerator.TerraceGeneration
 {
     /// <summary>
-    /// Modified an existing terrain mesh by creating terraces on it. The strategy used is similar to the one described
+    /// Modifies an existing terrain mesh by creating terraces on it. The strategy used is similar to the one described
     /// in https://icospheric.com/blog/2016/07/17/making-terraced-terrain/.
     /// </summary>
     internal abstract class Terracer : IDisposable
@@ -44,7 +44,7 @@ namespace LazySquirrelLabs.TerracedTerrainGenerator.TerraceGeneration
         #region Setup
 
         /// <summary>
-        /// Creates a new <see cref="Terracer"/>.
+        /// <see cref="Terracer"/>'s constructor..
         /// </summary>
         /// <param name="meshData">The terrain's original mesh data. It will be used to read data from and remains
         /// unmodified.</param>
@@ -57,7 +57,8 @@ namespace LazySquirrelLabs.TerracedTerrainGenerator.TerraceGeneration
 	        var vertexCount = _meshData.Vertices.Length;
 	        var indexCount = _meshData.Indices.Length;
 	        _terraceCount = terraceHeights.Length;
-	        _meshBuilder = new TerracedMeshBuilder(vertexCount, indexCount, _terraceCount, allocator, GetVertexHeight, SetVertexHeight);
+	        _meshBuilder = new TerracedMeshBuilder(vertexCount, indexCount, _terraceCount, allocator, 
+		        GetVertexHeight, SetVertexHeight);
 	        _planeHeights = terraceHeights;
         }
 
@@ -102,6 +103,8 @@ namespace LazySquirrelLabs.TerracedTerrainGenerator.TerraceGeneration
                 SliceAndAddTriangle(triangle);
             }
 
+            return;
+
             void SliceAndAddTriangle(Triangle t)
             {
                 var planeCount = _planeHeights.Length;
@@ -121,7 +124,8 @@ namespace LazySquirrelLabs.TerracedTerrainGenerator.TerraceGeneration
                 var lastHeight = _planeHeights[planeCount - 1];
                 var lastTerraceIx = _terraceCount - 1;
                 SliceTriangleAtHeight(lastHeight, lastTerraceIx, false);
-
+                return;
+                
                 void SliceTriangleAtHeight(float height, int terraceIx, bool placeOnTerraceAbove)
                 {
                     int pointsAbove;
@@ -154,6 +158,7 @@ namespace LazySquirrelLabs.TerracedTerrainGenerator.TerraceGeneration
                     }
                     
                     previousHeight = height;
+                    return;
                     
                     void SliceTriangle(Slicer slice)
                     {
@@ -241,8 +246,21 @@ namespace LazySquirrelLabs.TerracedTerrainGenerator.TerraceGeneration
 
         #region Protected
 
+        /// <summary>
+        /// Finds the height of a <paramref name="vertex"/>.
+        /// </summary>
+        /// <param name="vertex">The vertex whose height we would like to know.</param>
+        /// <returns>How many units above the ground the given <paramref name="vertex"/> is (whatever that means for
+        /// the given implementation).</returns>
         protected abstract float GetVertexHeight(Vector3 vertex);
         
+        /// <summary>
+        /// A method that returns a copy of a <paramref name="vertex"/> set at a given <paramref name="height"/>.
+        /// </summary>
+        /// <param name="vertex">The vertex to set the height.</param>
+        /// <param name="height">The desired height.</param>
+        /// <returns>A copy of <paramref name="vertex"/>, set at the given <paramref name="height"/> above the ground
+        /// (whatever that means for the given implementation).</returns>
         protected abstract Vector3 SetVertexHeight(Vector3 vertex, float height);
 
         #endregion

@@ -20,21 +20,25 @@ namespace LazySquirrelLabs.TerracedTerrainGenerator.TerraceGeneration
         /// </summary>
         private const int MaxVertexCountUInt16 = 65_535;
         /// <summary>
-        /// Mesh data that holds all the terrain's "walls" (vertical triangles) 
+        /// Mesh data that holds all the terrain's "floors" (horizontal triangles).
         /// </summary>
         private readonly ComplexMeshData _horizontalMeshData;
         /// <summary>
-        /// Mesh data that holds all the terrain's "floors" (horizontal triangles) 
+        /// Mesh data that holds all the terrain's "walls" (vertical triangles).
         /// </summary>
         private readonly ComplexMeshData _verticalMeshData;
         /// <summary>
         /// The number of terraces to be created.
         /// </summary>
         private readonly int _terraceCount;
-
-        private readonly Func<Vector3, float> _getVertexHeight;
-        private readonly Func<Vector3, float, Vector3> _setVertexHeight;
-        
+        /// <summary>
+        /// A method that finds the height of a vertex.
+        /// </summary>
+        private readonly HeightGetter _getVertexHeight;
+        /// <summary>
+        /// A method that returns a copy of a vertex set at a given height.
+        /// </summary>
+        private readonly HeightSetter _setVertexHeight;
         
         /// <summary>
         /// The index of the next vertex to be added to the terrain mesh. It's shared between both vertical and
@@ -65,8 +69,10 @@ namespace LazySquirrelLabs.TerracedTerrainGenerator.TerraceGeneration
         /// <param name="indicesCount">The initial number of indices.</param>
         /// <param name="terraceCount">The number of terraces to be created.</param>
         /// <param name="allocator">The allocation strategy used when creating vertex and index buffers.</param>
+        /// <param name="getVertexHeight">A method that finds the height of a vertex.</param>
+        /// <param name="setVertexHeight">A method that returns a copy of a vertex set at a given height.</param>
         internal TerracedMeshBuilder(int vertexCount, int indicesCount, int terraceCount, Allocator allocator, 
-	        Func<Vector3, float> getVertexHeight, Func<Vector3, float, Vector3> setVertexHeight)
+	        HeightGetter getVertexHeight, HeightSetter setVertexHeight)
         {
             _terraceCount = terraceCount;
             _getVertexHeight = getVertexHeight;
@@ -192,6 +198,7 @@ namespace LazySquirrelLabs.TerracedTerrainGenerator.TerraceGeneration
             }
 
             _baked = true;
+            return;
             
             static NativeArray<Vector3> MergeVertices(NativeParallelHashMap<Vector3,int> v1, 
 	            NativeParallelHashMap<Vector3,int> v2, Allocator allocator)
