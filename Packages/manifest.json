@@ -2,7 +2,7 @@
   "dependencies": {
     "com.unity.collections": "2.1.4",
     "com.unity.ide.rider": "3.0.28",
-    "com.unity.render-pipelines.universal": "14.0.10",
+    "com.unity.render-pipelines.universal": "14.0.11",
     "com.unity.test-framework": "1.1.33",
     "com.unity.textmeshpro": "3.0.8",
     "com.unity.ugui": "1.0.0",
