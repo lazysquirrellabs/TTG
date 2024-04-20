@@ -8,7 +8,7 @@ namespace LazySquirrelLabs.TerracedTerrainGenerator.ShapeGeneration.Plane
         #region Properties
 
         /// <summary>
-        /// The distance between the the center and the most distant point of the terrain.
+        /// The distance between the center and the most distant point of the terrain.
         /// </summary>
         protected float Radius { get; }
 

@@ -3,6 +3,9 @@ using UnityEngine;
 
 namespace LazySquirrelLabs.TerracedTerrainGenerator.Controllers
 {
+	/// <summary>
+	/// A controller that helps with generating spherical terraced terrains.
+	/// </summary>
 	public class SphereTerrainGeneratorController : TerrainGeneratorController
 	{
 		#region Serialzied fields

@@ -160,14 +160,14 @@ namespace LazySquirrelLabs.TerracedTerrainGenerator.TerraceGeneration
         {
             ThrowIfAlreadyBaked();
             
-            // Add floor
+            // Add floor.
             var floor1 = GetPlanePoint(t.V1, t.V3, plane);
             var floor2 = GetPlanePoint(t.V2, t.V3, plane);
             var floor3 = _setVertexHeight(t.V1, plane);
             var floor4 = _setVertexHeight(t.V2, plane);
             _horizontalMeshData.AddQuadrilateral(floor1, floor3, floor4, floor2, terraceIx, ref _nextVertexIndex);
 
-            // Add wall
+            // Add wall.
             var wall1 = floor1;
             var wall2 = floor2;
             var wall3 = _setVertexHeight(floor2, previousPlane);
@@ -184,12 +184,12 @@ namespace LazySquirrelLabs.TerracedTerrainGenerator.TerraceGeneration
         {
             ThrowIfAlreadyBaked();
             
-            // Bake vertices
+            // Bake vertices.
             _bakedVertices = MergeVertices(_horizontalMeshData.Vertices, _verticalMeshData.Vertices, allocator);
             // Initialize indices list (per terrace).
             _bakedIndices = new NativeArray<NativeList<int>>(_terraceCount, allocator);
             
-            // Bake mesh indices data, per terrace/sub mesh
+            // Bake mesh indices data, per terrace/sub mesh.
             for (var i = 0; i < _terraceCount; i++)
             {
                 var horizontalIndices = _horizontalMeshData.GetIndices(i);
@@ -237,10 +237,10 @@ namespace LazySquirrelLabs.TerracedTerrainGenerator.TerraceGeneration
             // Each terrace must be a sub mesh to allow for material assignment per terrace.
             mesh.subMeshCount = _terraceCount;
             
-            // Set mesh vertex data
+            // Set mesh vertex data.
             mesh.SetVertices(_bakedVertices, 0, vertexCount);
             
-            // Set mesh indices data, per terrace/sub mesh
+            // Set mesh indices data, per terrace/sub mesh.
             for (var i = 0; i < _terraceCount; i++)
             {
                 var indices = _bakedIndices[i];

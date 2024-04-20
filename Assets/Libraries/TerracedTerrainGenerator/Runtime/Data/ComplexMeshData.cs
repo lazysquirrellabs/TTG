@@ -11,6 +11,10 @@ namespace LazySquirrelLabs.TerracedTerrainGenerator.Data
     {
         #region Fields
 
+        /// <summary>
+        /// All mesh data's vertices (key) and their indices (value). This is kept as a dictionary to ease
+        /// finding existing vertices, reducing the number of duplicates.
+        /// </summary>
         private NativeParallelHashMap<Vector3, int> _vertices;
 
         #endregion

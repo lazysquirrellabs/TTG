@@ -12,7 +12,7 @@ using UnityEngine;
 namespace LazySquirrelLabs.TerracedTerrainGenerator
 {
     /// <summary>
-    /// Top-most entity responsible for the terraced terrain generation.
+    /// Base class for all terrain generators.
     /// </summary>
     public abstract class TerrainGenerator
     {
@@ -27,6 +27,9 @@ namespace LazySquirrelLabs.TerracedTerrainGenerator
         /// </summary>
         private const Allocator AsyncAllocator = Allocator.Persistent;
 
+        /// <summary>
+        /// The allocation strategy used by this generator.
+        /// </summary>
         private readonly Allocator _allocator;
 
         /// <summary>
@@ -60,18 +63,19 @@ namespace LazySquirrelLabs.TerracedTerrainGenerator
         /// <summary>
         /// <see cref="PlaneTerrainGenerator"/>'s constructor.
         /// </summary>
-        /// <param name="maximumHeight">The maximum height of the terrain, in units. In order words, distance
-        /// between its lowest and highest point. Value must be greater than zero.</param>
+        /// <param name="minHeight">The minimum height of the terrain, in units.</param>
+        /// <param name="maxHeight">The maximum height of the terrain, in units.</param>
         /// <param name="relativeTerraceHeights">Terrace heights, relative to the terrain's maximum height. Values
-        /// must be in the  [0, 1] range, in ascending order. Each terrace's final height will be calculated by
+        /// must be in the [0, 1] range, in ascending order. Each terrace's final height will be calculated by
         /// multiplying the relative height by the terrain's height.</param>
         /// <param name="depth">Depth to fragment the basic mesh. Value must be greater than zero.</param>
         /// <exception cref="ArgumentOutOfRangeException">Thrown if any of the arguments is out of range. Checks 
         /// individual arguments for valid ranges.</exception>
-        private protected TerrainGenerator(float minimumHeight, float maximumHeight, float[] relativeTerraceHeights, ushort depth)
+        private protected TerrainGenerator(float minHeight, float maxHeight, float[] relativeTerraceHeights, 
+                                           ushort depth)
         {
-            if (maximumHeight <= 0)
-	            throw new ArgumentOutOfRangeException(nameof(maximumHeight), "Height must be greater than zero.");
+	        if (maxHeight <= 0)
+		        throw new ArgumentOutOfRangeException(nameof(maxHeight), "Height must be greater than zero.");
             
             if (depth == 0)
 	            throw new ArgumentOutOfRangeException(nameof(depth), "Depth must be greater than zero.");
@@ -86,23 +90,25 @@ namespace LazySquirrelLabs.TerracedTerrainGenerator
 	            if (relativeHeight is < 0 or > 1)
 	            {
 		            throw new ArgumentOutOfRangeException(nameof(relativeTerraceHeights),
-			            "Relative heights must be greater than 0 and less than 1.");
+		                                                  "Relative heights must be greater than 0 and less than 1."
+		            );
 	            }
 
 	            if (i != 0 && relativeHeight <= relativeTerraceHeights[i - 1])
 	            {
 		            throw new ArgumentOutOfRangeException(nameof(relativeTerraceHeights),
-			            "Relative heights must be in ascending order.");
+		                                                  "Relative heights must be in ascending order."
+		            );
 	            }
             }
 
             _fragmenter = new MeshFragmenter(depth);
             
-            var heightDelta = maximumHeight - minimumHeight;
+            var heightDelta = maxHeight - minHeight;
             TerraceHeights = new float[relativeTerraceHeights.Length];
             for (var i = 0; i < TerraceHeights.Length; i++)
             {
-	            TerraceHeights[i] = minimumHeight + relativeTerraceHeights[i] * heightDelta;
+	            TerraceHeights[i] = minHeight + relativeTerraceHeights[i] * heightDelta;
             }
         }
 

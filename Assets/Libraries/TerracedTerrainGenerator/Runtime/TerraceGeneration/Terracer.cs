@@ -31,7 +31,7 @@ namespace LazySquirrelLabs.TerracedTerrainGenerator.TerraceGeneration
         /// </summary>
         private readonly TerracedMeshBuilder _meshBuilder;
         /// <summary>
-        /// The height of all the planes used to slice the triangles.
+        /// The height (in units) of all the terraces used to slice the triangles.
         /// </summary>
         private readonly float[] _planeHeights;
         /// <summary>
@@ -44,7 +44,7 @@ namespace LazySquirrelLabs.TerracedTerrainGenerator.TerraceGeneration
         #region Setup
 
         /// <summary>
-        /// <see cref="Terracer"/>'s constructor..
+        /// <see cref="Terracer"/>'s constructor.
         /// </summary>
         /// <param name="meshData">The terrain's original mesh data. It will be used to read data from and remains
         /// unmodified.</param>
@@ -80,7 +80,7 @@ namespace LazySquirrelLabs.TerracedTerrainGenerator.TerraceGeneration
         /// Creates the terraces, but doesn't create the <see cref="Mesh"/> yet.
         /// </summary>
         /// <exception cref="NotSupportedException">Thrown whenever a triangle has more than 3 vertices below a given
-        /// place (which should be impossible, because it's a triangle). </exception>
+        /// terrace height (which should be impossible, because it's a triangle). </exception>
         internal void CreateTerraces()
         {
             if (_terraceCount == 0)
@@ -96,7 +96,7 @@ namespace LazySquirrelLabs.TerracedTerrainGenerator.TerraceGeneration
             var indices = _meshData.Indices;
             var vertices = _meshData.Vertices;
             
-            // Loop through all triangles, slicing each one
+            // Loop through all triangles, slicing each one.
             for (var t = 0; t < triangleCount; t++)
             {
                 var triangle = new Triangle(indices, vertices, ref triangleIndex);
@@ -108,19 +108,19 @@ namespace LazySquirrelLabs.TerracedTerrainGenerator.TerraceGeneration
             void SliceAndAddTriangle(Triangle t)
             {
                 var planeCount = _planeHeights.Length;
-                // Keep track of the previous plane because some slice cases need to add triangles on it
+                // Keep track of the previous plane because some slice cases need to add triangles on it.
                 var previousHeight = _planeHeights[0];
                 var added = false;
 
-                // Loop through all planes, except the last one, and try to slice the triangle at the current one
+                // Loop through all planes, except the last one, and try to slice the triangle at the current one.
                 for (var terraceIx = 0; terraceIx < _terraceCount - 1; terraceIx++)
                 {
-                    // There is one plane below the first terrace, so offset its index by 1
+                    // There is one plane below the first terrace, so offset its index by 1.
                     var terraceHeight = _planeHeights[terraceIx + 1];
                     SliceTriangleAtHeight(terraceHeight, terraceIx, true);
                 }
                 
-                // Handle the last terrace separately because it's a special case
+                // Handle the last terrace separately because it's a special case.
                 var lastHeight = _planeHeights[planeCount - 1];
                 var lastTerraceIx = _terraceCount - 1;
                 SliceTriangleAtHeight(lastHeight, lastTerraceIx, false);
@@ -162,7 +162,7 @@ namespace LazySquirrelLabs.TerracedTerrainGenerator.TerraceGeneration
                     
                     void SliceTriangle(Slicer slice)
                     {
-                        // If this is the fist slice, place the bottom triangle
+                        // If this is the fist slice, place the bottom triangle.
                         if (!added)
                             PlacePlane();
                         var terraceIncrement = placeOnTerraceAbove ? 1 : 0;

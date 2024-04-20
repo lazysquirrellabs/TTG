@@ -6,6 +6,9 @@ using UnityEngine;
 
 namespace LazySquirrelLabs.TerracedTerrainGenerator.Controllers
 {
+	/// <summary>
+	/// Base class for all terraced terrain generator controllers.
+	/// </summary>
 	public abstract class TerrainGeneratorController : MonoBehaviour
 	{
 		#region Serialized fields
@@ -93,7 +96,7 @@ namespace LazySquirrelLabs.TerracedTerrainGenerator.Controllers
 		{
 			if (_renderer == null) return;
 			if (_relativeHeights == null) return;
-			// If there's more materials then terraces, don't do anything.
+			// If there are more materials than terraces, don't do anything.
 			var materials = _renderer.sharedMaterials;
 			var terraceCount = _relativeHeights.Length;
 			if (materials.Length >= terraceCount) return;
