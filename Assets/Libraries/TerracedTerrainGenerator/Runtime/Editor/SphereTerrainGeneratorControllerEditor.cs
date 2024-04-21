@@ -10,7 +10,7 @@ namespace LazySquirrelLabs.TerracedTerrainGenerator.Editor
 
 		// Properties
 		private SerializedProperty _minimumHeight;
-		
+
 		// Tooltips
 		private const string MinimumHeightHeightTooltip = "The minimum height of the generated terrain, in units.";
 

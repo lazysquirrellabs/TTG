@@ -11,9 +11,10 @@ namespace LazySquirrelLabs.TerracedTerrainGenerator.Editor
 		// Properties
 		private SerializedProperty _sides;
 		private SerializedProperty _radius;
-		
+
 		// Tooltips
 		private const string SidesTooltip = "The number of sides of the terrain's basic shape.";
+
 		private const string RadiusTooltip = "The greatest distance between the center of the mesh and all of its " +
 		                                     "vertices (ignoring their position's Y coordinate)";
 

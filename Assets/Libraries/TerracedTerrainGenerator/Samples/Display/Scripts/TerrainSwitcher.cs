@@ -9,7 +9,7 @@ namespace LazySquirrelLabs.TerracedTerrainGenerator.Samples.Display
 	{
 		#region Serialized fields
 
-		[SerializeField, Range(1, 60)] private float _periodSeconds;
+		[SerializeField, Range(1, 60)]  private float _periodSeconds;
 		[SerializeField] private TerrainSetup[] _setups;
 
 		#endregion
@@ -30,7 +30,9 @@ namespace LazySquirrelLabs.TerracedTerrainGenerator.Samples.Display
 		private async void Start()
 		{
 			foreach (var setup in _setups)
+			{
 				setup.WarmUp();
+			}
 
 			var token = _cancellationTokenSource.Token;
 			var periodMilli = (int)(_periodSeconds * 1_000);
@@ -38,10 +40,14 @@ namespace LazySquirrelLabs.TerracedTerrainGenerator.Samples.Display
 			try
 			{
 				var index = 0;
+
 				while (true)
 				{
 					if (index >= _setups.Length)
+					{
 						index = 0;
+					}
+
 					var setup = _setups[index];
 					setup.Show();
 					await Task.Delay(periodMilli, token);

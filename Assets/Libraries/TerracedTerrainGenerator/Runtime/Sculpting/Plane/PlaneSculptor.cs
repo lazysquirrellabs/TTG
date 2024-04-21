@@ -20,7 +20,7 @@ namespace LazySquirrelLabs.TerracedTerrainGenerator.Sculpting.Plane
 		#region Setup
 
 		/// <summary>
-		/// Creates a <see cref="PlaneSculptor"/> with the given settings.
+		/// Creates a <see cref="PlaneSculptor" /> with the given settings.
 		/// </summary>
 		/// <param name="sculptSettings">The settings used for sculpting.</param>
 		/// <param name="maximumHeight"> The Y coordinate of the highest possible vertex after sculpting.</param>
@@ -60,7 +60,7 @@ namespace LazySquirrelLabs.TerracedTerrainGenerator.Sculpting.Plane
 		protected override Func<Vector3, Vector3> GetApplyFinalHeight(float dropFactor)
 		{
 			return ApplyHeight;
-			
+
 			Vector3 ApplyHeight(Vector3 vertex)
 			{
 				// Normalize the height data, so it's in the [0, 1] range.

@@ -9,7 +9,7 @@ namespace LazySquirrelLabs.TerracedTerrainGenerator.ShapeGeneration
 	internal abstract class ShapeGenerator
 	{
 		#region Internal
-        
+
 		/// <summary>
 		/// Generates the shape.
 		/// </summary>

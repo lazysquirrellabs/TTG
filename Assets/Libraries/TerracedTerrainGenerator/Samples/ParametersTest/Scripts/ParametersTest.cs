@@ -48,14 +48,18 @@ namespace LazySquirrelLabs.TerracedTerrainGenerator.Samples.ParametersTest
 		private async void Update()
 		{
 			if (Time.realtimeSinceStartup - _lastGeneration < Interval)
+			{
 				return;
+			}
 
 			var startTime = Time.realtimeSinceStartup;
 			_lastGeneration = startTime;
 			string synchronicity;
+
 			if (_async)
 			{
 				synchronicity = "asynchronously";
+
 				try
 				{
 					await _generatorController.GenerateTerrainAsync(_cancellationTokenSource.Token);
@@ -70,6 +74,7 @@ namespace LazySquirrelLabs.TerracedTerrainGenerator.Samples.ParametersTest
 				synchronicity = "synchronously";
 				_generatorController.GenerateTerrain();
 			}
+
 			var endTime = Time.realtimeSinceStartup;
 			Debug.Log($"Generated terrain {synchronicity} in {(endTime - startTime) * 1_000} milliseconds.");
 		}

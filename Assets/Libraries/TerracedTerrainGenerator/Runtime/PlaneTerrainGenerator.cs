@@ -17,7 +17,7 @@ namespace LazySquirrelLabs.TerracedTerrainGenerator
 		#region Setup
 
 		/// <summary>
-		/// <see cref="PlaneTerrainGenerator"/>'s constructor.
+		/// <see cref="PlaneTerrainGenerator" />'s constructor.
 		/// </summary>
 		/// <param name="sides">Number of sides of the terrain's basic shape. Value must be between 3 and 10. </param>
 		/// <param name="radius">The terrain's radius. Value must be greater than zero.</param>
@@ -28,16 +28,18 @@ namespace LazySquirrelLabs.TerracedTerrainGenerator
 		/// multiplying the relative height by the terrain's height.</param>
 		/// <param name="sculptSettings">The settings used during the sculpting phase.</param>
 		/// <param name="depth">Depth to fragment the basic mesh. Value must be greater than zero.</param>
-		/// <exception cref="ArgumentOutOfRangeException">Thrown if any of the arguments is out of range. Checks 
+		/// <exception cref="ArgumentOutOfRangeException">Thrown if any of the arguments is out of range. Checks
 		/// individual arguments for valid ranges.</exception>
-		/// <exception cref="NotImplementedException">Thrown whenever the provided number of <paramref name="sides"/>
+		/// <exception cref="NotImplementedException">Thrown whenever the provided number of <paramref name="sides" />
 		/// is not supported (greater than 10).</exception>
 		public PlaneTerrainGenerator(ushort sides, float radius, float maxHeight, float[] relativeTerraceHeights,
-		                             SculptSettings sculptSettings, ushort depth) 
+		                             SculptSettings sculptSettings, ushort depth)
 			: base(0, maxHeight, relativeTerraceHeights, depth)
 		{
 			if (sides < 3)
+			{
 				throw new ArgumentOutOfRangeException(nameof(sides), "Sides must be greater than 2.");
+			}
 
 			ShapeGenerator = sides switch
 			{
@@ -52,13 +54,13 @@ namespace LazySquirrelLabs.TerracedTerrainGenerator
 
 		#endregion
 
-        #region Protected
+		#region Protected
 
-        private protected override Terracer GetTerracer(SimpleMeshData meshData, Allocator allocator)
-        {
-	        return new PlaneTerracer(meshData, TerraceHeights, allocator);
-        }
+		private protected override Terracer GetTerracer(SimpleMeshData meshData, Allocator allocator)
+		{
+			return new PlaneTerracer(meshData, TerraceHeights, allocator);
+		}
 
-        #endregion
+		#endregion
 	}
 }

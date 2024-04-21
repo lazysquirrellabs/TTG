@@ -1,6 +1,6 @@
 using System;
-using NUnit.Framework;
 using LazySquirrelLabs.TerracedTerrainGenerator.Sculpting;
+using NUnit.Framework;
 using UnityEngine;
 
 namespace LazySquirrelLabs.TerracedTerrainGenerator.Tests
@@ -54,6 +54,7 @@ namespace LazySquirrelLabs.TerracedTerrainGenerator.Tests
 			depth = 3;
 			// Nothing wrong, just to ensure no other parameters were still invalid
 			Create();
+			return;
 
 			void Create()
 			{

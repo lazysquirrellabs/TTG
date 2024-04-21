@@ -8,7 +8,7 @@ namespace LazySquirrelLabs.TerracedTerrainGenerator.Sculpting
 	/// <summary>
 	/// Sculpts a terrain mesh using a Perlin filter.
 	/// </summary>
-	internal abstract class Sculptor 
+	internal abstract class Sculptor
 	{
 		#region Properties
 
@@ -21,7 +21,7 @@ namespace LazySquirrelLabs.TerracedTerrainGenerator.Sculpting
 		/// The settings used for sculpting.
 		/// </summary>
 		protected SculptSettings Settings { get; }
-		
+
 		/// <summary>
 		/// The random generator used to calculate noise offsets.
 		/// </summary>
@@ -32,7 +32,7 @@ namespace LazySquirrelLabs.TerracedTerrainGenerator.Sculpting
 		#region Setup
 
 		/// <summary>
-		/// Creates a <see cref="Sculptor"/> with the given settings.
+		/// Creates a <see cref="Sculptor" /> with the given settings.
 		/// </summary>
 		/// <param name="sculptSettings">The settings used for sculpting.</param>
 		/// <param name="maximumHeight"> The height of the highest possible vertex after sculpting.</param>
@@ -44,7 +44,7 @@ namespace LazySquirrelLabs.TerracedTerrainGenerator.Sculpting
 		}
 
 		#endregion
-		
+
 		#region Internal
 
 		/// <summary>
@@ -67,12 +67,17 @@ namespace LazySquirrelLabs.TerracedTerrainGenerator.Sculpting
 			// bringing all vertices' Y coordinate to the [0, maximumHeight] range.
 			var applyFinalHeight = GetApplyFinalHeight(dropFactor);
 			meshData.Map(applyFinalHeight);
+			return;
 
 			Vector3 CalculateVertexHeight(Vector3 vertex)
 			{
 				var height = GetTotalNoise(vertex);
+
 				if (height > highestRelativeHeight)
+				{
 					highestRelativeHeight = height;
+				}
+
 				return PlaceVertexAtHeight(vertex, height);
 
 				float GetTotalNoise(Vector3 v)
@@ -82,6 +87,7 @@ namespace LazySquirrelLabs.TerracedTerrainGenerator.Sculpting
 					var frequency = Settings.BaseFrequency;
 					var persistence = Settings.Persistence;
 					var lacunarity = Settings.Lacunarity;
+
 					for (var i = 0; i < Settings.Octaves; i++)
 					{
 						var octaveNoise = GetNoise(v, frequency, i);
@@ -102,10 +108,10 @@ namespace LazySquirrelLabs.TerracedTerrainGenerator.Sculpting
 		protected abstract void InitializeOffsets();
 
 		protected abstract Vector3 PlaceVertexAtHeight(Vector3 vertex, float height);
-		
+
 		protected abstract float GetNoise(Vector3 vertex, float frequency, int octaveIndex);
 
-		protected abstract Func<Vector3,Vector3> GetApplyFinalHeight(float dropFactor);
+		protected abstract Func<Vector3, Vector3> GetApplyFinalHeight(float dropFactor);
 
 		#endregion
 	}

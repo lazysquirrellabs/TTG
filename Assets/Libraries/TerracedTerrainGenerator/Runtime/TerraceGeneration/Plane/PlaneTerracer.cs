@@ -12,23 +12,21 @@ namespace LazySquirrelLabs.TerracedTerrainGenerator.TerraceGeneration.Plane
 	internal sealed class PlaneTerracer : Terracer
 	{
 		#region Setup
-		
+
 		/// <summary>
-		/// <see cref="PlaneTerracer"/>'s constructor.
+		/// <see cref="PlaneTerracer" />'s constructor.
 		/// </summary>
 		/// <param name="meshData">The terrain's original mesh data. It will be used to read data from and remains
 		/// unmodified.</param>
 		/// <param name="terraceHeights">The heights of all terraces (in units), in ascending order.</param>
 		/// <param name="allocator">The allocation strategy used when creating vertex and index buffers.</param>
-		public PlaneTerracer(SimpleMeshData meshData, float[] terraceHeights, Allocator allocator) 
-			: base(meshData, terraceHeights, allocator)
-		{
-		}
-		
+		public PlaneTerracer(SimpleMeshData meshData, float[] terraceHeights, Allocator allocator)
+			: base(meshData, terraceHeights, allocator) { }
+
 		#endregion
 
 		#region Protected
-		
+
 		protected override float GetVertexHeight(Vector3 vertex)
 		{
 			// On a plane terrain, a vertex's height is its Y coordinate.
@@ -41,7 +39,7 @@ namespace LazySquirrelLabs.TerracedTerrainGenerator.TerraceGeneration.Plane
 			vertex.y = height;
 			return vertex;
 		}
-		
-		#endregion		
+
+		#endregion
 	}
 }

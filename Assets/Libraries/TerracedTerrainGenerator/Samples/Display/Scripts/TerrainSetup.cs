@@ -20,7 +20,7 @@ namespace LazySquirrelLabs.TerracedTerrainGenerator.Samples.Display
 		{
 			_controller.GenerateTerrain(_seed);
 		}
-		
+
 		internal void Show()
 		{
 			_controller.gameObject.SetActive(true);
