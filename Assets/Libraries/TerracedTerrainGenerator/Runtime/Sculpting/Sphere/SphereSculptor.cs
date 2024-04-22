@@ -30,7 +30,7 @@ namespace LazySquirrelLabs.TerracedTerrainGenerator.Sculpting.Sphere
 		#region Setup
 
 		/// <summary>
-		/// Creates a <see cref="SphereSculptor" /> with the given settings.
+		/// Creates a <see cref="SphereSculptor"/> with the given settings.
 		/// </summary>
 		/// <param name="sculptSettings">The settings used for sculpting.</param>
 		/// <param name="minimumHeight">The height (magnitude) of the lowest possible vertex after sculpting.</param>

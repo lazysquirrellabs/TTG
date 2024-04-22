@@ -17,7 +17,7 @@ namespace LazySquirrelLabs.TerracedTerrainGenerator
 		#region Setup
 
 		/// <summary>
-		/// <see cref="PlaneTerrainGenerator" />'s constructor.
+		/// <see cref="PlaneTerrainGenerator"/>'s constructor.
 		/// </summary>
 		/// <param name="sides">Number of sides of the terrain's basic shape. Value must be between 3 and 10. </param>
 		/// <param name="radius">The terrain's radius. Value must be greater than zero.</param>
@@ -30,7 +30,7 @@ namespace LazySquirrelLabs.TerracedTerrainGenerator
 		/// <param name="depth">Depth to fragment the basic mesh. Value must be greater than zero.</param>
 		/// <exception cref="ArgumentOutOfRangeException">Thrown if any of the arguments is out of range. Checks
 		/// individual arguments for valid ranges.</exception>
-		/// <exception cref="NotImplementedException">Thrown whenever the provided number of <paramref name="sides" />
+		/// <exception cref="NotImplementedException">Thrown whenever the provided number of <paramref name="sides"/>
 		/// is not supported (greater than 10).</exception>
 		public PlaneTerrainGenerator(ushort sides, float radius, float maxHeight, float[] relativeTerraceHeights,
 		                             SculptSettings sculptSettings, ushort depth)

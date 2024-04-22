@@ -7,7 +7,7 @@ namespace LazySquirrelLabs.TerracedTerrainGenerator.Utils
 		#region Internal
 
 		/// <summary>
-		/// Rotates the given <paramref name="point" /> around the origin by a given angle.
+		/// Rotates the given <paramref name="point"/> around the origin by a given angle.
 		/// </summary>
 		/// <param name="point">The point to be rotated.</param>
 		/// <param name="degrees">The angle in degrees.</param>

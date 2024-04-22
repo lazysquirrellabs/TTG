@@ -32,7 +32,7 @@ namespace LazySquirrelLabs.TerracedTerrainGenerator.Sculpting
 		#region Setup
 
 		/// <summary>
-		/// Creates a <see cref="Sculptor" /> with the given settings.
+		/// Creates a <see cref="Sculptor"/> with the given settings.
 		/// </summary>
 		/// <param name="sculptSettings">The settings used for sculpting.</param>
 		/// <param name="maximumHeight"> The height of the highest possible vertex after sculpting.</param>

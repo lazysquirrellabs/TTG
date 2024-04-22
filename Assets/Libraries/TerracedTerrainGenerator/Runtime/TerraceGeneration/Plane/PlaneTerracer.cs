@@ -14,7 +14,7 @@ namespace LazySquirrelLabs.TerracedTerrainGenerator.TerraceGeneration.Plane
 		#region Setup
 
 		/// <summary>
-		/// <see cref="PlaneTerracer" />'s constructor.
+		/// <see cref="PlaneTerracer"/>'s constructor.
 		/// </summary>
 		/// <param name="meshData">The terrain's original mesh data. It will be used to read data from and remains
 		/// unmodified.</param>

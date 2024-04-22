@@ -29,7 +29,7 @@ namespace LazySquirrelLabs.TerracedTerrainGenerator.ShapeGeneration.Plane.Polygo
 		/// <param name="radius">The radius of the generated polygon (distance between the center and its
 		/// vertices).</param>
 		/// <exception cref="ArgumentException">Thrown if the number of sides is less than 5. For squares and triangles,
-		/// check <see cref="SquareGenerator" /> and <see cref="TriangleGenerator" />.</exception>
+		/// check <see cref="SquareGenerator"/> and <see cref="TriangleGenerator"/>.</exception>
 		internal RegularPolygonGenerator(ushort sides, float radius) : base(radius)
 		{
 			if (sides < 5)

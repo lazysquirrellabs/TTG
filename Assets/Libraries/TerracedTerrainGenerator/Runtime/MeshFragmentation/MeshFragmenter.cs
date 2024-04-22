@@ -23,7 +23,7 @@ namespace LazySquirrelLabs.TerracedTerrainGenerator.MeshFragmentation
 		#region Setup
 
 		/// <summary>
-		/// <see cref="MeshFragmenter" />'s constructor. To actually fragment a mesh, call <see cref="Fragment" />.
+		/// <see cref="MeshFragmenter"/>'s constructor. To actually fragment a mesh, call <see cref="Fragment"/>.
 		/// </summary>
 		/// <param name="depth">The depth (how many consecutive times) the mesh will be fragmented.</param>
 		internal MeshFragmenter(ushort depth)

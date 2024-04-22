@@ -70,20 +70,20 @@ namespace LazySquirrelLabs.TerracedTerrainGenerator.Data
 
 		#region Internal
 
-		/// <inheritdoc cref="MeshData.AddTriangleAt" />
+		/// <inheritdoc cref="MeshData.AddTriangleAt"/>
 		internal void AddTriangle(Vector3 v1, Vector3 v2, Vector3 v3, int subMesh, ref int index)
 		{
 			AddTriangleAt(v1, v2, v3, subMesh, ref index);
 		}
 
-		/// <inheritdoc cref="MeshData.AddQuadrilateralAt" />
+		/// <inheritdoc cref="MeshData.AddQuadrilateralAt"/>
 		internal void AddQuadrilateral(Vector3 v1, Vector3 v2, Vector3 v3, Vector3 v4, int subMesh, ref int index)
 		{
 			AddQuadrilateralAt(v1, v2, v3, v4, subMesh, ref index);
 		}
 
 		/// <summary>
-		/// Fetches the mesh (triangle) indices for a given <paramref name="subMesh" /> index.
+		/// Fetches the mesh (triangle) indices for a given <paramref name="subMesh"/> index.
 		/// </summary>
 		/// <param name="subMesh">The index of the sub mesh to fetch the indices from.</param>
 		/// <returns></returns>

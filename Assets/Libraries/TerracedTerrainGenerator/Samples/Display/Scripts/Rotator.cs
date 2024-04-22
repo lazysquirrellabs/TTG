@@ -6,7 +6,7 @@ namespace LazySquirrelLabs.TerracedTerrainGenerator.Samples.Display
 	{
 		#region Serialized fields
 
-		[SerializeField, Range(0.1f, 100f)]  private float _speed;
+		[SerializeField, Range(0.1f, 100f)] private float _speed;
 
 		#endregion
 

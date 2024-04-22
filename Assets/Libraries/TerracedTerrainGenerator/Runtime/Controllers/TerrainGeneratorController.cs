@@ -153,7 +153,7 @@ namespace LazySquirrelLabs.TerracedTerrainGenerator.Controllers
 		}
 
 		/// <summary>
-		/// Generates and displays a terraced terrain synchronously, based on the given <paramref name="seed" />.
+		/// Generates and displays a terraced terrain synchronously, based on the given <paramref name="seed"/>.
 		/// </summary>
 		/// <param name="seed">The seed used to feed the randomizer. The same seed will always generate the same
 		/// terrain.</param>
@@ -175,7 +175,7 @@ namespace LazySquirrelLabs.TerracedTerrainGenerator.Controllers
 		}
 
 		/// <summary>
-		/// Generates and displays a terraced terrain asynchronously, based on the given <paramref name="seed" />.
+		/// Generates and displays a terraced terrain asynchronously, based on the given <paramref name="seed"/>.
 		/// </summary>
 		/// <param name="seed">The seed used to feed the randomizer. The same seed will always generate the same
 		/// terrain.</param>

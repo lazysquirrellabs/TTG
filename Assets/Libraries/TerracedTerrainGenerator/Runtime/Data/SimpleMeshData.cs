@@ -81,7 +81,7 @@ namespace LazySquirrelLabs.TerracedTerrainGenerator.Data
 		#region Internal
 
 		/// <summary>
-		/// Maps a function <paramref name="f" /> to all vertices of the mesh.
+		/// Maps a function <paramref name="f"/> to all vertices of the mesh.
 		/// </summary>
 		/// <param name="f">The function to be applied on all vertices.</param>
 		internal void Map(Func<Vector3, Vector3> f)

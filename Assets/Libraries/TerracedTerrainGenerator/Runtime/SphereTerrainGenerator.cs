@@ -25,8 +25,8 @@ namespace LazySquirrelLabs.TerracedTerrainGenerator
 		/// distance between a mesh point and the sphere's center. </param>
 		/// <param name="relativeTerraceHeights">Terrace heights, relative to the terrain's maximum height. Values
 		/// must be in the [0, 1] range, in ascending order. Each terrace's final height will be calculated by
-		/// multiplying the relative height by the delta height (<paramref name="maxHeight" /> -
-		/// <paramref name="minHeight" />) and adding it to <paramref name="minHeight" />.</param>
+		/// multiplying the relative height by the delta height (<paramref name="maxHeight"/> -
+		/// <paramref name="minHeight"/>) and adding it to <paramref name="minHeight"/>.</param>
 		/// <param name="sculptSettings">The settings used during the sculpting phase.</param>
 		/// <param name="depth">Depth to fragment the basic mesh. Value must be greater than zero.</param>
 		/// <exception cref="ArgumentOutOfRangeException">Thrown if any of the arguments is out of range. Checks

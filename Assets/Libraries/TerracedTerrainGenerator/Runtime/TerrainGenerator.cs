@@ -62,7 +62,7 @@ namespace LazySquirrelLabs.TerracedTerrainGenerator
 		#region Setup
 
 		/// <summary>
-		/// <see cref="PlaneTerrainGenerator" />'s constructor.
+		/// <see cref="PlaneTerrainGenerator"/>'s constructor.
 		/// </summary>
 		/// <param name="minHeight">The minimum height of the terrain, in units.</param>
 		/// <param name="maxHeight">The maximum height of the terrain, in units.</param>
@@ -128,7 +128,7 @@ namespace LazySquirrelLabs.TerracedTerrainGenerator
 		/// <summary>
 		/// Generates the entire terraced terrain synchronously.
 		/// </summary>
-		/// <returns>The generated <see cref="Mesh" />.</returns>
+		/// <returns>The generated <see cref="Mesh"/>.</returns>
 		public Mesh GenerateTerrain()
 		{
 			var meshData = GenerateTerrainData(SyncAllocator);
@@ -144,7 +144,7 @@ namespace LazySquirrelLabs.TerracedTerrainGenerator
 		/// </summary>
 		/// <param name="token">Token used for task cancellation.</param>
 		/// <returns>A task that represents the generation process. Should be awaited to retrieve the generated
-		/// <see cref="Mesh" />.</returns>
+		/// <see cref="Mesh"/>.</returns>
 		public async Task<Mesh> GenerateTerrainAsync(CancellationToken token)
 		{
 			// Run the mesh data generation (the heaviest part of the process) on the thread pool
@@ -177,11 +177,11 @@ namespace LazySquirrelLabs.TerracedTerrainGenerator
 		#region Protected
 
 		/// <summary>
-		/// Gets a <see cref="Terracer" /> instance.
+		/// Gets a <see cref="Terracer"/> instance.
 		/// </summary>
-		/// <param name="meshData">The mesh data used to build the <see cref="Terracer" />.</param>
-		/// <param name="allocator">The allocator used by the <see cref="Terracer" />.</param>
-		/// <returns>A new instance of <see cref="Terracer" />.</returns>
+		/// <param name="meshData">The mesh data used to build the <see cref="Terracer"/>.</param>
+		/// <param name="allocator">The allocator used by the <see cref="Terracer"/>.</param>
+		/// <returns>A new instance of <see cref="Terracer"/>.</returns>
 		private protected abstract Terracer GetTerracer(SimpleMeshData meshData, Allocator allocator);
 
 		#endregion

@@ -14,7 +14,7 @@ namespace LazySquirrelLabs.TerracedTerrainGenerator.TerraceGeneration
 		#region Delegates
 
 		/// <summary>
-		/// Delegate used to slice a given <see cref="Triangle" />.
+		/// Delegate used to slice a given <see cref="Triangle"/>.
 		/// </summary>
 		private delegate void Slicer(Triangle t, float height, float previousHeight, int terraceIndex);
 
@@ -47,7 +47,7 @@ namespace LazySquirrelLabs.TerracedTerrainGenerator.TerraceGeneration
 		#region Setup
 
 		/// <summary>
-		/// <see cref="Terracer" />'s constructor.
+		/// <see cref="Terracer"/>'s constructor.
 		/// </summary>
 		/// <param name="meshData">The terrain's original mesh data. It will be used to read data from and remains
 		/// unmodified.</param>
@@ -81,7 +81,7 @@ namespace LazySquirrelLabs.TerracedTerrainGenerator.TerraceGeneration
 		#region Internal
 
 		/// <summary>
-		/// Creates the terraces, but doesn't create the <see cref="Mesh" /> yet.
+		/// Creates the terraces, but doesn't create the <see cref="Mesh"/> yet.
 		/// </summary>
 		/// <exception cref="NotSupportedException">Thrown whenever a triangle has more than 3 vertices below a given
 		/// terrace height (which should be impossible, because it's a triangle). </exception>
@@ -236,7 +236,7 @@ namespace LazySquirrelLabs.TerracedTerrainGenerator.TerraceGeneration
 		}
 
 		/// <summary>
-		/// Bakes the terraced mesh data. Usually followed by a call to <see cref="CreateMesh" />. The baking and
+		/// Bakes the terraced mesh data. Usually followed by a call to <see cref="CreateMesh"/>. The baking and
 		/// creation steps are separate to allow callers to invoke the baking in a separate thread to maximize
 		/// performance.
 		/// </summary>
@@ -248,7 +248,7 @@ namespace LazySquirrelLabs.TerracedTerrainGenerator.TerraceGeneration
 
 		/// <summary>
 		/// Actually creates the previously baked terraced terrain mesh. This method must be called from the
-		/// main thread, otherwise the Unity <see cref="Mesh" /> API will throw an exception.
+		/// main thread, otherwise the Unity <see cref="Mesh"/> API will throw an exception.
 		/// </summary>
 		/// <returns>The terraced terrain's mesh.</returns>
 		internal Mesh CreateMesh()
@@ -261,19 +261,19 @@ namespace LazySquirrelLabs.TerracedTerrainGenerator.TerraceGeneration
 		#region Protected
 
 		/// <summary>
-		/// Finds the height of a <paramref name="vertex" />.
+		/// Finds the height of a <paramref name="vertex"/>.
 		/// </summary>
 		/// <param name="vertex">The vertex whose height we would like to know.</param>
-		/// <returns>How many units above the ground the given <paramref name="vertex" /> is (whatever that means for
+		/// <returns>How many units above the ground the given <paramref name="vertex"/> is (whatever that means for
 		/// the given implementation).</returns>
 		protected abstract float GetVertexHeight(Vector3 vertex);
 
 		/// <summary>
-		/// A method that returns a copy of a <paramref name="vertex" /> set at a given <paramref name="height" />.
+		/// A method that returns a copy of a <paramref name="vertex"/> set at a given <paramref name="height"/>.
 		/// </summary>
 		/// <param name="vertex">The vertex to set the height.</param>
 		/// <param name="height">The desired height.</param>
-		/// <returns>A copy of <paramref name="vertex" />, set at the given <paramref name="height" /> above the ground
+		/// <returns>A copy of <paramref name="vertex"/>, set at the given <paramref name="height"/> above the ground
 		/// (whatever that means for the given implementation).</returns>
 		protected abstract Vector3 SetVertexHeight(Vector3 vertex, float height);
 

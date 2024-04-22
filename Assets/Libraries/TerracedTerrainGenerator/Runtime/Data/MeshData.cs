@@ -5,7 +5,7 @@ using UnityEngine;
 namespace LazySquirrelLabs.TerracedTerrainGenerator.Data
 {
 	/// <summary>
-	/// Abstract class used to create data that can be used to create a <see cref="Mesh" />.
+	/// Abstract class used to create data that can be used to create a <see cref="Mesh"/>.
 	/// </summary>
 	internal abstract class MeshData : IDisposable
 	{

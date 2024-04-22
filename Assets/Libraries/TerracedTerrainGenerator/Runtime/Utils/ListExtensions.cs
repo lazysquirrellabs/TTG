@@ -23,15 +23,15 @@ namespace LazySquirrelLabs.TerracedTerrainGenerator.Utils
 		}
 
 		/// <summary>
-		/// Creates a copy of a <see cref="NativeList{T}" />, respecting a given <paramref name="capacity" />.
+		/// Creates a copy of a <see cref="NativeList{T}"/>, respecting a given <paramref name="capacity"/>.
 		/// </summary>
 		/// <param name="list">The original list.</param>
 		/// <param name="capacity">The initial capacity of the copy list. It's assumed to be at least the length of the
 		/// original list, but it can also be greater.</param>
 		/// <param name="allocator">The allocation strategy used when creating vertex and index buffers.</param>
-		/// <typeparam name="T">The type of the elements of both the original <paramref name="list" /> and the copy
+		/// <typeparam name="T">The type of the elements of both the original <paramref name="list"/> and the copy
 		/// list.</typeparam>
-		/// <returns>A <see cref="NativeList{T}" /> containing all elements of the original list and potentially more
+		/// <returns>A <see cref="NativeList{T}"/> containing all elements of the original list and potentially more
 		/// elements.</returns>
 		internal static NativeList<T> Copy<T>(this NativeList<T> list, int capacity, Allocator allocator)
 			where T : unmanaged

@@ -9,7 +9,7 @@ namespace LazySquirrelLabs.TerracedTerrainGenerator.Samples.Display
 	{
 		#region Serialized fields
 
-		[SerializeField, Range(1, 60)]  private float _periodSeconds;
+		[SerializeField, Range(1, 60)] private float _periodSeconds;
 		[SerializeField] private TerrainSetup[] _setups;
 
 		#endregion

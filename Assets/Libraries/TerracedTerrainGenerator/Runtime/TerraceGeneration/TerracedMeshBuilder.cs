@@ -71,7 +71,7 @@ namespace LazySquirrelLabs.TerracedTerrainGenerator.TerraceGeneration
 		#region Setup
 
 		/// <summary>
-		/// Creates a <see cref="TerracedMeshBuilder" />.
+		/// Creates a <see cref="TerracedMeshBuilder"/>.
 		/// </summary>
 		/// <param name="vertexCount">The initial number of vertices.</param>
 		/// <param name="indicesCount">The initial number of indices.</param>
@@ -122,7 +122,7 @@ namespace LazySquirrelLabs.TerracedTerrainGenerator.TerraceGeneration
 		#region Internal
 
 		/// <summary>
-		/// Adds a whole, flat <see cref="Triangle" /> to the to-be-generated terraced mesh.
+		/// Adds a whole, flat <see cref="Triangle"/> to the to-be-generated terraced mesh.
 		/// </summary>
 		/// <param name="triangle">The original triangle.</param>
 		/// <param name="height">The height which the triangle will be added at.</param>
@@ -138,9 +138,9 @@ namespace LazySquirrelLabs.TerracedTerrainGenerator.TerraceGeneration
 		}
 
 		/// <summary>
-		/// Adds a triangle which has 1 vertex above the given <paramref name="plane" />.
+		/// Adds a triangle which has 1 vertex above the given <paramref name="plane"/>.
 		/// </summary>
-		/// <param name="t">The original <see cref="Triangle" />.</param>
+		/// <param name="t">The original <see cref="Triangle"/>.</param>
 		/// <param name="plane">The plane which sliced the triangle, leaving 1 vertex above it.</param>
 		/// <param name="previousPlane">The plane placed right above the one who sliced the triangle.</param>
 		/// <param name="terraceIx">The index of the terrace to add the triangle to.</param>
@@ -163,9 +163,9 @@ namespace LazySquirrelLabs.TerracedTerrainGenerator.TerraceGeneration
 		}
 
 		/// <summary>
-		/// Adds a triangle which has 2 vertices above the given <paramref name="plane" />.
+		/// Adds a triangle which has 2 vertices above the given <paramref name="plane"/>.
 		/// </summary>
-		/// <param name="t">The original <see cref="Triangle" />.</param>
+		/// <param name="t">The original <see cref="Triangle"/>.</param>
 		/// <param name="plane">The plane which sliced the triangle, leaving 2 vertices above it.</param>
 		/// <param name="previousPlane">The plane placed right above the one who sliced the triangle.</param>
 		/// <param name="terraceIx">The index of the terrace to add the triangle to.</param>
@@ -189,7 +189,7 @@ namespace LazySquirrelLabs.TerracedTerrainGenerator.TerraceGeneration
 		}
 
 		/// <summary>
-		/// Bakes the mesh data. Usually followed by a call to <see cref="Build" />. The baking and building steps are
+		/// Bakes the mesh data. Usually followed by a call to <see cref="Build"/>. The baking and building steps are
 		/// separate to allow callers to invoke the baking in a separate thread to maximize performance.
 		/// </summary>
 		/// <param name="allocator">The allocation strategy used when creating vertex and index buffers.</param>
@@ -232,12 +232,12 @@ namespace LazySquirrelLabs.TerracedTerrainGenerator.TerraceGeneration
 		}
 
 		/// <summary>
-		/// Builds a <see cref="Mesh" /> based on the previously baked mesh data. This method must be called from the
-		/// main thread, otherwise the Unity <see cref="Mesh" /> API will throw an exception.
+		/// Builds a <see cref="Mesh"/> based on the previously baked mesh data. This method must be called from the
+		/// main thread, otherwise the Unity <see cref="Mesh"/> API will throw an exception.
 		/// </summary>
-		/// <returns>The terraced terrain <see cref="Mesh" />.</returns>
+		/// <returns>The terraced terrain <see cref="Mesh"/>.</returns>
 		/// <exception cref="InvalidOperationException">Thrown if called without previously baking the mesh data
-		/// (by calling <see cref="Bake" />).</exception>
+		/// (by calling <see cref="Bake"/>).</exception>
 		internal Mesh Build()
 		{
 			if (!_baked)
@@ -294,15 +294,15 @@ namespace LazySquirrelLabs.TerracedTerrainGenerator.TerraceGeneration
 		}
 
 		/// <summary>
-		/// Gets a point between two provided positions, placed exactly at the given <paramref name="height" />. It
-		/// assumes that the provided data is valid: that the <paramref name="lower" /> point is actually lower and the
-		/// <paramref name="height" /> lies between the 2 provided points.
+		/// Gets a point between two provided positions, placed exactly at the given <paramref name="height"/>. It
+		/// assumes that the provided data is valid: that the <paramref name="lower"/> point is actually lower and the
+		/// <paramref name="height"/> lies between the 2 provided points.
 		/// </summary>
 		/// <param name="lower">The lower point.</param>
 		/// <param name="higher">The higher point.</param>
-		/// <param name="height">The height of the desired point between <paramref name="lower" /> and
-		/// <paramref name="higher" />.</param>
-		/// <returns>A point between <paramref name="lower" /> and <paramref name="higher" />, placed exactly at the
+		/// <param name="height">The height of the desired point between <paramref name="lower"/> and
+		/// <paramref name="higher"/>.</param>
+		/// <returns>A point between <paramref name="lower"/> and <paramref name="higher"/>, placed exactly at the
 		/// provided height.</returns>
 		private Vector3 GetPlanePoint(Vector3 lower, Vector3 higher, float height)
 		{
