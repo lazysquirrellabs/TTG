@@ -60,8 +60,7 @@ namespace LazySquirrelLabs.TerracedTerrainGenerator.Tests
 			void Create()
 			{
 				_ = new SculptSettings(6, baseFrequency, octaves, persistence, lacunarity,
-				                       heightDistribution
-				);
+				                       heightDistribution);
 			}
 		}
 	}

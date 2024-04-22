@@ -43,8 +43,7 @@ namespace LazySquirrelLabs.TerracedTerrainGenerator
 			if (minHeight > maxHeight)
 			{
 				throw new ArgumentOutOfRangeException(nameof(minHeight),
-				                                      "Minimum height must be less than maximum height"
-				);
+				                                      "Minimum height must be less than maximum height");
 			}
 
 			ShapeGenerator = new SphereGenerator(minHeight);

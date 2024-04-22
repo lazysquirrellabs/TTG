@@ -112,8 +112,7 @@ namespace LazySquirrelLabs.TerracedTerrainGenerator.Samples.Randomizer
 			_lastGeneration = Time.realtimeSinceStartup;
 			_meshFilter.mesh = await generator.GenerateTerrainAsync(_cancellationTokenSource.Token);
 			Debug.Log($"Generated a terrain with {sides} sides, height {height}, depth {depth}, " +
-			          $"{terraceCount} terraces and detail frequency {frequency:F3}."
-			);
+			          $"{terraceCount} terraces and detail frequency {frequency:F3}.");
 			return;
 
 			static float[] GetTerraceHeights(int count)

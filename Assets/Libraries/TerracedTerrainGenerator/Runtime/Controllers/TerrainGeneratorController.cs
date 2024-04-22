@@ -78,8 +78,7 @@ namespace LazySquirrelLabs.TerracedTerrainGenerator.Controllers
 				if (!urpLit)
 				{
 					Debug.LogError("Failed to create URP Lit material when resetting the terrain generator " +
-					               "controller. Please assign renderer materials manually."
-					);
+					               "controller. Please assign renderer materials manually.");
 					return;
 				}
 

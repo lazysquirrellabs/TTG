@@ -98,15 +98,13 @@ namespace LazySquirrelLabs.TerracedTerrainGenerator
 				if (relativeHeight is < 0 or > 1)
 				{
 					throw new ArgumentOutOfRangeException(nameof(relativeTerraceHeights),
-					                                      "Relative heights must be greater than 0 and less than 1."
-					);
+					                                      "Relative heights must be greater than 0 and less than 1.");
 				}
 
 				if (i != 0 && relativeHeight <= relativeTerraceHeights[i - 1])
 				{
 					throw new ArgumentOutOfRangeException(nameof(relativeTerraceHeights),
-					                                      "Relative heights must be in ascending order."
-					);
+					                                      "Relative heights must be in ascending order.");
 				}
 			}
 
