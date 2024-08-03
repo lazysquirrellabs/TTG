@@ -96,7 +96,7 @@ namespace LazySquirrelLabs.TerracedTerrainGenerator.ShapeGeneration.Sphere
 				indices.Add(t);
 			}
 
-			return new SimpleMeshData(vertices, indices);
+			return new SimpleMeshData(vertices, indices, allocator);
 		}
 
 		#endregion

@@ -78,7 +78,7 @@ namespace LazySquirrelLabs.TerracedTerrainGenerator.MeshFragmentation
 			}
 
 			// Create the new mesh data.
-			var newMeshData = new SimpleMeshData(readVertices, readIndices);
+			var newMeshData = new SimpleMeshData(readVertices, readIndices, allocator);
 			writeIndices.Dispose();
 			writeVertices.Dispose();
 

@@ -44,11 +44,12 @@ namespace LazySquirrelLabs.TerracedTerrainGenerator.Data
 		/// </summary>
 		/// <param name="vertices">The initial mesh vertices.</param>
 		/// <param name="indices">The initial mesh (triangle) indices.</param>
-		internal SimpleMeshData(NativeArray<Vector3> vertices, NativeList<int> indices)
+		/// <param name="allocator">The allocation strategy used when creating vertex and index buffers.</param>
+		internal SimpleMeshData(NativeArray<Vector3> vertices, NativeList<int> indices, Allocator allocator)
 		{
 			_vertices = vertices;
 			// A simple mesh on has 1 sub mesh
-			IndicesPerSubMesh = new NativeArray<NativeList<int>>(1, Allocator.Temp);
+			IndicesPerSubMesh = new NativeArray<NativeList<int>>(1, allocator);
 			IndicesPerSubMesh[0] = indices;
 		}
 
