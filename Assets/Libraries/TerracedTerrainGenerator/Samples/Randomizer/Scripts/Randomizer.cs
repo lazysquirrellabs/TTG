@@ -69,6 +69,13 @@ namespace LazySquirrelLabs.TerracedTerrainGenerator.Samples.Randomizer
 		{
 			_cancellationTokenSource?.Cancel();
 			_cancellationTokenSource?.Dispose();
+
+			var mesh = _meshFilter.mesh;
+			if (mesh)
+			{
+				mesh.Clear();
+				Destroy(mesh);
+			}
 		}
 
 		#endregion
