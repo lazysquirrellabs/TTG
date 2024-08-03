@@ -10,11 +10,28 @@ namespace LazySquirrelLabs.TerracedTerrainGenerator.Samples.Display
 
 		#endregion
 
+		#region Fields
+
+		private Transform _transform;
+		private Vector3 _up;
+
+		#endregion
+
+		#region Setup
+
+		private void Awake()
+		{
+			_transform = transform;
+			_up = _transform.up;
+		}
+
+		#endregion
+
 		#region Update
 
 		private void Update()
 		{
-			transform.Rotate(Vector3.up, _speed * Time.deltaTime);
+			transform.Rotate(_up, _speed * Time.deltaTime);
 		}
 
 		#endregion
