@@ -9,6 +9,7 @@ namespace LazySquirrelLabs.TerracedTerrainGenerator.Samples.Display
 	{
 		#region Serialized fields
 
+		[SerializeField] private Transform _lightTransform;
 		[SerializeField, Range(1, 60)] private float _periodSeconds;
 		[SerializeField] private TerrainSetup[] _setups;
 
@@ -49,7 +50,7 @@ namespace LazySquirrelLabs.TerracedTerrainGenerator.Samples.Display
 					}
 
 					var setup = _setups[index];
-					setup.Show();
+					setup.Show(_lightTransform);
 					await Task.Delay(periodMilli, token);
 					token.ThrowIfCancellationRequested();
 					setup.Hide();

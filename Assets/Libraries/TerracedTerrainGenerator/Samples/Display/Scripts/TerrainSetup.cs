@@ -11,6 +11,7 @@ namespace LazySquirrelLabs.TerracedTerrainGenerator.Samples.Display
 
 		[SerializeField] private TerrainGeneratorController _controller;
 		[SerializeField] private int _seed;
+		[SerializeField] private Vector3 _lightRotation;
 
 		#endregion
 
@@ -21,8 +22,9 @@ namespace LazySquirrelLabs.TerracedTerrainGenerator.Samples.Display
 			_controller.GenerateTerrain(_seed);
 		}
 
-		internal void Show()
+		internal void Show(Transform lightTransform)
 		{
+			lightTransform.eulerAngles = _lightRotation;
 			_controller.gameObject.SetActive(true);
 		}
 
