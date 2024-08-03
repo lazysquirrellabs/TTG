@@ -1,4 +1,6 @@
 using System;
+using System.Threading;
+using System.Threading.Tasks;
 using LazySquirrelLabs.TerracedTerrainGenerator.Controllers;
 using UnityEngine;
 
@@ -11,18 +13,20 @@ namespace LazySquirrelLabs.TerracedTerrainGenerator.Samples.Display
 
 		[SerializeField] private TerrainGeneratorController _controller;
 		[SerializeField] private int _seed;
+		[SerializeField] private Vector3 _lightRotation;
 
 		#endregion
 
 		#region Internal
 
-		internal void WarmUp()
+		internal async Task WarmUpAsync(CancellationToken token)
 		{
-			_controller.GenerateTerrain(_seed);
+			await _controller.GenerateTerrainAsync(_seed, token);
 		}
 
-		internal void Show()
+		internal void Show(Transform lightTransform)
 		{
+			lightTransform.eulerAngles = _lightRotation;
 			_controller.gameObject.SetActive(true);
 		}
 

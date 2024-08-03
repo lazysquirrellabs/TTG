@@ -33,16 +33,11 @@ namespace LazySquirrelLabs.TerracedTerrainGenerator.Controllers
 
 		#region Fields
 
-		private CancellationTokenSource _cancellationTokenSource;
+		private readonly CancellationTokenSource _cancellationTokenSource = new();
 
 		#endregion
 
 		#region Setup
-
-		private void Awake()
-		{
-			_cancellationTokenSource = new CancellationTokenSource();
-		}
 
 		private void Start()
 		{
