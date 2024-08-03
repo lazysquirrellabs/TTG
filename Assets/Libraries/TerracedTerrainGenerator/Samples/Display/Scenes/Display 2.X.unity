@@ -1874,6 +1874,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _lightTransform: {fileID: 1172090615}
+  _warmUpOnStart: 0
   _periodSeconds: 3
   _setups:
   - _controller: {fileID: 941666120}

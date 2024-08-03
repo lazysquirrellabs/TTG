@@ -10,6 +10,7 @@ namespace LazySquirrelLabs.TerracedTerrainGenerator.Samples.Display
 		#region Serialized fields
 
 		[SerializeField] private Transform _lightTransform;
+		[SerializeField] private bool _warmUpOnStart;
 		[SerializeField, Range(1, 60)] private float _periodSeconds;
 		[SerializeField] private TerrainSetup[] _setups;
 
@@ -30,12 +31,23 @@ namespace LazySquirrelLabs.TerracedTerrainGenerator.Samples.Display
 
 		private async void Start()
 		{
-			foreach (var setup in _setups)
+			var token = _cancellationTokenSource.Token;
+			var warmedUp = false;
+
+			if (_warmUpOnStart)
 			{
-				setup.WarmUp();
+				foreach (var setup in _setups)
+				{
+					await setup.WarmUpAsync(token);
+				}
+
+				warmedUp = true;
+			}
+			else
+			{
+				await _setups[0].WarmUpAsync(token);
 			}
 
-			var token = _cancellationTokenSource.Token;
 			var periodMilli = (int)(_periodSeconds * 1_000);
 
 			try
@@ -44,16 +56,29 @@ namespace LazySquirrelLabs.TerracedTerrainGenerator.Samples.Display
 
 				while (true)
 				{
-					if (index >= _setups.Length)
+					if (index >= _setups.Length) // Loop
 					{
 						index = 0;
+						warmedUp = true;
 					}
 
-					var setup = _setups[index];
-					setup.Show(_lightTransform);
-					await Task.Delay(periodMilli, token);
+					var currentSetup = _setups[index];
+					currentSetup.Show(_lightTransform);
+					var nextSetupIndex = index == _setups.Length - 1 ? 0 : index + 1;
+					var delayTask = Task.Delay(periodMilli, token);
+
+					if (warmedUp)
+					{
+						await delayTask;
+					}
+					else
+					{
+						var warmUpTask = _setups[nextSetupIndex].WarmUpAsync(token);
+						await Task.WhenAll(delayTask, warmUpTask);
+					}
+
 					token.ThrowIfCancellationRequested();
-					setup.Hide();
+					currentSetup.Hide();
 					index++;
 				}
 			}
