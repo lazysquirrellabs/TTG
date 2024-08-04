@@ -1371,7 +1371,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1956311790}
-  - component: {fileID: 1956311789}
+  - component: {fileID: 1956311791}
   m_Layer: 0
   m_Name: Switcher
   m_TagString: Untagged
@@ -1379,36 +1379,6 @@ GameObject:
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!114 &1956311789
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1956311788}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: e96e130637b74f1cb53678803ab143af, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  _lightTransform: {fileID: 1172090615}
-  _periodSeconds: 2
-  _setups:
-  - _controller: {fileID: 826162132}
-    _seed: 6
-    _lightRotation: {x: 108.7, y: 179.17, z: 0}
-  - _controller: {fileID: 1901063285}
-    _seed: 31811
-    _lightRotation: {x: 108.7, y: 179.17, z: 0}
-  - _controller: {fileID: 1642614724}
-    _seed: 1624
-    _lightRotation: {x: 108.7, y: 179.17, z: 0}
-  - _controller: {fileID: 1383736272}
-    _seed: 14708
-    _lightRotation: {x: 108.7, y: 179.17, z: 0}
-  - _controller: {fileID: 1012788112}
-    _seed: 451998560
-    _lightRotation: {x: 108.7, y: 179.17, z: 0}
 --- !u!4 &1956311790
 Transform:
   m_ObjectHideFlags: 0
@@ -1429,6 +1399,31 @@ Transform:
   - {fileID: 1012788109}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1956311791
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1956311788}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1b83110535ce24cc0800d1e4a5e3a818, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _warmUpOnStart: 0
+  _periodSeconds: 2
+  _setups:
+  - _controller: {fileID: 826162132}
+    _seed: 6
+  - _controller: {fileID: 1901063285}
+    _seed: 31811
+  - _controller: {fileID: 1642614724}
+    _seed: 1624
+  - _controller: {fileID: 1383736272}
+    _seed: 14708
+  - _controller: {fileID: 1012788112}
+    _seed: 451998560
 --- !u!1660057539 &9223372036854775807
 SceneRoots:
   m_ObjectHideFlags: 0

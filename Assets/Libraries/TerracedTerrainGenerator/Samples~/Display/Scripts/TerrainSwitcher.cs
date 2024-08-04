@@ -9,7 +9,6 @@ namespace LazySquirrelLabs.TerracedTerrainGenerator.Samples.Display
 	{
 		#region Serialized fields
 
-		[SerializeField] private Transform _lightTransform;
 		[SerializeField] private bool _warmUpOnStart;
 		[SerializeField, Range(1, 60)] private float _periodSeconds;
 		[SerializeField] private TerrainSetup[] _setups;
@@ -18,16 +17,11 @@ namespace LazySquirrelLabs.TerracedTerrainGenerator.Samples.Display
 
 		#region Fields
 
-		private CancellationTokenSource _cancellationTokenSource;
+		private readonly CancellationTokenSource _cancellationTokenSource = new();
 
 		#endregion
 
 		#region Setup
-
-		private void Awake()
-		{
-			_cancellationTokenSource = new CancellationTokenSource();
-		}
 
 		private async void Start()
 		{
@@ -63,7 +57,7 @@ namespace LazySquirrelLabs.TerracedTerrainGenerator.Samples.Display
 					}
 
 					var currentSetup = _setups[index];
-					currentSetup.Show(_lightTransform);
+					currentSetup.Show();
 					var nextSetupIndex = index == _setups.Length - 1 ? 0 : index + 1;
 					var delayTask = Task.Delay(periodMilli, token);
 
