@@ -41,6 +41,11 @@ namespace LazySquirrelLabs.TerracedTerrainGenerator
 				throw new ArgumentOutOfRangeException(nameof(sides), "Sides must be greater than 2.");
 			}
 
+			if (radius <= 0)
+			{
+				throw new ArgumentOutOfRangeException(nameof(radius), "Radius must be positive.");
+			}
+
 			ShapeGenerator = sides switch
 			{
 				3     => new TriangleGenerator(radius),
