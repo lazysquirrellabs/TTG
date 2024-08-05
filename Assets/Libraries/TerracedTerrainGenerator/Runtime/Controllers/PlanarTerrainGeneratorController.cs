@@ -4,9 +4,9 @@ using UnityEngine;
 namespace LazySquirrelLabs.TerracedTerrainGenerator.Controllers
 {
 	/// <summary>
-	/// A controller that helps with generating plane terraced terrains.
+	/// A controller that helps with generating planar terraced terrains.
 	/// </summary>
-	public class PlaneTerrainGeneratorController : TerrainGeneratorController
+	public class PlanarTerrainGeneratorController : TerrainGeneratorController
 	{
 		#region Serialzied fields
 
@@ -20,7 +20,7 @@ namespace LazySquirrelLabs.TerracedTerrainGenerator.Controllers
 		private protected override TerrainGenerator GetGenerator(float maximumHeight, float[] relativeHeights,
 		                                                         SculptSettings sculptSettings, ushort depth)
 		{
-			return new PlaneTerrainGenerator(_sides, _radius, maximumHeight, relativeHeights, sculptSettings, depth);
+			return new PlanarTerrainGenerator(_sides, _radius, maximumHeight, relativeHeights, sculptSettings, depth);
 		}
 
 		#endregion

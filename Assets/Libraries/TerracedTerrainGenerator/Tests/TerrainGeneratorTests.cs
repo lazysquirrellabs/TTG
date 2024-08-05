@@ -8,7 +8,7 @@ namespace LazySquirrelLabs.TerracedTerrainGenerator.Tests
 	internal class TerrainGeneratorTests
 	{
 		[Test]
-		public void PlaneConstructor()
+		public void PlanarConstructor()
 		{
 			ushort sides = 0;
 			var radius = 12.3f;
@@ -58,7 +58,7 @@ namespace LazySquirrelLabs.TerracedTerrainGenerator.Tests
 
 			void Create()
 			{
-				_ = new PlaneTerrainGenerator(sides, radius, maximumHeight, heights, settings, depth);
+				_ = new PlanarTerrainGenerator(sides, radius, maximumHeight, heights, settings, depth);
 			}
 		}
 	}

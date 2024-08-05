@@ -6,7 +6,7 @@ namespace LazySquirrelLabs.TerracedTerrainGenerator.Controllers
 	/// <summary>
 	/// A controller that helps with generating spherical terraced terrains.
 	/// </summary>
-	public class SphereTerrainGeneratorController : TerrainGeneratorController
+	public class SphericalTerrainGeneratorController : TerrainGeneratorController
 	{
 		#region Serialzied fields
 
@@ -19,7 +19,7 @@ namespace LazySquirrelLabs.TerracedTerrainGenerator.Controllers
 		private protected override TerrainGenerator GetGenerator(float maximumHeight, float[] relativeHeights,
 		                                                         SculptSettings sculptSettings, ushort depth)
 		{
-			return new SphereTerrainGenerator(_minimumHeight, maximumHeight, relativeHeights, sculptSettings, depth);
+			return new SphericalTerrainGenerator(_minimumHeight, maximumHeight, relativeHeights, sculptSettings, depth);
 		}
 
 		#endregion

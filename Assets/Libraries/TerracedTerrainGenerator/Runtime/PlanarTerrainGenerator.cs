@@ -10,14 +10,14 @@ using Unity.Collections;
 namespace LazySquirrelLabs.TerracedTerrainGenerator
 {
 	/// <summary>
-	/// /// Top-class responsible for the generation of plane terraced terrains.
+	/// /// Top-class responsible for the generation of planar terraced terrains.
 	/// </summary>
-	public class PlaneTerrainGenerator : TerrainGenerator
+	public class PlanarTerrainGenerator : TerrainGenerator
 	{
 		#region Setup
 
 		/// <summary>
-		/// <see cref="PlaneTerrainGenerator"/>'s constructor.
+		/// <see cref="PlanarTerrainGenerator"/>'s constructor.
 		/// </summary>
 		/// <param name="sides">Number of sides of the terrain's basic shape. Value must be between 3 and 10. </param>
 		/// <param name="radius">The terrain's radius. Value must be greater than zero.</param>
@@ -32,8 +32,8 @@ namespace LazySquirrelLabs.TerracedTerrainGenerator
 		/// individual arguments for valid ranges.</exception>
 		/// <exception cref="NotImplementedException">Thrown whenever the provided number of <paramref name="sides"/>
 		/// is not supported (greater than 10).</exception>
-		public PlaneTerrainGenerator(ushort sides, float radius, float maxHeight, float[] relativeTerraceHeights,
-		                             SculptSettings sculptSettings, ushort depth)
+		public PlanarTerrainGenerator(ushort sides, float radius, float maxHeight, float[] relativeTerraceHeights, 
+		                              SculptSettings sculptSettings, ushort depth)
 			: base(0, maxHeight, relativeTerraceHeights, depth)
 		{
 			if (sides < 3)

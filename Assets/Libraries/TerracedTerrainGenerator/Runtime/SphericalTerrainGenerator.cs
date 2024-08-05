@@ -12,12 +12,12 @@ namespace LazySquirrelLabs.TerracedTerrainGenerator
 	/// <summary>
 	/// Top-class responsible for the generation of spherical terraced terrains.
 	/// </summary>
-	internal class SphereTerrainGenerator : TerrainGenerator
+	internal class SphericalTerrainGenerator : TerrainGenerator
 	{
 		#region Setup
 
 		/// <summary>
-		/// <see cref="SphereTerrainGenerator"/>'s constructor.
+		/// <see cref="SphericalTerrainGenerator"/>'s constructor.
 		/// </summary>
 		/// <param name="minHeight">The minimum height of the terrain, in units. In order words, the smallest
 		/// distance between a mesh point and the sphere's center. </param>
@@ -31,8 +31,8 @@ namespace LazySquirrelLabs.TerracedTerrainGenerator
 		/// <param name="depth">Depth to fragment the basic mesh. Value must be greater than zero.</param>
 		/// <exception cref="ArgumentOutOfRangeException">Thrown if any of the arguments is out of range. Checks
 		/// individual arguments for valid ranges.</exception>
-		public SphereTerrainGenerator(float minHeight, float maxHeight, float[] relativeTerraceHeights,
-		                              SculptSettings sculptSettings, ushort depth)
+		public SphericalTerrainGenerator(float minHeight, float maxHeight, float[] relativeTerraceHeights, 
+		                                 SculptSettings sculptSettings, ushort depth)
 			: base(minHeight, maxHeight, relativeTerraceHeights, depth)
 		{
 			if (minHeight <= 0)

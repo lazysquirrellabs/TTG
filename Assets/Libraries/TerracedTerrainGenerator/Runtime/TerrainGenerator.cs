@@ -62,7 +62,7 @@ namespace LazySquirrelLabs.TerracedTerrainGenerator
 		#region Setup
 
 		/// <summary>
-		/// <see cref="PlaneTerrainGenerator"/>'s constructor.
+		/// <see cref="PlanarTerrainGenerator"/>'s constructor.
 		/// </summary>
 		/// <param name="minHeight">The minimum height of the terrain, in units.</param>
 		/// <param name="maxHeight">The maximum height of the terrain, in units.</param>
