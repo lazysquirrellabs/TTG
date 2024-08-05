@@ -1,6 +1,6 @@
 {
-  "name": "com.sneakysquirrellabs.terracedterraingenerator",
-  "version": "1.2.0",
+  "name": "com.lazysquirrellabs.terracedterraingenerator",
+  "version": "2.0.0",
   "displayName": "Terraced Terrain Generator",
   "description": "Generate terraced terrains procedurally.",
   "unity": "2022.3",
@@ -8,7 +8,7 @@
   "changelogUrl": "https://github.com/matheusamazonas/TTG/releases",
   "licensesUrl": "https://github.com/matheusamazonas/TTG/blob/master/LICENSE",
   "dependencies": {
-    "com.unity.collections": "1.5.1"
+    "com.unity.collections": "2.4.2"
   },
   "keywords": [
     "tools",
@@ -26,17 +26,17 @@
   "samples": [
     {
       "displayName": "Display",
-      "description": "This sample generates five hand-picked terrains with different characteristic. It's a great display of how the materials used by the terrains might influence its mood.",
+      "description": "This sample generates hand-picked terrains with different characteristic. It's a great display of how the materials used by the terrains might influence its mood. It contains 2 scenes: \"Display 1.0\" contains terrains that could be generated using TTG 1.X and \"Display 2.X\" contains terrains that can be generated using TTG 2.X.",
       "path": "Samples~/Display"
     },
     {
       "displayName": "Randomizer",
-      "description": "This sample repeatedly creates completely random terraced terrains. It's a great display of the tool's capabilities and the different types of terrains it can create.",
+      "description": "This sample repeatedly creates completely random plane terraced terrains. It's a great display of the tool's capabilities and the different types of plane terrains it can create.",
       "path": "Samples~/Randomizer"
     },
     {
         "displayName": "Parameters test",
-        "description": "This sample simply creates completely random terraced terrains every five seconds. It's a great display of the tool's capabilities and the different types of terrains it can create.",
+        "description": "This sample simply creates completely random plane terraced terrains every five seconds. It's a great display of the tool's capabilities and the different types of plane terrains it can create.",
         "path": "Samples~/ParametersTest"
     }
   ]

@@ -1,182 +1,200 @@
 using System;
-using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
-using SneakySquirrelLabs.TerracedTerrainGenerator.Data;
-using SneakySquirrelLabs.TerracedTerrainGenerator.MeshFragmentation;
-using SneakySquirrelLabs.TerracedTerrainGenerator.PolygonGeneration;
-using SneakySquirrelLabs.TerracedTerrainGenerator.Sculpting;
-using SneakySquirrelLabs.TerracedTerrainGenerator.TerraceGeneration;
+using LazySquirrelLabs.TerracedTerrainGenerator.Data;
+using LazySquirrelLabs.TerracedTerrainGenerator.MeshFragmentation;
+using LazySquirrelLabs.TerracedTerrainGenerator.Sculpting;
+using LazySquirrelLabs.TerracedTerrainGenerator.ShapeGeneration;
+using LazySquirrelLabs.TerracedTerrainGenerator.TerraceGeneration;
 using Unity.Collections;
 using UnityEngine;
 
-namespace SneakySquirrelLabs.TerracedTerrainGenerator
+namespace LazySquirrelLabs.TerracedTerrainGenerator
 {
-    /// <summary>
-    /// Top-most entity responsible for the terraced terrain generation.
-    /// </summary>
-    public class TerrainGenerator 
-    {
-        #region Fields
+	/// <summary>
+	/// Base class for all terrain generators.
+	/// </summary>
+	public abstract class TerrainGenerator
+	{
+		#region Fields
 
-        /// <summary>
-        /// Allocation strategy used whenever the synchronous terrain generation is performed.
-        /// </summary>
-        private const Allocator SyncAllocator = Allocator.TempJob;
-        /// <summary>
-        /// Allocation strategy used whenever the asynchronous terrain generation is performed.
-        /// </summary>
-        private const Allocator AsyncAllocator = Allocator.Persistent;
+		/// <summary>
+		/// Allocation strategy used whenever the synchronous terrain generation is performed.
+		/// </summary>
+		private const Allocator SyncAllocator = Allocator.TempJob;
 
-        private readonly Allocator _allocator;
-        /// <summary>
-        /// The polygon generator used to create the terrain's basic shape.
-        /// </summary>
-        private readonly PolygonGenerator _polygonGenerator;
-        /// <summary>
-        /// The mesh fragmenter used to fragment a basic shape, creating a more detailed mesh.
-        /// </summary>
-        private readonly MeshFragmenter _fragmenter;
-        /// <summary>
-        /// The sculptor used to create hills/valleys on the mesh.
-        /// </summary>
-        private readonly Sculptor _sculptor;
-        /// <summary>
-        /// The height of the terraces (in units), in ascending order.
-        /// </summary>
-        private readonly float[] _terraceHeights;
+		/// <summary>
+		/// Allocation strategy used whenever the asynchronous terrain generation is performed.
+		/// </summary>
+		private const Allocator AsyncAllocator = Allocator.Persistent;
 
-        #endregion
+		/// <summary>
+		/// The allocation strategy used by this generator.
+		/// </summary>
+		private readonly Allocator _allocator;
 
-        #region Setup
+		/// <summary>
+		/// The mesh fragmenter used to fragment a basic shape, creating a more detailed mesh.
+		/// </summary>
+		private readonly MeshFragmenter _fragmenter;
 
-        /// <summary>
-        /// <see cref="TerrainGenerator"/>'s constructor.
-        /// </summary>
-        /// <param name="sides">Number of sides of the terrain's basic shape. Value must be between 3 and 10. </param>
-        /// <param name="radius">The terrain's radius. Value must be greater than zero.</param>
-        /// <param name="maximumHeight">The maximum height of the terrain, in units. In order words, distance
-        /// between its lowest and highest point. Value must be greater than zero.</param>
-        /// <param name="relativeTerraceHeights">Terrace heights, relative to the terrain's maximum height. Values
-        /// must be in the  [0, 1] range, in ascending order. Each terrace's final height will be calculated by
-        /// multiplying the relative height by the terrain's height.</param>
-        /// <param name="sculptSettings">The settings used during the sculpting phase.</param>
-        /// <param name="depth">Depth to fragment the basic mesh. Value must be greater than zero.</param>
-        /// <exception cref="ArgumentOutOfRangeException">Thrown if any of the arguments is out of range. Checks 
-        /// individual arguments for valid ranges.</exception>
-        /// <exception cref="NotImplementedException">Thrown whenever the provided number of <paramref name="sides"/>
-        /// is not supported (greater than 10).</exception>
-        public TerrainGenerator(ushort sides, float radius, float maximumHeight, float[] relativeTerraceHeights, 
-	        SculptSettings sculptSettings, ushort depth)
-        {
-	        if (sides < 3)
-		        throw new ArgumentOutOfRangeException(nameof(sides), "Sides must be greater than 2.");
-	        
-            if (radius <= 0)
-                throw new ArgumentOutOfRangeException(nameof(radius), "Radius must be greater than zero.");
-            
-            if (maximumHeight <= 0)
-	            throw new ArgumentOutOfRangeException(nameof(maximumHeight), "Height must be greater than zero.");
-            
-            if (depth == 0)
-	            throw new ArgumentOutOfRangeException(nameof(depth), "Depth must be greater than zero.");
+		#endregion
 
-            if (relativeTerraceHeights.Length == 0)
-                throw new ArgumentOutOfRangeException(nameof(relativeTerraceHeights), "Relative heights is empty.");
+		#region Protected
 
-            // Check if relative terrace heights are valid.
-            for (var i = 0; i < relativeTerraceHeights.Length; i++)
-            {
-	            var relativeHeight = relativeTerraceHeights[i];
-	            if (relativeHeight is < 0 or > 1)
-	            {
-		            throw new ArgumentOutOfRangeException(nameof(relativeTerraceHeights),
-			            "Relative heights must be greater than 0 and less than 1.");
-	            }
+		/// <summary>
+		/// The polygon generator used to create the terrain's basic shape.
+		/// </summary>
+		private protected ShapeGenerator ShapeGenerator { private get; set; }
 
-	            if (i != 0 && relativeHeight <= relativeTerraceHeights[i - 1])
-	            {
-		            throw new ArgumentOutOfRangeException(nameof(relativeTerraceHeights),
-			            "Relative heights must be in ascending order.");
-	            }
-            }
-            
-            _polygonGenerator = sides switch
-            {
-                3 => new TriangleGenerator(radius),
-                4 => new SquareGenerator(radius),
-                <= 10 => new RegularPolygonGenerator(sides, radius),
-                _ => throw new NotImplementedException($"Polygon with {sides} not implemented")
-            };
+		/// <summary>
+		/// The sculptor used to create hills/valleys on the mesh.
+		/// </summary>
+		private protected Sculptor Sculptor { private get; set; }
 
-            _fragmenter = new MeshFragmenter(depth);
-            _sculptor = new Sculptor(sculptSettings, maximumHeight);
-            _terraceHeights = relativeTerraceHeights.Select(h => h * maximumHeight).ToArray();
-        }
+		/// <summary>
+		/// The height of the terraces (in units), in ascending order.
+		/// </summary>
+		private protected float[] TerraceHeights { get; }
 
-        #endregion
-        
-        #region Public
+		#endregion
 
-        /// <summary>
-        /// Generates the entire terraced terrain synchronously.
-        /// </summary>
-        /// <returns>The generated <see cref="Mesh"/>.</returns>
-        public Mesh GenerateTerrain()
-        {
-            var meshData = GenerateTerrainData(SyncAllocator);
-            using var terracer = new Terracer(meshData, _terraceHeights, SyncAllocator);
-            terracer.CreateTerraces();
-            terracer.BakeMeshData(SyncAllocator);
-            var mesh = terracer.CreateMesh();
-            return mesh;
-        }
+		#region Setup
 
-        /// <summary>
-        /// Generates the entire terraced terrain asynchronously.
-        /// </summary>
-        /// <param name="token">Token used for task cancellation.</param>
-        /// <returns>A task that represents the generation process. Should be awaited to retrieve the generated
-        /// <see cref="Mesh"/>.</returns>
-        public async Task<Mesh> GenerateTerrainAsync(CancellationToken token)
-        {
-            // Run the mesh data generation (the heaviest part of the process) on the thread pool
-            using var terracer = await Task.Run(GenerateTerracedTerrainData, token);
-            var mesh = terracer.CreateMesh();
-            return mesh;
+		/// <summary>
+		/// <see cref="PlanarTerrainGenerator"/>'s constructor.
+		/// </summary>
+		/// <param name="minHeight">The minimum height of the terrain, in units.</param>
+		/// <param name="maxHeight">The maximum height of the terrain, in units.</param>
+		/// <param name="relativeTerraceHeights">Terrace heights, relative to the terrain's maximum height. Values
+		/// must be in the [0, 1] range, in ascending order. Each terrace's final height will be calculated by
+		/// multiplying the relative height by the terrain's height.</param>
+		/// <param name="depth">Depth to fragment the basic mesh. Value must be greater than zero.</param>
+		/// <exception cref="ArgumentOutOfRangeException">Thrown if any of the arguments is out of range. Checks
+		/// individual arguments for valid ranges.</exception>
+		private protected TerrainGenerator(float minHeight, float maxHeight, float[] relativeTerraceHeights,
+		                                   ushort depth)
+		{
+			if (maxHeight <= 0)
+			{
+				throw new ArgumentOutOfRangeException(nameof(maxHeight), "Height must be greater than zero.");
+			}
 
-            Terracer GenerateTerracedTerrainData()
-            {
-                var meshData = GenerateTerrainData(AsyncAllocator);
-                var t = new Terracer(meshData, _terraceHeights, AsyncAllocator);
-                try
-                {
-                    t.CreateTerraces();
-                    t.BakeMeshData(AsyncAllocator);
-                }
-                catch (Exception)
-                {
-                    t.Dispose();
-                    throw;
-                }
+			if (depth == 0)
+			{
+				throw new ArgumentOutOfRangeException(nameof(depth), "Depth must be greater than zero.");
+			}
 
-                return t;
-            }
-        }
+			if (relativeTerraceHeights.Length == 0)
+			{
+				throw new ArgumentOutOfRangeException(nameof(relativeTerraceHeights), "Relative heights is empty.");
+			}
 
-        #endregion
+			// Check if relative terrace heights are valid.
+			for (var i = 0; i < relativeTerraceHeights.Length; i++)
+			{
+				var relativeHeight = relativeTerraceHeights[i];
 
-        #region Private
+				if (relativeHeight is < 0 or > 1)
+				{
+					throw new ArgumentOutOfRangeException(nameof(relativeTerraceHeights),
+					                                      "Relative heights must be greater than 0 and less than 1.");
+				}
 
-        private SimpleMeshData GenerateTerrainData(Allocator allocator)
-        {
-            var meshData = _polygonGenerator.Generate(allocator);
-            var fragmentedMeshData = _fragmenter.Fragment(meshData, allocator);
-            meshData.Dispose();
-            _sculptor.Sculpt(fragmentedMeshData);
-            return fragmentedMeshData;
-        }
+				if (i != 0 && relativeHeight <= relativeTerraceHeights[i - 1])
+				{
+					throw new ArgumentOutOfRangeException(nameof(relativeTerraceHeights),
+					                                      "Relative heights must be in ascending order.");
+				}
+			}
 
-        #endregion
-    }
+			_fragmenter = new MeshFragmenter(depth);
+
+			var heightDelta = maxHeight - minHeight;
+			TerraceHeights = new float[relativeTerraceHeights.Length];
+
+			for (var i = 0; i < TerraceHeights.Length; i++)
+			{
+				TerraceHeights[i] = minHeight + relativeTerraceHeights[i] * heightDelta;
+			}
+		}
+
+		#endregion
+
+		#region Public
+
+		/// <summary>
+		/// Generates the entire terraced terrain synchronously.
+		/// </summary>
+		/// <returns>The generated <see cref="Mesh"/>.</returns>
+		public Mesh GenerateTerrain()
+		{
+			var meshData = GenerateTerrainData(SyncAllocator);
+			using var terracer = GetTerracer(meshData, SyncAllocator);
+			terracer.CreateTerraces();
+			terracer.BakeMeshData(SyncAllocator);
+			var mesh = terracer.CreateMesh();
+			return mesh;
+		}
+
+		/// <summary>
+		/// Generates the entire terraced terrain asynchronously.
+		/// </summary>
+		/// <param name="token">Token used for task cancellation.</param>
+		/// <returns>A task that represents the generation process. Should be awaited to retrieve the generated
+		/// <see cref="Mesh"/>.</returns>
+		public async Task<Mesh> GenerateTerrainAsync(CancellationToken token)
+		{
+			// Run the mesh data generation (the heaviest part of the process) on the thread pool
+			using var terracer = await Task.Run(GenerateTerracedTerrainData, token);
+			var mesh = terracer.CreateMesh();
+			return mesh;
+
+			Terracer GenerateTerracedTerrainData()
+			{
+				var meshData = GenerateTerrainData(AsyncAllocator);
+				var t = GetTerracer(meshData, AsyncAllocator);
+
+				try
+				{
+					t.CreateTerraces();
+					t.BakeMeshData(AsyncAllocator);
+				}
+				catch (Exception)
+				{
+					t.Dispose();
+					throw;
+				}
+
+				return t;
+			}
+		}
+
+		#endregion
+
+		#region Protected
+
+		/// <summary>
+		/// Gets a <see cref="Terracer"/> instance.
+		/// </summary>
+		/// <param name="meshData">The mesh data used to build the <see cref="Terracer"/>.</param>
+		/// <param name="allocator">The allocator used by the <see cref="Terracer"/>.</param>
+		/// <returns>A new instance of <see cref="Terracer"/>.</returns>
+		private protected abstract Terracer GetTerracer(SimpleMeshData meshData, Allocator allocator);
+
+		#endregion
+
+		#region Private
+
+		private SimpleMeshData GenerateTerrainData(Allocator allocator)
+		{
+			var meshData = ShapeGenerator.Generate(allocator);
+			var fragmentedMeshData = _fragmenter.Fragment(meshData, allocator);
+			meshData.Dispose();
+			Sculptor.Sculpt(fragmentedMeshData);
+			return fragmentedMeshData;
+		}
+
+		#endregion
+	}
 }

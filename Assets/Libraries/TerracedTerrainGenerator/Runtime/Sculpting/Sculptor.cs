@@ -1,35 +1,31 @@
-using SneakySquirrelLabs.TerracedTerrainGenerator.Data;
+using System;
+using LazySquirrelLabs.TerracedTerrainGenerator.Data;
 using UnityEngine;
 using Random = System.Random;
 
-namespace SneakySquirrelLabs.TerracedTerrainGenerator.Sculpting
+namespace LazySquirrelLabs.TerracedTerrainGenerator.Sculpting
 {
 	/// <summary>
-	/// Sculpts a terrain mesh using a planar Perlin filter. The sculpting is applied on the Y axis, upwards.
+	/// Sculpts a terrain mesh using a Perlin filter.
 	/// </summary>
-	internal class Sculptor 
+	internal abstract class Sculptor
 	{
-		#region Fields
+		#region Properties
 
 		/// <summary>
-		/// The Y coordinate of the highest possible vertex after sculpting.
+		/// The height of the highest possible vertex after sculpting.
 		/// </summary>
-		private readonly float _maximumHeight;
+		protected float MaximumHeight { get; }
 
 		/// <summary>
 		/// The settings used for sculpting.
 		/// </summary>
-		private readonly SculptSettings _settings;
-		
+		protected SculptSettings Settings { get; }
+
 		/// <summary>
 		/// The random generator used to calculate noise offsets.
 		/// </summary>
-		private readonly Random _random;
-		
-		/// <summary>
-		/// The octave offsets.
-		/// </summary>
-		private readonly Vector2[] _offsets;
+		protected Random Random { get; }
 
 		#endregion
 
@@ -39,17 +35,16 @@ namespace SneakySquirrelLabs.TerracedTerrainGenerator.Sculpting
 		/// Creates a <see cref="Sculptor"/> with the given settings.
 		/// </summary>
 		/// <param name="sculptSettings">The settings used for sculpting.</param>
-		/// <param name="maximumHeight"> The Y coordinate of the highest possible vertex after sculpting.</param>
-		internal Sculptor(SculptSettings sculptSettings, float maximumHeight)
+		/// <param name="maximumHeight"> The height of the highest possible vertex after sculpting.</param>
+		protected Sculptor(SculptSettings sculptSettings, float maximumHeight)
 		{
-			_settings = sculptSettings;
-			_maximumHeight = maximumHeight;
-			_random = new Random(_settings.Seed);
-			_offsets = new Vector2[(int)_settings.Octaves];
+			Settings = sculptSettings;
+			MaximumHeight = maximumHeight;
+			Random = new Random(Settings.Seed);
 		}
 
 		#endregion
-		
+
 		#region Internal
 
 		/// <summary>
@@ -58,67 +53,66 @@ namespace SneakySquirrelLabs.TerracedTerrainGenerator.Sculpting
 		/// <param name="meshData">The mesh data to be sculpted.</param>
 		internal void Sculpt(SimpleMeshData meshData)
 		{
-			var offsets = _offsets;
-			for (var i = 0; i < _settings.Octaves; i++)
-			{
-				var xOffset = _random.Next(-10_000, 10_000);
-				var yOffset = _random.Next(-10_000, 10_000);
-				offsets[i] = new Vector2(xOffset, yOffset);
-			}
-			
-			var highestPointRelative = float.MinValue;
+			InitializeOffsets();
+
+			var highestRelativeHeight = float.MinValue;
 			// Actually apply the Perlin noise modifier.
-			meshData.Map(CalculateVertexNoise);
+			meshData.Map(CalculateVertexHeight);
 			// At this point, the vertices' Y coordinate store noise data, which will be used to calculate the final 
 			// heights. But first, we need to normalize the noise data, bringing all values to the [0,1] range. To do
 			// so, we find by how much we need to multiply the largest noise value among the vertices in order to bring
 			// it down to 1. This value will be used on the next step to normalize all vertices.
-			var dropFactor = 1f / highestPointRelative;
+			var dropFactor = 1f / highestRelativeHeight;
 			// Now that we've got noise data and a way to normalize it, we can actually apply the final height modifier,
 			// bringing all vertices' Y coordinate to the [0, maximumHeight] range.
-			meshData.Map(ApplyHeight);
+			var applyFinalHeight = GetApplyFinalHeight(dropFactor);
+			meshData.Map(applyFinalHeight);
+			return;
 
-			Vector3 CalculateVertexNoise(Vector3 vertex)
+			Vector3 CalculateVertexHeight(Vector3 vertex)
 			{
-				var height = GetNoise(vertex.x, vertex.z, _settings, _offsets);
-				if (height > highestPointRelative)
-					highestPointRelative = height;
-				vertex.y = height;
-				return vertex;
+				var height = GetTotalNoise(vertex);
 
-				static float GetNoise(float x, float y, SculptSettings settings, Vector2[] offsets)
+				if (height > highestRelativeHeight)
 				{
-					float relativeHeight = 0;
+					highestRelativeHeight = height;
+				}
+
+				return PlaceVertexAtHeight(vertex, height);
+
+				float GetTotalNoise(Vector3 v)
+				{
+					float totalNoise = 0;
 					var amplitude = 1f;
-					var frequency = settings.BaseFrequency;
-					var persistence = settings.Persistence;
-					var lacunarity = settings.Lacunarity;
-					for (var i = 0; i < settings.Octaves; i++)
+					var frequency = Settings.BaseFrequency;
+					var persistence = Settings.Persistence;
+					var lacunarity = Settings.Lacunarity;
+
+					for (var i = 0; i < Settings.Octaves; i++)
 					{
-						var offset = offsets[i];
-						var filterX = x * frequency + offset.x;
-						var filterY = y * frequency + offset.y;
-						var noise = Mathf.PerlinNoise(filterX, filterY);
-						relativeHeight += amplitude * noise;
+						var octaveNoise = GetNoise(v, frequency, i);
+						totalNoise += amplitude * octaveNoise;
 						amplitude *= persistence;
 						frequency *= lacunarity;
 					}
 
-					return relativeHeight;
+					return totalNoise;
 				}
 			}
-
-			Vector3 ApplyHeight(Vector3 vertex)
-			{
-				// Normalize the height data, so it's in the [0, 1] range.
-				var relativeHeight = vertex.y * dropFactor;
-				// Fetch the height distribution modifier
-				var modifier = _settings.HeightDistribution.Evaluate(relativeHeight);
-				vertex.y = _maximumHeight * relativeHeight * modifier;
-				return vertex;
-			}
 		}
-		
+
+		#endregion
+
+		#region Protected
+
+		protected abstract void InitializeOffsets();
+
+		protected abstract Vector3 PlaceVertexAtHeight(Vector3 vertex, float height);
+
+		protected abstract float GetNoise(Vector3 vertex, float frequency, int octaveIndex);
+
+		protected abstract Func<Vector3, Vector3> GetApplyFinalHeight(float dropFactor);
+
 		#endregion
 	}
 }

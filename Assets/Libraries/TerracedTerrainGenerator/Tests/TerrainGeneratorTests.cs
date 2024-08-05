@@ -1,14 +1,14 @@
 using System;
+using LazySquirrelLabs.TerracedTerrainGenerator.Sculpting;
 using NUnit.Framework;
-using SneakySquirrelLabs.TerracedTerrainGenerator.Sculpting;
 using UnityEngine;
 
-namespace SneakySquirrelLabs.TerracedTerrainGenerator.Tests
+namespace LazySquirrelLabs.TerracedTerrainGenerator.Tests
 {
 	internal class TerrainGeneratorTests
 	{
 		[Test]
-		public void Constructor()
+		public void PlanarConstructor()
 		{
 			ushort sides = 0;
 			var radius = 12.3f;
@@ -54,10 +54,59 @@ namespace SneakySquirrelLabs.TerracedTerrainGenerator.Tests
 			depth = 3;
 			// Nothing wrong, just to ensure no other parameters were still invalid
 			Create();
+			return;
 
 			void Create()
 			{
-				_ = new TerrainGenerator(sides, radius, maximumHeight, heights, settings, depth);
+				_ = new PlanarTerrainGenerator(sides, radius, maximumHeight, heights, settings, depth);
+			}
+		}
+		
+		[Test]
+		public void SphericalConstructor()
+		{
+			var maximumHeight = 10f;
+			var heights = new[] { 0.1f, 0.2f, 0.9f };
+			var settings = new SculptSettings(0.1f, 2, 0.5f, 1.5f, AnimationCurve.Linear(0, 0, 1, 1));
+			ushort depth = 3;
+			
+			// Invalid minimum height
+			var minimumHeight = -40f;
+			Assert.Throws<ArgumentOutOfRangeException>(Create);
+			minimumHeight = 0;
+			Assert.Throws<ArgumentOutOfRangeException>(Create);
+			minimumHeight = 10;
+			// Invalid maximum height
+			maximumHeight = -10f;
+			Assert.Throws<ArgumentOutOfRangeException>(Create);
+			maximumHeight = 0f;
+			Assert.Throws<ArgumentOutOfRangeException>(Create);
+			// Grater minimum height
+			minimumHeight = 20;
+			maximumHeight = 10;
+			Assert.Throws<ArgumentOutOfRangeException>(Create);
+			maximumHeight = 25f;
+			// Invalid custom heights
+			heights = Array.Empty<float>();
+			Assert.Throws<ArgumentOutOfRangeException>(Create);
+			heights = new[] { 0.5f, 0.3f };
+			Assert.Throws<ArgumentOutOfRangeException>(Create);
+			heights = new[] { -0.1f };
+			Assert.Throws<ArgumentOutOfRangeException>(Create);
+			heights = new[] { 1.1f };
+			Assert.Throws<ArgumentOutOfRangeException>(Create);
+			heights = new[] { 0.1f, 0.2f, 0.3f };
+			// Invalid depth
+			depth = 0;
+			Assert.Throws<ArgumentOutOfRangeException>(Create);
+			depth = 3;
+			// Nothing wrong, just to ensure no other parameters were still invalid
+			Create();
+			return;
+
+			void Create()
+			{
+				_ = new SphericalTerrainGenerator(minimumHeight, maximumHeight, heights, settings, depth);
 			}
 		}
 	}

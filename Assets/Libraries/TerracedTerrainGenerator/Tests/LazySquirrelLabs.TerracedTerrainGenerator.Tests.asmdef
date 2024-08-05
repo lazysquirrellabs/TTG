@@ -1,6 +1,6 @@
 {
-    "name": "SneakySquirrelLabs.TerracedTerrainGenerator.Editor",
-    "rootNamespace": "SneakySquirrelLabs.TerracedTerrainGenerator.Editor",
+    "name": "LazySquirrelLabs.TerracedTerrainGenerator.Tests",
+    "rootNamespace": "LazySquirrelLabs.TerracedTerrainGenerator.Tests",
     "references": [
         "GUID:3a0a9c0c8ea5546ce85aca8e39ded36b"
     ],

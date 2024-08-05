@@ -1,7 +1,10 @@
 using System;
+using System.Threading;
+using System.Threading.Tasks;
+using LazySquirrelLabs.TerracedTerrainGenerator.Controllers;
 using UnityEngine;
 
-namespace SneakySquirrelLabs.TerracedTerrainGenerator.Samples.Display
+namespace LazySquirrelLabs.TerracedTerrainGenerator.Samples.Display
 {
 	[Serializable]
 	internal struct TerrainSetup
@@ -15,11 +18,11 @@ namespace SneakySquirrelLabs.TerracedTerrainGenerator.Samples.Display
 
 		#region Internal
 
-		internal void WarmUp()
+		internal async Task WarmUpAsync(CancellationToken token)
 		{
-			_controller.GenerateTerrain(_seed);
+			await _controller.GenerateTerrainAsync(_seed, token);
 		}
-		
+
 		internal void Show()
 		{
 			_controller.gameObject.SetActive(true);

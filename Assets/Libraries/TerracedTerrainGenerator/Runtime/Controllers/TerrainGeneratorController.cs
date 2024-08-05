@@ -1,20 +1,22 @@
 using System;
 using System.Threading;
 using System.Threading.Tasks;
-using SneakySquirrelLabs.TerracedTerrainGenerator.Sculpting;
+using LazySquirrelLabs.TerracedTerrainGenerator.Sculpting;
 using UnityEngine;
 
-namespace SneakySquirrelLabs.TerracedTerrainGenerator
+namespace LazySquirrelLabs.TerracedTerrainGenerator.Controllers
 {
-	public class TerrainGeneratorController : MonoBehaviour
+	/// <summary>
+	/// Base class for all terraced terrain generator controllers.
+	/// </summary>
+	public abstract class TerrainGeneratorController : MonoBehaviour
 	{
 		#region Serialized fields
 
 		[SerializeField] private bool _generateOnStart = true;
 		[SerializeField] private Renderer _renderer;
 		[SerializeField] private MeshFilter _meshFilter;
-		[SerializeField] private ushort _sides = 8;
-		[SerializeField] private float _radius = 20;
+
 		[SerializeField] private ushort _depth = 5;
 		[SerializeField] private float _maximumHeight = 10;
 		[SerializeField] private float _baseFrequency = 0.075f;
@@ -31,29 +33,27 @@ namespace SneakySquirrelLabs.TerracedTerrainGenerator
 
 		#region Fields
 
-		private CancellationTokenSource _cancellationTokenSource;
+		private readonly CancellationTokenSource _cancellationTokenSource = new();
 
 		#endregion
 
 		#region Setup
 
-		private void Awake()
-		{
-			_cancellationTokenSource = new CancellationTokenSource();
-		}
-
 		private void Start()
 		{
 			if (_generateOnStart)
+			{
 				GenerateTerrain();
+			}
 		}
 
 		private void OnDestroy()
 		{
 			_cancellationTokenSource?.Cancel();
 			_cancellationTokenSource?.Dispose();
-			
+
 			var mesh = _meshFilter.mesh;
+
 			if (mesh)
 			{
 				mesh.Clear();
@@ -64,25 +64,33 @@ namespace SneakySquirrelLabs.TerracedTerrainGenerator
 		private void Reset()
 		{
 			var meshRenderer = GetComponent<MeshRenderer>();
+
 			if (meshRenderer == null)
 			{
 				meshRenderer = gameObject.AddComponent<MeshRenderer>();
 				var urpLit = Shader.Find("Universal Render Pipeline/Lit");
+
 				if (!urpLit)
 				{
 					Debug.LogError("Failed to create URP Lit material when resetting the terrain generator " +
-					                 "controller. Please assign renderer materials manually.");
+					               "controller. Please assign renderer materials manually.");
 					return;
 				}
+
 				var newMaterial = new Material(urpLit);
 				newMaterial.name = "[Replace this] Placeholder material";
 				meshRenderer.sharedMaterials = new[] { newMaterial };
 			}
+
 			_renderer = meshRenderer;
 
 			var meshFilter = GetComponent<MeshFilter>();
+
 			if (meshFilter == null)
+			{
 				meshFilter = gameObject.AddComponent<MeshFilter>();
+			}
+
 			_meshFilter = meshFilter;
 		}
 
@@ -92,20 +100,36 @@ namespace SneakySquirrelLabs.TerracedTerrainGenerator
 
 		private void OnValidate()
 		{
-			if (_renderer == null) return;
-			if (_relativeHeights == null) return;
-			// If there's more materials then terraces, don't do anything.
+			if (_renderer == null)
+			{
+				return;
+			}
+
+			if (_relativeHeights == null)
+			{
+				return;
+			}
+
+			// If there are more materials than terraces, don't do anything.
 			var materials = _renderer.sharedMaterials;
 			var terraceCount = _relativeHeights.Length;
-			if (materials.Length >= terraceCount) return;
-			
+
+			if (materials.Length >= terraceCount)
+			{
+				return;
+			}
+
 			// If the current number of materials is less than the terrace count, create more materials. This simply
 			// avoids forgetting to assign enough materials and can be easily discarded.
 			var newMaterials = new Material[terraceCount];
 			Array.Copy(materials, newMaterials, materials.Length);
 			var lastMaterial = materials[^1];
+
 			for (var i = materials.Length; i < terraceCount; i++)
+			{
 				newMaterials[i] = lastMaterial;
+			}
+
 			_renderer.sharedMaterials = newMaterials;
 		}
 
@@ -132,7 +156,7 @@ namespace SneakySquirrelLabs.TerracedTerrainGenerator
 			var settings = new SculptSettings(seed, _baseFrequency, _octaves, _persistence, _lacunarity, _heightCurve);
 			Generate(settings);
 		}
-		
+
 		/// <summary>
 		/// Generates and displays a random terraced terrain asynchronously.
 		/// </summary>
@@ -159,6 +183,13 @@ namespace SneakySquirrelLabs.TerracedTerrainGenerator
 
 		#endregion
 
+		#region Protected
+
+		private protected abstract TerrainGenerator GetGenerator(float maximumHeight, float[] relativeHeights,
+		                                                         SculptSettings sculptSettings, ushort depth);
+
+		#endregion
+
 		#region Private
 
 		/// <summary>
@@ -168,27 +199,35 @@ namespace SneakySquirrelLabs.TerracedTerrainGenerator
 		private void Generate(SculptSettings sculptSettings)
 		{
 			// Generate
-			var generator = new TerrainGenerator(_sides, _radius, _maximumHeight, _relativeHeights, sculptSettings, 
-				_depth);
+			var generator = GetGenerator(_maximumHeight, _relativeHeights, sculptSettings, _depth);
 			var previousMesh = _meshFilter.mesh;
 			_meshFilter.mesh = generator.GenerateTerrain();
+
 			// Cleanup
-			if (previousMesh == null) return;
+			if (previousMesh == null)
+			{
+				return;
+			}
+
 			previousMesh.Clear();
 			Destroy(previousMesh);
 		}
-		
+
 		private async Task GenerateAsync(SculptSettings sculptSettings, CancellationToken token)
 		{
 			// Generate
-			var generator = new TerrainGenerator(_sides, _radius, _maximumHeight, _relativeHeights, sculptSettings, 
-				_depth);
+			var generator = GetGenerator(_maximumHeight, _relativeHeights, sculptSettings, _depth);
 			var internalToken = _cancellationTokenSource.Token;
 			var combinedSource = CancellationTokenSource.CreateLinkedTokenSource(internalToken, token);
 			var previousMesh = _meshFilter.mesh;
 			_meshFilter.mesh = await generator.GenerateTerrainAsync(combinedSource.Token);
+
 			// Cleanup
-			if (previousMesh == null) return;
+			if (previousMesh == null)
+			{
+				return;
+			}
+
 			previousMesh.Clear();
 			Destroy(previousMesh);
 		}

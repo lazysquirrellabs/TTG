@@ -38,7 +38,6 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 0}
-  m_IndirectSpecularColor: {r: 0.17473948, g: 0.21857512, b: 0.30084234, a: 1}
   m_UseRadianceAmbientProbe: 0
 --- !u!157 &3
 LightmapSettings:
@@ -237,14 +236,12 @@ MonoBehaviour:
   m_GameObject: {fileID: 826162127}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 3559f8bf650d43038bb417ef5300517a, type: 3}
+  m_Script: {fileID: 11500000, guid: 6cab271779ff42cd9dc2df6494e57cdd, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   _generateOnStart: 0
   _renderer: {fileID: 826162131}
   _meshFilter: {fileID: 826162130}
-  _sides: 8
-  _radius: 20
   _depth: 6
   _maximumHeight: 6
   _baseFrequency: 0.055
@@ -308,6 +305,8 @@ MonoBehaviour:
   - 0.95238096
   - 1
   _useCustomHeights: 0
+  _sides: 8
+  _radius: 20
 --- !u!1 &1012788108
 GameObject:
   m_ObjectHideFlags: 0
@@ -430,14 +429,12 @@ MonoBehaviour:
   m_GameObject: {fileID: 1012788108}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 3559f8bf650d43038bb417ef5300517a, type: 3}
+  m_Script: {fileID: 11500000, guid: 6cab271779ff42cd9dc2df6494e57cdd, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   _generateOnStart: 0
   _renderer: {fileID: 1012788111}
   _meshFilter: {fileID: 1012788110}
-  _sides: 10
-  _radius: 20
   _depth: 7
   _maximumHeight: 8
   _baseFrequency: 0.09
@@ -536,6 +533,8 @@ MonoBehaviour:
   - 0.8
   - 1
   _useCustomHeights: 1
+  _sides: 10
+  _radius: 20
 --- !u!1 &1171427300
 GameObject:
   m_ObjectHideFlags: 0
@@ -667,12 +666,12 @@ MonoBehaviour:
   m_RequiresColorTexture: 0
   m_Version: 2
   m_TaaSettings:
-    quality: 3
-    frameInfluence: 0.1
-    jitterScale: 1
-    mipBias: 0
-    varianceClampScale: 0.9
-    contrastAdaptiveSharpening: 0
+    m_Quality: 3
+    m_FrameInfluence: 0.1
+    m_JitterScale: 1
+    m_MipBias: 0
+    m_VarianceClampScale: 0.9
+    m_ContrastAdaptiveSharpening: 0
 --- !u!1 &1172090613
 GameObject:
   m_ObjectHideFlags: 0
@@ -900,14 +899,12 @@ MonoBehaviour:
   m_GameObject: {fileID: 1383736268}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 3559f8bf650d43038bb417ef5300517a, type: 3}
+  m_Script: {fileID: 11500000, guid: 6cab271779ff42cd9dc2df6494e57cdd, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   _generateOnStart: 0
   _renderer: {fileID: 1383736271}
   _meshFilter: {fileID: 1383736270}
-  _sides: 4
-  _radius: 18
   _depth: 7
   _maximumHeight: 5
   _baseFrequency: 0.095
@@ -1002,6 +999,8 @@ MonoBehaviour:
   - 0.9375
   - 1
   _useCustomHeights: 1
+  _sides: 4
+  _radius: 18
 --- !u!1 &1642614723
 GameObject:
   m_ObjectHideFlags: 0
@@ -1030,14 +1029,12 @@ MonoBehaviour:
   m_GameObject: {fileID: 1642614723}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 3559f8bf650d43038bb417ef5300517a, type: 3}
+  m_Script: {fileID: 11500000, guid: 6cab271779ff42cd9dc2df6494e57cdd, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   _generateOnStart: 0
   _renderer: {fileID: 1642614726}
   _meshFilter: {fileID: 1642614725}
-  _sides: 6
-  _radius: 20
   _depth: 7
   _maximumHeight: 2.5
   _baseFrequency: 0.05
@@ -1087,6 +1084,8 @@ MonoBehaviour:
   - 0.9375
   - 1
   _useCustomHeights: 0
+  _sides: 6
+  _radius: 20
 --- !u!33 &1642614725
 MeshFilter:
   m_ObjectHideFlags: 0
@@ -1287,14 +1286,12 @@ MonoBehaviour:
   m_GameObject: {fileID: 1901063281}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 3559f8bf650d43038bb417ef5300517a, type: 3}
+  m_Script: {fileID: 11500000, guid: 6cab271779ff42cd9dc2df6494e57cdd, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   _generateOnStart: 0
   _renderer: {fileID: 1901063284}
   _meshFilter: {fileID: 1901063283}
-  _sides: 7
-  _radius: 20
   _depth: 5
   _maximumHeight: 7
   _baseFrequency: 0.05
@@ -1363,6 +1360,8 @@ MonoBehaviour:
   - 0.96153843
   - 1
   _useCustomHeights: 0
+  _sides: 7
+  _radius: 20
 --- !u!1 &1956311788
 GameObject:
   m_ObjectHideFlags: 0
@@ -1372,7 +1371,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1956311790}
-  - component: {fileID: 1956311789}
+  - component: {fileID: 1956311791}
   m_Layer: 0
   m_Name: Switcher
   m_TagString: Untagged
@@ -1380,30 +1379,6 @@ GameObject:
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!114 &1956311789
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1956311788}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: e96e130637b74f1cb53678803ab143af, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  _periodSeconds: 2
-  _setups:
-  - _controller: {fileID: 826162132}
-    _seed: 6
-  - _controller: {fileID: 1901063285}
-    _seed: 31811
-  - _controller: {fileID: 1642614724}
-    _seed: 1624
-  - _controller: {fileID: 1383736272}
-    _seed: 14708
-  - _controller: {fileID: 1012788112}
-    _seed: 451998560
 --- !u!4 &1956311790
 Transform:
   m_ObjectHideFlags: 0
@@ -1424,6 +1399,31 @@ Transform:
   - {fileID: 1012788109}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1956311791
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1956311788}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1b83110535ce24cc0800d1e4a5e3a818, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _warmUpOnStart: 0
+  _periodSeconds: 2
+  _setups:
+  - _controller: {fileID: 826162132}
+    _seed: 6
+  - _controller: {fileID: 1901063285}
+    _seed: 31811
+  - _controller: {fileID: 1642614724}
+    _seed: 1624
+  - _controller: {fileID: 1383736272}
+    _seed: 14708
+  - _controller: {fileID: 1012788112}
+    _seed: 451998560
 --- !u!1660057539 &9223372036854775807
 SceneRoots:
   m_ObjectHideFlags: 0

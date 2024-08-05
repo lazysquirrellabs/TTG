@@ -1,10 +1,12 @@
 {
-    "name": "SneakySquirrelLabs.TerracedTerrainGenerator",
-    "rootNamespace": "SneakySquirrelLabs.TerracedTerrainGenerator",
+    "name": "LazySquirrelLabs.TerracedTerrainGenerator.Editor",
+    "rootNamespace": "LazySquirrelLabs.TerracedTerrainGenerator.Editor",
     "references": [
-        "GUID:e0cd26848372d4e5c891c569017e11f1"
+        "GUID:3a0a9c0c8ea5546ce85aca8e39ded36b"
     ],
-    "includePlatforms": [],
+    "includePlatforms": [
+        "Editor"
+    ],
     "excludePlatforms": [],
     "allowUnsafeCode": false,
     "overrideReferences": false,

@@ -3,12 +3,13 @@ using System.Threading;
 using System.Threading.Tasks;
 using UnityEngine;
 
-namespace SneakySquirrelLabs.TerracedTerrainGenerator.Samples.Display
+namespace LazySquirrelLabs.TerracedTerrainGenerator.Samples.Display
 {
 	internal class TerrainSwitcher : MonoBehaviour
 	{
 		#region Serialized fields
 
+		[SerializeField] private bool _warmUpOnStart;
 		[SerializeField, Range(1, 60)] private float _periodSeconds;
 		[SerializeField] private TerrainSetup[] _setups;
 
@@ -16,37 +17,62 @@ namespace SneakySquirrelLabs.TerracedTerrainGenerator.Samples.Display
 
 		#region Fields
 
-		private CancellationTokenSource _cancellationTokenSource;
+		private readonly CancellationTokenSource _cancellationTokenSource = new();
 
 		#endregion
 
 		#region Setup
 
-		private void Awake()
-		{
-			_cancellationTokenSource = new CancellationTokenSource();
-		}
-
 		private async void Start()
 		{
-			foreach (var setup in _setups)
-				setup.WarmUp();
-
 			var token = _cancellationTokenSource.Token;
+			var warmedUp = false;
+
+			if (_warmUpOnStart)
+			{
+				foreach (var setup in _setups)
+				{
+					await setup.WarmUpAsync(token);
+				}
+
+				warmedUp = true;
+			}
+			else
+			{
+				await _setups[0].WarmUpAsync(token);
+			}
+
 			var periodMilli = (int)(_periodSeconds * 1_000);
 
 			try
 			{
 				var index = 0;
+
 				while (true)
 				{
-					if (index >= _setups.Length)
+					if (index >= _setups.Length) // Loop
+					{
 						index = 0;
-					var setup = _setups[index];
-					setup.Show();
-					await Task.Delay(periodMilli, token);
+						warmedUp = true;
+					}
+
+					var currentSetup = _setups[index];
+					currentSetup.Show();
+					var nextSetupIndex = index == _setups.Length - 1 ? 0 : index + 1;
+					var delayTask = Task.Delay(periodMilli, token);
+
+					if (warmedUp)
+					{
+						await delayTask;
+					}
+					else
+					{
+						var warmUpTask = _setups[nextSetupIndex].WarmUpAsync(token);
+						await Task.WhenAll(delayTask, warmUpTask);
+					}
+
 					token.ThrowIfCancellationRequested();
-					setup.Hide();
+					currentSetup.Hide();
 					index++;
 				}
 			}

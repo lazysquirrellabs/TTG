@@ -1,7 +1,8 @@
 using System;
 using UnityEngine;
+using Random = System.Random;
 
-namespace SneakySquirrelLabs.TerracedTerrainGenerator.Sculpting
+namespace LazySquirrelLabs.TerracedTerrainGenerator.Sculpting
 {
 	/// <summary>
 	/// Settings used during terrain sculpting, the step that creates hills and valleys on the terrain.
@@ -19,20 +20,20 @@ namespace SneakySquirrelLabs.TerracedTerrainGenerator.Sculpting
 		/// The base (first octave's) degree of detail (hills and valleys) in a given area.
 		/// </summary>
 		public float BaseFrequency { get; }
-		
+
 		/// <summary>
 		/// How many octaves (iterations) the sculpting will run. Each octave will run on a higher frequency and lower
 		/// relevance than the previous one. The higher the value, the more variation the terrain will contain, but
 		/// there is a point of diminishing returns due to persistence."
 		/// </summary>
 		public uint Octaves { get; }
-		
+
 		/// <summary>
 		/// >How much of an octave's amplitude will be carried to the next octave. The lower the value, the quicker
 		/// octave details disappear with each iteration.
 		/// </summary>
 		public float Persistence { get; }
-		
+
 		/// <summary>
 		/// How the frequency will be affected (multiplication factor) between octaves. In other words, how much" detail
 		/// each octave will contain, when compared to the previous one.
@@ -65,10 +66,10 @@ namespace SneakySquirrelLabs.TerracedTerrainGenerator.Sculpting
 		/// <paramref name="octaves"/> is greater than 1, this value must be greater than one.</param>
 		/// <param name="heightDistribution">The curve used to change the height distribution. If this value is null, a
 		/// canonical value (a linear curve that won't affect the distribution) will be used.</param>
-		/// <exception cref="ArgumentOutOfRangeException">Thrown if any of the arguments is out of range. Checks 
+		/// <exception cref="ArgumentOutOfRangeException">Thrown if any of the arguments is out of range. Checks
 		/// individual arguments for valid ranges.</exception>
-		public SculptSettings(float baseFrequency, uint octaves, float persistence, float lacunarity, 
-			AnimationCurve heightDistribution) 
+		public SculptSettings(float baseFrequency, uint octaves, float persistence, float lacunarity,
+		                      AnimationCurve heightDistribution)
 			: this(GetRandomSeed(), baseFrequency, octaves, persistence, lacunarity, heightDistribution) { }
 
 		/// <summary>
@@ -89,24 +90,32 @@ namespace SneakySquirrelLabs.TerracedTerrainGenerator.Sculpting
 		/// <paramref name="octaves"/> is greater than 1, this value must be greater than one.</param>
 		/// <param name="heightDistribution">The curve used to change the height distribution. If this value is null, a
 		/// canonical value (a linear curve that won't affect the distribution) will be used.</param>
-		/// <exception cref="ArgumentOutOfRangeException">Thrown if any of the arguments is out of range. Checks 
+		/// <exception cref="ArgumentOutOfRangeException">Thrown if any of the arguments is out of range. Checks
 		/// individual arguments for valid ranges.</exception>
-		public SculptSettings(int seed, float baseFrequency, uint octaves, float persistence, float lacunarity, 
-			AnimationCurve heightDistribution)
+		public SculptSettings(int seed, float baseFrequency, uint octaves, float persistence, float lacunarity,
+		                      AnimationCurve heightDistribution)
 		{
 			if (baseFrequency <= 0)
+			{
 				throw new ArgumentOutOfRangeException(nameof(baseFrequency));
+			}
 
 			if (octaves == 0)
+			{
 				throw new ArgumentOutOfRangeException(nameof(octaves), "Generation must contain at least one octave.");
-			
+			}
+
 			// Only check persistence if there is more than 1 octave, otherwise its value is irrelevant.
 			if (octaves > 1 && persistence is <= 0 or >= 1)
+			{
 				throw new ArgumentOutOfRangeException(nameof(persistence), "Persistence must be in the (0,1) range.");
+			}
 
 			// Only check lacunarity if there is more than 1 octave, otherwise its value is irrelevant.
 			if (octaves > 1 && lacunarity <= 1)
+			{
 				throw new ArgumentOutOfRangeException(nameof(lacunarity), "Lacunarity must be greater than one.");
+			}
 
 			Seed = seed;
 			BaseFrequency = baseFrequency;
@@ -122,7 +131,7 @@ namespace SneakySquirrelLabs.TerracedTerrainGenerator.Sculpting
 
 		private static int GetRandomSeed()
 		{
-			var random = new System.Random();
+			var random = new Random();
 			return random.Next();
 		}
 

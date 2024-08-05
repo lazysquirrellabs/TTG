@@ -1,11 +1,11 @@
-using SneakySquirrelLabs.TerracedTerrainGenerator.Sculpting;
 using System;
 using System.Threading;
 using System.Threading.Tasks;
+using LazySquirrelLabs.TerracedTerrainGenerator.Sculpting;
 using UnityEngine;
 using Random = UnityEngine.Random;
 
-namespace SneakySquirrelLabs.TerracedTerrainGenerator.Samples.Randomizer
+namespace LazySquirrelLabs.TerracedTerrainGenerator.Samples.Randomizer
 {
 	internal class Randomizer : MonoBehaviour
 	{
@@ -14,12 +14,12 @@ namespace SneakySquirrelLabs.TerracedTerrainGenerator.Samples.Randomizer
 		[SerializeField] private MeshFilter _meshFilter;
 
 		#endregion
-		
+
 		#region Fields
 
 		private const int TerraceCountMin = 3;
 		private const int TerraceCountMax = 20;
-		
+
 		// Generation settings
 		private const ushort SidesMin = 3;
 		private const ushort SidesMax = 10;
@@ -37,14 +37,14 @@ namespace SneakySquirrelLabs.TerracedTerrainGenerator.Samples.Randomizer
 		private const float FrequencyMin = 0.02f;
 		private const float FrequencyMax = 0.45f;
 		private static readonly AnimationCurve HeightCurve = AnimationCurve.Linear(0, 0, 1, 1);
-		
+
 		// Loop fields  
 		private const float Interval = 5f;
 		private float _lastGeneration;
 		private CancellationTokenSource _cancellationTokenSource;
 
 		#endregion
-		
+
 		#region Setup
 
 		private void Awake()
@@ -69,16 +69,25 @@ namespace SneakySquirrelLabs.TerracedTerrainGenerator.Samples.Randomizer
 		{
 			_cancellationTokenSource?.Cancel();
 			_cancellationTokenSource?.Dispose();
+
+			var mesh = _meshFilter.mesh;
+			if (mesh)
+			{
+				mesh.Clear();
+				Destroy(mesh);
+			}
 		}
 
 		#endregion
-		
+
 		#region Update
 
 		private async void Update()
 		{
 			if (Time.realtimeSinceStartup - _lastGeneration < Interval)
+			{
 				return;
+			}
 
 			try
 			{
@@ -101,20 +110,22 @@ namespace SneakySquirrelLabs.TerracedTerrainGenerator.Samples.Randomizer
 			var frequency = Random.Range(FrequencyMin, FrequencyMax);
 			var sculptingSettings = new SculptSettings(frequency, 3, 0.5f, 2f, HeightCurve);
 			// Generation settings
-			var sides = (ushort) Random.Range(SidesMin, SidesMax);
-			var depth = (ushort) Random.Range(DepthMin, DepthMax);
+			var sides = (ushort)Random.Range(SidesMin, SidesMax);
+			var depth = (ushort)Random.Range(DepthMin, DepthMax);
 			var terraceCount = Random.Range(TerraceCountMin, TerraceCountMax);
 			var terraceHeights = GetTerraceHeights(terraceCount);
-			
-			var generator = new TerrainGenerator(sides, Radius, height, terraceHeights, sculptingSettings, depth);
+
+			var generator = new PlanarTerrainGenerator(sides, Radius, height, terraceHeights, sculptingSettings, depth);
 			_lastGeneration = Time.realtimeSinceStartup;
 			_meshFilter.mesh = await generator.GenerateTerrainAsync(_cancellationTokenSource.Token);
 			Debug.Log($"Generated a terrain with {sides} sides, height {height}, depth {depth}, " +
 			          $"{terraceCount} terraces and detail frequency {frequency:F3}.");
+			return;
 
 			static float[] GetTerraceHeights(int count)
 			{
 				var heights = new float[count];
+
 				for (var i = 0; i < count; i++)
 				{
 					heights[i] = (float)i / count;
