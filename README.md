@@ -1,5 +1,5 @@
 # Terraced Terrain Generator (TTG)
-![openupm](https://img.shields.io/npm/v/com.sneakysquirrellabs.terracedterraingenerator?label=openupm&registry_uri=https://package.openupm.com)
+![openupm](https://img.shields.io/npm/v/com.lazysquirrellabs.terracedterraingenerator?label=openupm&registry_uri=https://package.openupm.com)
 
 Terraced Terrain Generator (TTG) is a free Unity tool for procedural generation of spherical and planar terraced terrain meshes.
 
