@@ -12,7 +12,7 @@ namespace LazySquirrelLabs.TerracedTerrainGenerator
 	/// <summary>
 	/// Top-class responsible for the generation of spherical terraced terrains.
 	/// </summary>
-	internal class SphericalTerrainGenerator : TerrainGenerator
+	public class SphericalTerrainGenerator : TerrainGenerator
 	{
 		#region Setup
 
