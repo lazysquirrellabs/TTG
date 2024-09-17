@@ -233,7 +233,7 @@ Technical aspects of TTG were described in the following blogs posts:
 - [Adding more detail to Terraced Terrain Generator using Perlin noise octaves](https://blog.matheusamazonas.net/posts/ttg_octaves).
 
 ## Contributing
-If you would like to report e bug, please create an [issue](https://github.com/lazysquirrellabs/ttg/issues). If you would like to contribute with bug fixing or small improvements, please open a Pull Request. If you would like to contribute with a new feature (regardless if it's in the roadmap or not), [contact the developer](https://matheusamazonas.net/contact.html).  
+If you would like to report a bug, please create an [issue](https://github.com/lazysquirrellabs/ttg/issues). If you would like to contribute with bug fixing or small improvements, please open a Pull Request. If you would like to contribute with a new feature (regardless if it's in the roadmap or not), [contact the developer](https://matheusamazonas.net/contact.html).  
 
 ## Getting help
 Use the [issues page](https://github.com/lazysquirrellabs/ttg/issues) if there's a problem with your TTG setup, if something isn't working as expected, or if you would like to ask questions about the tool and its usage.
