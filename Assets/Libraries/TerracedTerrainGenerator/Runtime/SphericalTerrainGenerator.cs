@@ -1,5 +1,6 @@
 using System;
 using LazySquirrelLabs.TerracedTerrainGenerator.Data;
+using LazySquirrelLabs.TerracedTerrainGenerator.MeshFragmentation;
 using LazySquirrelLabs.TerracedTerrainGenerator.Sculpting;
 using LazySquirrelLabs.TerracedTerrainGenerator.Sculpting.Sphere;
 using LazySquirrelLabs.TerracedTerrainGenerator.ShapeGeneration.Sphere;
@@ -10,7 +11,7 @@ using Unity.Collections;
 namespace LazySquirrelLabs.TerracedTerrainGenerator
 {
 	/// <summary>
-	/// Top-class responsible for the generation of spherical terraced terrains.
+	/// Top class responsible for the generation of spherical terraced terrains.
 	/// </summary>
 	public class SphericalTerrainGenerator : TerrainGenerator
 	{
@@ -31,10 +32,15 @@ namespace LazySquirrelLabs.TerracedTerrainGenerator
 		/// <param name="depth">Depth to fragment the basic mesh. Value must be greater than zero.</param>
 		/// <exception cref="ArgumentOutOfRangeException">Thrown if any of the arguments is out of range. Checks
 		/// individual arguments for valid ranges.</exception>
-		public SphericalTerrainGenerator(float minHeight, float maxHeight, float[] relativeTerraceHeights, 
+		public SphericalTerrainGenerator(float minHeight, float maxHeight, float[] relativeTerraceHeights,
 		                                 SculptSettings sculptSettings, ushort depth)
-			: base(minHeight, maxHeight, relativeTerraceHeights, depth)
+			: base(minHeight, maxHeight, relativeTerraceHeights)
 		{
+			if (depth == 0)
+			{
+				throw new ArgumentOutOfRangeException(nameof(depth), "Depth must be greater than zero.");
+			}
+
 			if (minHeight <= 0)
 			{
 				throw new ArgumentOutOfRangeException(nameof(maxHeight), "Minimum height must be greater than zero.");
@@ -47,6 +53,7 @@ namespace LazySquirrelLabs.TerracedTerrainGenerator
 			}
 
 			ShapeGenerator = new SphereGenerator(minHeight);
+			Fragmenter = new SphericalMeshFragmenter(depth);
 			Sculptor = new SphereSculptor(sculptSettings, minHeight, maxHeight);
 		}
 

@@ -61,7 +61,7 @@ namespace LazySquirrelLabs.TerracedTerrainGenerator.Tests
 				_ = new PlanarTerrainGenerator(sides, radius, maximumHeight, heights, settings, depth);
 			}
 		}
-		
+
 		[Test]
 		public void SphericalConstructor()
 		{
@@ -69,7 +69,7 @@ namespace LazySquirrelLabs.TerracedTerrainGenerator.Tests
 			var heights = new[] { 0.1f, 0.2f, 0.9f };
 			var settings = new SculptSettings(0.1f, 2, 0.5f, 1.5f, AnimationCurve.Linear(0, 0, 1, 1));
 			ushort depth = 3;
-			
+
 			// Invalid minimum height
 			var minimumHeight = -40f;
 			Assert.Throws<ArgumentOutOfRangeException>(Create);

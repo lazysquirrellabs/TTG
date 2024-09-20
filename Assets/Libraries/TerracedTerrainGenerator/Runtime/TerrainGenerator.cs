@@ -33,11 +33,6 @@ namespace LazySquirrelLabs.TerracedTerrainGenerator
 		/// </summary>
 		private readonly Allocator _allocator;
 
-		/// <summary>
-		/// The mesh fragmenter used to fragment a basic shape, creating a more detailed mesh.
-		/// </summary>
-		private readonly MeshFragmenter _fragmenter;
-
 		#endregion
 
 		#region Protected
@@ -46,6 +41,11 @@ namespace LazySquirrelLabs.TerracedTerrainGenerator
 		/// The polygon generator used to create the terrain's basic shape.
 		/// </summary>
 		private protected ShapeGenerator ShapeGenerator { private get; set; }
+
+		/// <summary>
+		/// The mesh fragmenter used to fragment a basic shape, creating a more detailed mesh.
+		/// </summary>
+		private protected MeshFragmenter Fragmenter { get; set; }
 
 		/// <summary>
 		/// The sculptor used to create hills/valleys on the mesh.
@@ -62,27 +62,20 @@ namespace LazySquirrelLabs.TerracedTerrainGenerator
 		#region Setup
 
 		/// <summary>
-		/// <see cref="PlanarTerrainGenerator"/>'s constructor.
+		/// <see cref="TerrainGenerator"/>'s constructor.
 		/// </summary>
 		/// <param name="minHeight">The minimum height of the terrain, in units.</param>
 		/// <param name="maxHeight">The maximum height of the terrain, in units.</param>
 		/// <param name="relativeTerraceHeights">Terrace heights, relative to the terrain's maximum height. Values
 		/// must be in the [0, 1] range, in ascending order. Each terrace's final height will be calculated by
 		/// multiplying the relative height by the terrain's height.</param>
-		/// <param name="depth">Depth to fragment the basic mesh. Value must be greater than zero.</param>
 		/// <exception cref="ArgumentOutOfRangeException">Thrown if any of the arguments is out of range. Checks
 		/// individual arguments for valid ranges.</exception>
-		private protected TerrainGenerator(float minHeight, float maxHeight, float[] relativeTerraceHeights,
-		                                   ushort depth)
+		private protected TerrainGenerator(float minHeight, float maxHeight, float[] relativeTerraceHeights)
 		{
 			if (maxHeight <= 0)
 			{
 				throw new ArgumentOutOfRangeException(nameof(maxHeight), "Height must be greater than zero.");
-			}
-
-			if (depth == 0)
-			{
-				throw new ArgumentOutOfRangeException(nameof(depth), "Depth must be greater than zero.");
 			}
 
 			if (relativeTerraceHeights.Length == 0)
@@ -107,8 +100,6 @@ namespace LazySquirrelLabs.TerracedTerrainGenerator
 					                                      "Relative heights must be in ascending order.");
 				}
 			}
-
-			_fragmenter = new MeshFragmenter(depth);
 
 			var heightDelta = maxHeight - minHeight;
 			TerraceHeights = new float[relativeTerraceHeights.Length];
@@ -189,7 +180,7 @@ namespace LazySquirrelLabs.TerracedTerrainGenerator
 		private SimpleMeshData GenerateTerrainData(Allocator allocator)
 		{
 			var meshData = ShapeGenerator.Generate(allocator);
-			var fragmentedMeshData = _fragmenter.Fragment(meshData, allocator);
+			var fragmentedMeshData = Fragmenter.Fragment(meshData, allocator);
 			meshData.Dispose();
 			Sculptor.Sculpt(fragmentedMeshData);
 			return fragmentedMeshData;
