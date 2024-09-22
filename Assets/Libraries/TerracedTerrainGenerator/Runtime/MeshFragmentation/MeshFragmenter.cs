@@ -7,9 +7,10 @@ using UnityEngine;
 namespace LazySquirrelLabs.TerracedTerrainGenerator.MeshFragmentation
 {
 	/// <summary>
-	/// Fragments a mesh into sub-triangles given an arbitrary depth. The original mesh is modified.
+	/// Fragments a mesh into sub-triangles given an arbitrary depth, following a strategy defined by the inheritors.
+	/// The original mesh is modified.
 	/// </summary>
-	internal class MeshFragmenter
+	internal abstract class MeshFragmenter
 	{
 		#region Fields
 
@@ -26,10 +27,23 @@ namespace LazySquirrelLabs.TerracedTerrainGenerator.MeshFragmentation
 		/// <see cref="MeshFragmenter"/>'s constructor. To actually fragment a mesh, call <see cref="Fragment"/>.
 		/// </summary>
 		/// <param name="depth">The depth (how many consecutive times) the mesh will be fragmented.</param>
-		internal MeshFragmenter(ushort depth)
+		protected MeshFragmenter(ushort depth)
 		{
 			_depth = depth;
 		}
+
+		#endregion
+
+		#region Protected
+
+		/// <summary>
+		/// Finds the middle point between the given vectors. The implementation defines what these vectors
+		/// represent (e.g. point, direction).
+		/// </summary>
+		/// <param name="v1">The first vector to find the middle point for.</param>
+		/// <param name="v2">The second vector to find the middle point for.</param>
+		/// <returns>The middle point between <paramref name="v1"/> and <paramref name="v2"/>.</returns>
+		protected abstract Vector3 FindMiddlePoint(Vector3 v1, Vector3 v2);
 
 		#endregion
 
@@ -88,7 +102,7 @@ namespace LazySquirrelLabs.TerracedTerrainGenerator.MeshFragmentation
 			{
 				for (var i = 0; i < triangleCount; i++)
 				{
-					FragmentTriangle(i, readIndices, writeIndices, readVertices, writeVertices);
+					FragmentTriangle(i, readIndices, writeIndices, readVertices, writeVertices, FindMiddlePoint);
 				}
 
 				currentDepthTotalTriangles = GetTriangleCountForDepth(initialTriangleCount, depth);
@@ -116,7 +130,8 @@ namespace LazySquirrelLabs.TerracedTerrainGenerator.MeshFragmentation
 			}
 
 			static void FragmentTriangle(int triangleIx, NativeList<int> readTriangles, NativeList<int> writeTriangles,
-			                             NativeArray<Vector3> readVertices, NativeArray<Vector3> writeVertices)
+			                             NativeArray<Vector3> readVertices, NativeArray<Vector3> writeVertices,
+			                             Func<Vector3, Vector3, Vector3> findMiddlePoint)
 			{
 				// Each original triangle has 3 vertices, so we need to offset that from reading
 				var readTriangleIx = triangleIx * 3;
@@ -134,9 +149,9 @@ namespace LazySquirrelLabs.TerracedTerrainGenerator.MeshFragmentation
 				var v1 = readVertices[indexVertex1];
 				var v2 = readVertices[indexVertex2];
 				var v3 = readVertices[indexVertex3];
-				var v4 = (v1 + v2) / 2;
-				var v5 = (v2 + v3) / 2;
-				var v6 = (v3 + v1) / 2;
+				var v4 = findMiddlePoint(v1, v2);
+				var v5 = findMiddlePoint(v2, v3);
+				var v6 = findMiddlePoint(v3, v1);
 
 				// Add new vertices
 				var ix1 = AddVertex(v1);

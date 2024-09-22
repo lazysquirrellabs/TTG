@@ -1,5 +1,7 @@
 using System;
+using System.Linq;
 using System.Threading;
+using System.Threading.Tasks;
 using UnityEngine;
 
 namespace LazySquirrelLabs.TerracedTerrainGenerator.Samples.Display
@@ -25,18 +27,22 @@ namespace LazySquirrelLabs.TerracedTerrainGenerator.Samples.Display
 		{
 			try
 			{
-				var token = _cancellationTokenSource.Token;
-				{
-					foreach (var setup in _setups)
-					{
-						await setup.WarmUpAsync(token);
-						setup.Show();
-					}
-				}
+				var tasks = _setups.Select(WarmupAndShowSetup);
+				await Task.WhenAll(tasks);
 			}
 			catch (OperationCanceledException)
 			{
 				Debug.Log("Terrain switching stopped because the operation was cancelled.");
+			}
+
+			return;
+
+			async Task WarmupAndShowSetup(TerrainSetup setup)
+			{
+				var token = _cancellationTokenSource.Token;
+				await setup.WarmUpAsync(token);
+				token.ThrowIfCancellationRequested();
+				setup.Show();
 			}
 		}
 

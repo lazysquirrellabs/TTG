@@ -1,5 +1,6 @@
 using System;
 using LazySquirrelLabs.TerracedTerrainGenerator.Data;
+using LazySquirrelLabs.TerracedTerrainGenerator.MeshFragmentation;
 using LazySquirrelLabs.TerracedTerrainGenerator.Sculpting;
 using LazySquirrelLabs.TerracedTerrainGenerator.Sculpting.Plane;
 using LazySquirrelLabs.TerracedTerrainGenerator.ShapeGeneration.Plane.Polygons;
@@ -10,7 +11,7 @@ using Unity.Collections;
 namespace LazySquirrelLabs.TerracedTerrainGenerator
 {
 	/// <summary>
-	/// /// Top-class responsible for the generation of planar terraced terrains.
+	/// Top class responsible for the generation of planar terraced terrains.
 	/// </summary>
 	public class PlanarTerrainGenerator : TerrainGenerator
 	{
@@ -32,10 +33,15 @@ namespace LazySquirrelLabs.TerracedTerrainGenerator
 		/// individual arguments for valid ranges.</exception>
 		/// <exception cref="NotImplementedException">Thrown whenever the provided number of <paramref name="sides"/>
 		/// is not supported (greater than 10).</exception>
-		public PlanarTerrainGenerator(ushort sides, float radius, float maxHeight, float[] relativeTerraceHeights, 
+		public PlanarTerrainGenerator(ushort sides, float radius, float maxHeight, float[] relativeTerraceHeights,
 		                              SculptSettings sculptSettings, ushort depth)
-			: base(0, maxHeight, relativeTerraceHeights, depth)
+			: base(0, maxHeight, relativeTerraceHeights)
 		{
+			if (depth == 0)
+			{
+				throw new ArgumentOutOfRangeException(nameof(depth), "Depth must be greater than zero.");
+			}
+
 			if (sides < 3)
 			{
 				throw new ArgumentOutOfRangeException(nameof(sides), "Sides must be greater than 2.");
@@ -54,6 +60,7 @@ namespace LazySquirrelLabs.TerracedTerrainGenerator
 				_     => throw new NotImplementedException($"Polygon with {sides} not implemented")
 			};
 
+			Fragmenter = new PlanarMeshFragmenter(depth);
 			Sculptor = new PlaneSculptor(sculptSettings, maxHeight);
 		}
 

@@ -128,7 +128,7 @@ namespace LazySquirrelLabs.TerracedTerrainGenerator.Samples.Randomizer
 
 				for (var i = 0; i < count; i++)
 				{
-					heights[i] = (float)i / count;
+					heights[i] = (float)i / (count - 1);
 				}
 
 				return heights;
