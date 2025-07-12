@@ -239,10 +239,10 @@ You can follow TTG's development progress on its [Trello board](https://trello.c
 
 ## Technical aspects
 Technical aspects of TTG were described in the following blogs posts:
-- [Developing a Terraced Terrain Generator](https://blog.matheusamazonas.net/posts/ttg).
-- [Terraced Terrain Generator performance improvements](https://blog.matheusamazonas.net/posts/ttg_performance).
-- [Adding custom terrace heights to Terraced Terrain Generator](https://blog.matheusamazonas.net/posts/ttg_custom_heights).
-- [Adding more detail to Terraced Terrain Generator using Perlin noise octaves](https://blog.matheusamazonas.net/posts/ttg_octaves).
+- [Developing a Terraced Terrain Generator](https://blog.lslabs.dev/posts/ttg).
+- [Terraced Terrain Generator performance improvements](https://blog.lslabs.dev/posts/ttg_performance).
+- [Adding custom terrace heights to Terraced Terrain Generator](https://blog.lslabs.dev/posts/ttg_custom_heights).
+- [Adding more detail to Terraced Terrain Generator using Perlin noise octaves](https://blog.lslabs.dev/posts/ttg_octaves).
 
 ## Contributing
 If you would like to report a bug, please create an [issue](https://github.com/lazysquirrellabs/ttg/issues). If you would like to contribute with bug fixing or small improvements, please open a Pull Request. If you would like to contribute with a new feature (regardless if it's in the roadmap or not), [contact the developer](https://matheusamazonas.net/contact.html).
