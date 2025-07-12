@@ -5,10 +5,13 @@ Terraced Terrain Generator (TTG) is a free Unity tool for procedural generation 
 
 ![Five images of generated terraced terrains looping.](https://ttg.matheusamazonas.net/assets/images/banner.png)
 
+[![](https://minmax.lslabs.dev/assets/images/get_unity.webp)](https://assetstore.unity.com/packages/tools/terrain/terraced-terrain-generator-315969)
+
 ## Contents
 - [Features](#features)
 - [Importing](#importing)
-	- [Import using a git URL](#import-using-a-git-url)
+	- [Import with Unity Asset Store](#import-with-unity-asset-store)
+	- [Import with Package Manager using a git URL](#import-with-package-manager-using-a-git-url)
 	- [Import with OpenUPM](#import-with-openupm)
 	- [After importing](#after-importing)
 - [Usage](#usage)
@@ -42,9 +45,14 @@ Terraced Terrain Generator (TTG) is a free Unity tool for procedural generation 
 	- Height distribution.
 
 ## Importing
-The first step to get started with TTG is to import the library into your Unity project. There are two ways to do so: via the Package Manager using a git URL, and via OpenUPM.
+The first step to get started with TTG is to import the library into your Unity project. There are three ways to do so: via the Asset Store, via the Package Manager using a git URL, and via OpenUPM.
 
-### Import using a git URL
+### Import with Unity Asset Store
+Click on the image below to visit the package's page on the Unity Asset Store. One there, follow the instructions to import it into your project.
+
+[![](https://minmax.lslabs.dev/assets/images/get_unity.webp)](https://assetstore.unity.com/packages/tools/terrain/terraced-terrain-generator-315969)
+
+### Import with Package Manager using a git URL
 This approach uses Unity's Package Manager to add TTG to your project using the repo's git URL. To do so, navigate to `Window > Package Manager` in Unity. Then click on the `+` and select "Add package from git URL":
 
 ![](https://ttg.matheusamazonas.net/assets/images/upm_adding.png)
