@@ -49,9 +49,13 @@ This approach uses Unity's Package Manager to add TTG to your project using the 
 
 ![](https://ttg.matheusamazonas.net/assets/images/upm_adding.png)
 
-Next, enter the following in the "URL" input field to install the latest version of TTG:
+Next, enter the following in the "URL" input field to install the latest version of TTG if you're using HTTPS:
 ```
-https://github.com/lazysquirrellabs/ttg.git?path=Assets/Libraries/TerracedTerrainGenerator
+https://github.com/lazysquirrellabs/ttg.git?path=Assets/Lazy Squirrel Labs/TerracedTerrainGenerator
+```
+Or the one below if you're using SSH:
+```
+git@github.com:lazysquirrellabs/TTG.git?path=Assets/Lazy Squirrel Labs/TerracedTerrainGenerator
 ```
 Finally, click on the "Add" button. The importing process should start automatically. Once it's done, TTG is ready to be used in the project.
 
@@ -60,7 +64,7 @@ TTG is available as a package on [OpenUPM](https://openupm.com/packages/com.lazy
 ```
 openupm add com.lazysquirrellabs.terracedterraingenerator
 ```
-Once the importing process is complete, TTG is ready to be used in the project. 
+Once the importing process is complete, TTG is ready to be used in the project.
 
 ### After importing
 After importing TTG, check the [Usage](#usage) section on how to use it and the [Samples](#samples) section on how to import and use the package samples.
@@ -95,8 +99,8 @@ The easier way to jump into TTG is to use one of its controller components: `Sph
 These components contain all parameters explained in the previous section, in addition to the following fields:
 - Generate on start: whether a new terrain should be generated on start. This feature is great to quickly test generation parameters.
 - Renderer: the `MeshRenderer` that will be used to render the terrain.
-- Mesh filter: the `MeshFilter` that will contain the terrain's mesh. 
-- Use Custom Heights: whether a custom relative terrace heights array will be provided. 
+- Mesh filter: the `MeshFilter` that will contain the terrain's mesh.
+- Use Custom Heights: whether a custom relative terrace heights array will be provided.
 	- If true, the relative heights array will be available for customization. The length of this array will dictate how many terraces will be generated.
 	- If false, a "Terrace Count" field will be available and can be used to customize how many terraces will be created. In this case, the relative terrace heights array will be automatically generated and its values will be equally distributed between 0 and 1.
 
@@ -117,7 +121,7 @@ The first two methods are meant for pseudorandom procedural generation—when th
 The controllers manage the lifetime of the meshes they generate, and destroy them once they're not being used anymore (including when the component itself is destroyed). If you would like to manage mesh lifetime yourself, use the API (described below) instead.
 
 ### API usage
-The more advanced (and more flexible) way of using TTG is via its API, using the `SphericalTerrainGenerator` and `PlanarTerrainGenerator` classes, both inheriting from `TerrainGenerator`. The API method method is better suited for editor usage and dynamic terrain generation at runtime. Its usage isn't too different from the component-based approach seen above: the generation parameters are the same and there's a 1:1 mapping between generation methods. In fact, the generator controller classes are just convenient (`MonoBehaviour`) wrappers around `SphericalTerrainGenerator` and `PlanarTerrainGenerator`. 
+The more advanced (and more flexible) way of using TTG is via its API, using the `SphericalTerrainGenerator` and `PlanarTerrainGenerator` classes, both inheriting from `TerrainGenerator`. The API method method is better suited for editor usage and dynamic terrain generation at runtime. Its usage isn't too different from the component-based approach seen above: the generation parameters are the same and there's a 1:1 mapping between generation methods. In fact, the generator controller classes are just convenient (`MonoBehaviour`) wrappers around `SphericalTerrainGenerator` and `PlanarTerrainGenerator`.
 
 Generating a terraced terrain via the API requires two steps:
 - Creating a `TerrainGenerator` instance via one of the child classes' constructor.
@@ -163,12 +167,12 @@ public async Task<Mesh> GenerateTerrainAsync(CancellationToken token);
 ```
 The asynchronous method supports task cancellation via a cancellation token. If the token's source is cancelled, an `OperationCanceledException` might be thrown.
 
-It's important to point out that the user is responsible for resource management (in this case, meshes). The API doesn't automatically clean terrain meshes up. 
+It's important to point out that the user is responsible for resource management (in this case, meshes). The API doesn't automatically clean terrain meshes up.
 
 And that's it. No other types or methods are exposed. The ones above are sufficient to use all TTG features via the API.
 
-#### Example 
-Let's say we would like to generate random planar, octagonal terrain with 5 terraces, 20 units radius, maximum height of 9.5 units and a fragmentation depth of 4. For sculpting, we would like 5 octaves, a base frequency of 0.075, a persistence of 0.375 and a lacunarity of 2.52. 
+#### Example
+Let's say we would like to generate random planar, octagonal terrain with 5 terraces, 20 units radius, maximum height of 9.5 units and a fragmentation depth of 4. For sculpting, we would like 5 octaves, a base frequency of 0.075, a persistence of 0.375 and a lacunarity of 2.52.
 First, let's create the height distribution curve. For real-world usage, it would be handy to serialize this curve so it's easily editable in the inspector. Here, for the sake of simplicity, let's use a linear curve declared in code:
 ```csharp
 var heightDistribution = AnimationCurve.Linear(0f, 0f, 1f, 1f);
@@ -205,8 +209,8 @@ The source code of the controller classes `SphericalTerrainGeneratorController` 
 
 ## Samples
 The package contains three samples:
-- Display: this sample generates hand-picked terrains with different characteristic. It's a great display of how the materials used by the terrains might influence its mood. It contains 2 scenes: "Display 1.0" contains terrains that could be generated using TTG 1.X and "Display 2.X" contains terrains that can be generated using TTG 2.X. This last scene was used to generate the banner image at the top of this page. 
-- Randomizer: this sample simply repeatedly creates completely random planar terraced terrains. It's a great display of the tool's capabilities and the different types of terrains it can create. 
+- Display: this sample generates hand-picked terrains with different characteristic. It's a great display of how the materials used by the terrains might influence its mood. It contains 2 scenes: "Display 1.0" contains terrains that could be generated using TTG 1.X and "Display 2.X" contains terrains that can be generated using TTG 2.X. This last scene was used to generate the banner image at the top of this page.
+- Randomizer: this sample simply repeatedly creates completely random planar terraced terrains. It's a great display of the tool's capabilities and the different types of terrains it can create.
 - Parameters test: this sample repeatedly creates random planar terraced terrains that can be somewhat customized. It's a great tool to quickly test generation parameters. Play with the values in the `PlanarTerrainGeneratorController` component attached to the `Generator` game object to see how the parameters affect the generated terrains.
 
 To import the samples, open the Package Manager and select TTG in the packages list. Then find the Samples section on the right panel, and click on the "Import" button right next to the sample you would like to import. Once importing is finished, navigate to the `Assets/Samples/Terraced Terrain Generator` folder. Finally, open and play the scene from the sample you would like to test.
@@ -221,7 +225,7 @@ Although the first versions of TTG are out, the tool is still under (casual) dev
 - ~~Improve terrain detailing: use Perlin noise octaves to create more natural terrains.~~ Implemented on version 1.2.0.
 - ~~Sphere as a basic shape: let's create completely terraced planets!~~ Implemented on version 2.0.0.
 - Real-time sculpting: instead of letting an algorithm generate the hills, let the user interactively sculpt them.
-- Outer walls: “close” the generated mesh so it looks like a model carved in wood, sitting on a desk. 
+- Outer walls: “close” the generated mesh so it looks like a model carved in wood, sitting on a desk.
 
 You can follow TTG's development progress on its [Trello board](https://trello.com/b/cFRtgqal/terracted-terrain-generator).
 
@@ -233,7 +237,7 @@ Technical aspects of TTG were described in the following blogs posts:
 - [Adding more detail to Terraced Terrain Generator using Perlin noise octaves](https://blog.matheusamazonas.net/posts/ttg_octaves).
 
 ## Contributing
-If you would like to report a bug, please create an [issue](https://github.com/lazysquirrellabs/ttg/issues). If you would like to contribute with bug fixing or small improvements, please open a Pull Request. If you would like to contribute with a new feature (regardless if it's in the roadmap or not), [contact the developer](https://matheusamazonas.net/contact.html).  
+If you would like to report a bug, please create an [issue](https://github.com/lazysquirrellabs/ttg/issues). If you would like to contribute with bug fixing or small improvements, please open a Pull Request. If you would like to contribute with a new feature (regardless if it's in the roadmap or not), [contact the developer](https://matheusamazonas.net/contact.html).
 
 ## Getting help
 Use the [issues page](https://github.com/lazysquirrellabs/ttg/issues) if there's a problem with your TTG setup, if something isn't working as expected, or if you would like to ask questions about the tool and its usage.
