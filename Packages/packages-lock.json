@@ -396,12 +396,6 @@
         "com.unity.modules.xr": "1.0.0"
       }
     },
-    "com.unity.modules.wind": {
-      "version": "1.0.0",
-      "depth": 0,
-      "source": "builtin",
-      "dependencies": {}
-    },
     "com.unity.modules.xr": {
       "version": "1.0.0",
       "depth": 0,
