@@ -398,7 +398,7 @@
     },
     "com.unity.modules.xr": {
       "version": "1.0.0",
-      "depth": 0,
+      "depth": 1,
       "source": "builtin",
       "dependencies": {
         "com.unity.modules.physics": "1.0.0",
